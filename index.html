@@ -1,39 +1,49 @@
 <!DOCTYPE html>
 <html>
 
+<head>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
 <body>
-    <h1>Genotify</h1>
-    <form>
-        Search for:
+    <div class="queryform">
+        <h2>Genotify</h2>
+        <form>
+            Search for:
+            <br>
+            <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, etc">
+        </form>
         <br>
-        <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, etc">
-    </form>
-    <br>
-    <label>Species</label>
-    <br>
-    <select size=9 id="species" name="species">
-        <option value="human">Human</option>
-        <option value="mouse">Mouse</option>
-        <option value="rat">Rat</option>
-        <option value="fruitfly">Drosphila</option>
-        <option value="nematode">C. elegans</option>
-        <option value="thale-cress">Arabidopsis thaliana</option>
-        <option value="zebrafish">Zebrafish</option>
-        <option value="frog">Frog</option>
-        <option value="pig">Pig</option>
-    </select>
-    <br>
-    <br>
-    <button id="searchButton" type="button">Search</button>
-    <p id="basics"></p>
-    <p id="summary"></p>
+        <label>Species</label>
+        <br>
+        <select size=9 id="species" name="species">
+            <option value="human">Human</option>
+            <option value="mouse">Mouse</option>
+            <option value="rat">Rat</option>
+            <option value="fruitfly">Drosphila</option>
+            <option value="nematode">C. elegans</option>
+            <option value="thale-cress">Arabidopsis thaliana</option>
+            <option value="zebrafish">Zebrafish</option>
+            <option value="frog">Frog</option>
+            <option value="pig">Pig</option>
+        </select>
+        <br>
+        <br>
+        <button id="searchButton" type="button">Search</button>
+    </div>
+    <div class="info">
+        <p id="basics"></p>
+    </div>
+    <div class="info">
+        <p id="summary"></p>
+    </div>
     <script>
-    document.addEventListener("DOMContentLoaded", function(event) {
-        console.log("DOM fully loaded.");
-    });
 
     (function() {
-        document.getElementById("searchButton").addEventListener('click', newQuery);
+        document.addEventListener("DOMContentLoaded", function(event) {
+            console.log("DOM fully loaded.");
+            document.getElementById("searchButton").addEventListener('click', newQuery);
+        });
 
         function newQuery() {
             var term = document.getElementById("query").value;
