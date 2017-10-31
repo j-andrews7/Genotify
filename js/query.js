@@ -17,6 +17,7 @@
             fetch(query_url)
                 .then(
                     function(response) {
+                        console.log(response);
                         if (response.status !== 200) {
                             console.log('Looks like there was a problem. Status Code: ' +
                                 response.status);
@@ -25,7 +26,7 @@
 
                         response.json().then(function(data) {
                             console.log(data);
-                            if (data.total !== 0) {
+                            if (data.total !== 0 && data.success !== false) {
                                 top_hit = data.hits[0]
                                 var symbol = top_hit.symbol
                                 var geneId = top_hit._id
