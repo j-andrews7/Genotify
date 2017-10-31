@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h1>Genotify</h1>
+    <form>
+        Search for:
+        <br>
+        <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, etc">
+    </form>
+    <br>
+    <button id="searchButton" type="button">Search</button>
+    <p id="basics"></p>
+    <br>
+    <p id="summary"></p>
+    <script>
+    (function() {
+        var httpRequest;
+        document.getElementById("searchButton").addEventListener('click', makeQuery);
+
+        function makeQuery() {
+            httpRequest = new XMLHttpRequest();
+            var term = document.getElementById("query").value;
+
+            if (!httpRequest) {
+                alert('Giving up :( Cannot create an XMLHTTP instance');
+                return false;
+            }
+            httpRequest.onreadystatechange = parseQuery;
+            httpRequest.open('GET', "https://mygene.info/v3/query?q=" + term, true);
+            httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            httpRequest.send();
+        }
+
+        function parseQuery() {
+            if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                if (httpRequest.status === 200) {
+                    var response = JSON.parse(httpRequest.responseText);
+                    var symbol = response.hits[0].symbol
+                    var geneId = response.hits[0]._id
+                    document.getElementById("basics").innerHTML = 'Gene Symbol: ' + symbol + "; Gene ID: " + geneId;
+
+                    querySummary(geneId);
+
+                } else {
+                    var response = 'No hits found';
+                }
+                console.log(response);
+            }
+        }
+
+        function querySummary(gene) {
+            sumRequest = new XMLHttpRequest();
+            sumRequest.onreadystatechange = parseSummary;
+            console.log(gene)
+            sumRequest.open('GET', "https://mygene.info/v3/gene/" + gene, true);
+            sumRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            sumRequest.send();
+        }
+
+
+        function parseSummary() {
+            if (sumRequest.readyState === XMLHttpRequest.DONE) {
+                if (sumRequest.status === 200) {
+                    var response = JSON.parse(sumRequest.responseText);
+                    var summary = response.summary
+                    document.getElementById("summary").innerHTML = 'Gene Summary: ' + response.summary;
+                } else {
+                    var response = 'No hits found';
+                }
+                console.log(response);
+            }
+        }
+
+    })();
+    </script>
+</body>
+
+</html>
