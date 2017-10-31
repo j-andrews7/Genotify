@@ -4,39 +4,47 @@
 <head>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="js/query.js"></script>
+    <title>Genotify</title>
 </head>
 
 <body>
-    <div class="queryform">
-        <h2>Genotify</h2>
-        <form>
-            Search for:
+    <div class="header">
+        <h2 name="genotifyheader">Genotify</h2>
+    </div>
+    <div class="content">
+        <div class="queryform">
+            <form>
+                Search for:
+                <br>
+                <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" size=30>
+            </form>
             <br>
-            <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, etc">
-        </form>
-        <br>
-        <label>Species</label>
-        <br>
-        <select size=9 id="species" name="species">
-            <option value="human">Human</option>
-            <option value="mouse">Mouse</option>
-            <option value="rat">Rat</option>
-            <option value="fruitfly">Drosphila</option>
-            <option value="nematode">C. elegans</option>
-            <option value="thale-cress">Arabidopsis thaliana</option>
-            <option value="zebrafish">Zebrafish</option>
-            <option value="frog">Frog</option>
-            <option value="pig">Pig</option>
-        </select>
-        <br>
-        <br>
-        <button id="searchButton" type="button">Search</button>
+            <label>Limit Search to:</label>
+            <br>
+            <select size=9 id="species" name="species">
+                <option value="human">Human</option>
+                <option value="mouse">Mouse</option>
+                <option value="rat">Rat</option>
+                <option value="fruitfly">Drosphila</option>
+                <option value="nematode">C. elegans</option>
+                <option value="thale-cress">Arabidopsis thaliana</option>
+                <option value="zebrafish">Zebrafish</option>
+                <option value="frog">Frog</option>
+                <option value="pig">Pig</option>
+            </select>
+            <br>
+            <br>
+            <button id="searchButton" type="button">Search</button>
+        </div>
+        <div class="info">
+            <p id="basics"></p>
+        </div>
+        <div class="info">
+            <p id="summary"></p>
+        </div>
     </div>
-    <div class="info">
-        <p id="basics"></p>
-    </div>
-    <div class="info">
-        <p id="summary"></p>
+    <div class="footer">
+        <p>(C) Copyright 2017 Jared Andrews - Powered by the <a href="http://mygene.info">MyGene API</a></p>
     </div>
 </body>
 

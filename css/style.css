@@ -1,22 +1,26 @@
 * {
+	margin: 0;
     box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  background-color: #333;
+  margin: 0px;
+  background-color: #83A298;
+  padding: 0px;
+  min-height: 100%;
+  width: 100%;
 }
 
-/* Style the top navigation bar */
+/* Style query form */
 .queryform {
     overflow: hidden;
-    background-color: #333;
-    color: #ffffff;
+    background-color: #BCCDC7;
     margin: auto;
     padding: 10px;
+    margin: 20px 20px 0px 20px;;
 }
 
-/* Style the topnav links */
+/* Style the past search links */
 .history a {
     float: left;
     display: block;
@@ -32,14 +36,43 @@ body {
     color: black;
 }
 
-/* Style the content */
-.info {
-    background-color: #ddd;
-    padding: 10px;
+.content {
+	background-color: #83A298;
 }
 
-/* Style the footer */
-.footer {
-    background-color: #f1f1f1;
+/* Style the info */
+.info {
+    background-color: #BCCDC7;
     padding: 10px;
+    margin: 0px 20px 0px 20px;
+}
+
+/* Style the header */
+.header {
+    background-color: #516C63;
+    padding-left: 10px;
+    padding-top:5px;
+    padding-bottom:5px;
+    margin: 0px;
+    color: #ffffff;
+}
+
+.footer {
+	background-color: #1F372F;
+	padding: 10px;
+	margin: 0px;
+	color: #ffffff;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+}
+
+#genotifyheader {
+	margin: 0px;
+	padding: 0px;
+}
+
+/* For label hiding */
+.hidden{
+   visibility:hidden;
 }
