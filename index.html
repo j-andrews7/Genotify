@@ -19,63 +19,63 @@
     });
 
     (function() {
-        var httpRequest;
-        document.getElementById("searchButton").addEventListener('click', makeQuery);
+        document.getElementById("searchButton").addEventListener('click', newQuery);
 
-        function makeQuery() {
-            httpRequest = new XMLHttpRequest();
+        function newQuery() {
             var term = document.getElementById("query").value;
+            fetch("https://mygene.info/v3/query?q=" + term)
+                .then(
+                    function(response) {
+                        if (response.status !== 200) {
+                            console.log('Looks like there was a problem. Status Code: ' +
+                                response.status);
+                            return;
+                        }
 
-            if (!httpRequest) {
-                console.log('Giving up :( Cannot create an XMLHTTP instance');
-                return false;
-            }
-            httpRequest.onreadystatechange = parseQuery;
-            httpRequest.open('GET', "https://mygene.info/v3/query?q=" + term, true);
-            httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            httpRequest.send();
+                        // Examine the text in the response
+                        response.json().then(function(data) {
+                            console.log(data);
+                            if (data.total !== 0) {
+                                top_hit = data.hits[0]
+                                var symbol = top_hit.symbol
+                                var geneId = top_hit._id
+                                var geneName = top_hit.name
+                                document.getElementById("basics").textContent = 'Official Gene Symbol: ' + symbol + "; Official Gene Name: " + geneName + "; Entrez ID: " + geneId;
+                                annotateGene(geneId);
+                            } else {
+                                document.getElementById("basics").textContent = 'No hits.'
+                                document.getElementById("summary").textContent = ''
+                            }
+                        });
+                    }
+                )
+                .catch(function(err) {
+                    console.log('Fetch Error :-S', err);
+                });
         }
 
-        function parseQuery() {
-            if (httpRequest.readyState === XMLHttpRequest.DONE) {
-                if (httpRequest.status === 200) {
-                    var response = JSON.parse(httpRequest.responseText);
-                    var symbol = response.hits[0].symbol
-                    var geneId = response.hits[0]._id
-                    document.getElementById("basics").textContent = 'Gene Symbol: ' + symbol + "; Gene ID: " + geneId;
+        function annotateGene(gene) {
+            fetch("https://mygene.info/v3/gene/" + gene)
+                .then(
+                    function(response) {
+                        if (response.status !== 200) {
+                            console.log('Looks like there was a problem. Status Code: ' +
+                                response.status);
+                            return;
+                        }
 
-                    querySummary(geneId);
-
-                } else {
-                    var response = 'No hits found';
-                }
-                console.log(response);
-            }
+                        // Examine the text in the response
+                        response.json().then(function(data) {
+                            console.log(data);
+                            var summary = data.summary
+                            document.getElementById("summary").textContent = 'Gene Summary: ' + summary;
+                        });
+                    }
+                )
+                .catch(function(err) {
+                    console.log('Fetch Error :-S', err);
+                });
         }
-
-        function querySummary(gene) {
-            sumRequest = new XMLHttpRequest();
-            sumRequest.onreadystatechange = parseSummary;
-            console.log(gene)
-            sumRequest.open('GET', "https://mygene.info/v3/gene/" + gene, true);
-            sumRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            sumRequest.send();
-        }
-
-
-        function parseSummary() {
-            if (sumRequest.readyState === XMLHttpRequest.DONE) {
-                if (sumRequest.status === 200) {
-                    var response = JSON.parse(sumRequest.responseText);
-                    var summary = response.summary
-                    document.getElementById("summary").textContent = 'Gene Summary: ' + response.summary;
-                } else {
-                    var response = 'No hits found';
-                }
-                console.log(response);
-            }
-        }
-
     })();
     </script>
 </body>
