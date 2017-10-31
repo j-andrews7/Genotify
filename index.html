@@ -14,6 +14,10 @@
     <br>
     <p id="summary"></p>
     <script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        console.log("DOM fully loaded.");
+    });
+
     (function() {
         var httpRequest;
         document.getElementById("searchButton").addEventListener('click', makeQuery);
@@ -23,7 +27,7 @@
             var term = document.getElementById("query").value;
 
             if (!httpRequest) {
-                alert('Giving up :( Cannot create an XMLHTTP instance');
+                console.log('Giving up :( Cannot create an XMLHTTP instance');
                 return false;
             }
             httpRequest.onreadystatechange = parseQuery;
@@ -38,7 +42,7 @@
                     var response = JSON.parse(httpRequest.responseText);
                     var symbol = response.hits[0].symbol
                     var geneId = response.hits[0]._id
-                    document.getElementById("basics").innerHTML = 'Gene Symbol: ' + symbol + "; Gene ID: " + geneId;
+                    document.getElementById("basics").textContent = 'Gene Symbol: ' + symbol + "; Gene ID: " + geneId;
 
                     querySummary(geneId);
 
@@ -64,7 +68,7 @@
                 if (sumRequest.status === 200) {
                     var response = JSON.parse(sumRequest.responseText);
                     var summary = response.summary
-                    document.getElementById("summary").innerHTML = 'Gene Summary: ' + response.summary;
+                    document.getElementById("summary").textContent = 'Gene Summary: ' + response.summary;
                 } else {
                     var response = 'No hits found';
                 }
