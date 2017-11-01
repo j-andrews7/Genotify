@@ -1,83 +1,51 @@
 <!DOCTYPE html>
 <html>
 
+<head>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/query.js"></script>
+    <title>Genotify</title>
+</head>
+
 <body>
-    <h1>Genotify</h1>
-    <form>
-        Search for:
-        <br>
-        <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, etc">
-    </form>
-    <br>
-    <button id="searchButton" type="button">Search</button>
-    <p id="basics"></p>
-    <br>
-    <p id="summary"></p>
-    <script>
-    document.addEventListener("DOMContentLoaded", function(event) {
-        console.log("DOM fully loaded.");
-    });
-
-    (function() {
-        document.getElementById("searchButton").addEventListener('click', newQuery);
-
-        function newQuery() {
-            var term = document.getElementById("query").value;
-            fetch("https://mygene.info/v3/query?q=" + term)
-                .then(
-                    function(response) {
-                        if (response.status !== 200) {
-                            console.log('Looks like there was a problem. Status Code: ' +
-                                response.status);
-                            return;
-                        }
-
-                        // Examine the text in the response
-                        response.json().then(function(data) {
-                            console.log(data);
-                            if (data.total !== 0) {
-                                top_hit = data.hits[0]
-                                var symbol = top_hit.symbol
-                                var geneId = top_hit._id
-                                var geneName = top_hit.name
-                                document.getElementById("basics").textContent = 'Official Gene Symbol: ' + symbol + "; Official Gene Name: " + geneName + "; Entrez ID: " + geneId;
-                                annotateGene(geneId);
-                            } else {
-                                document.getElementById("basics").textContent = 'No hits.'
-                                document.getElementById("summary").textContent = ''
-                            }
-                        });
-                    }
-                )
-                .catch(function(err) {
-                    console.log('Fetch Error :-S', err);
-                });
-        }
-
-        function annotateGene(gene) {
-            fetch("https://mygene.info/v3/gene/" + gene)
-                .then(
-                    function(response) {
-                        if (response.status !== 200) {
-                            console.log('Looks like there was a problem. Status Code: ' +
-                                response.status);
-                            return;
-                        }
-
-                        // Examine the text in the response
-                        response.json().then(function(data) {
-                            console.log(data);
-                            var summary = data.summary
-                            document.getElementById("summary").textContent = 'Gene Summary: ' + summary;
-                        });
-                    }
-                )
-                .catch(function(err) {
-                    console.log('Fetch Error :-S', err);
-                });
-        }
-    })();
-    </script>
+    <div class="header">
+        <h2 name="genotifyheader">Genotify</h2>
+    </div>
+    <div class="content">
+        <div class="queryform">
+            <form>
+                Search for:
+                <br>
+                <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" size=30>
+            </form>
+            <br>
+            <label>Limit Search to:</label>
+            <br>
+            <select size=9 id="species" name="species">
+                <option value="human">Human</option>
+                <option value="mouse">Mouse</option>
+                <option value="rat">Rat</option>
+                <option value="fruitfly">Drosphila</option>
+                <option value="nematode">C. elegans</option>
+                <option value="thale-cress">Arabidopsis thaliana</option>
+                <option value="zebrafish">Zebrafish</option>
+                <option value="frog">Frog</option>
+                <option value="pig">Pig</option>
+            </select>
+            <br>
+            <br>
+            <button id="searchButton" type="button">Search</button>
+        </div>
+        <div class="info">
+            <p id="basics"></p>
+        </div>
+        <div class="info">
+            <p id="summary"></p>
+        </div>
+    </div>
+    <div class="footer">
+        <p>(C) Copyright 2017 Jared Andrews - Powered by the <a href="http://mygene.info">MyGene API</a></p>
+    </div>
 </body>
 
 </html>
