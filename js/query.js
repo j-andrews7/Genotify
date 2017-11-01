@@ -1,20 +1,21 @@
 (function() {
-        document.addEventListener("DOMContentLoaded", function(event) {
-            console.log("DOM fully loaded.");
-            document.getElementById("searchButton").addEventListener('click', newQuery);
+        document.addEventListener('DOMContentLoaded', function(event) {
+            console.log('DOM fully loaded.');
+            document.getElementById('searchButton').addEventListener('click', newQuery);
         });
 
         function newQuery() {
-            var term = document.getElementById("query").value;
-            var query_url = "https://mygene.info/v3/query?q=" + term;
-            var species_options = document.getElementById("species");
-            if (species_options.selectedIndex !== -1) {
-                var species = species_options.options[species_options.selectedIndex].value;
-                var query_url = "https://mygene.info/v3/query?q=" + term + "&species=" + species;
+            var term = document.getElementById('query').value;
+            var queryUrl = 'https://mygene.info/v3/query?q=' + term;
+            var speciesOptions = document.getElementById('species');
+
+            if (speciesOptions.selectedIndex !== -1) {
+                var species = speciesOptions.options[speciesOptions.selectedIndex].value;
+                queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' + species;
                 console.log(species);
             }
 
-            fetch(query_url)
+            fetch(queryUrl)
                 .then(
                     function(response) {
                         if (response.status !== 200) {
@@ -30,22 +31,22 @@
                                 var symbol = top_hit.symbol
                                 var geneId = top_hit._id
                                 var geneName = top_hit.name
-                                document.getElementById("basics").textContent = 'Official Gene Symbol: ' + symbol + "; Official Gene Name: " + geneName + "; Entrez ID: " + geneId;
+                                document.getElementById('basics').textContent = 'Official Gene Symbol: ' + symbol + '; Official Gene Name: ' + geneName + '; Entrez ID: ' + geneId;
                                 annotateGene(geneId);
                             } else {
-                                document.getElementById("basics").textContent = 'No hits.'
-                                document.getElementById("summary").textContent = ''
+                                document.getElementById('basics').textContent = 'No hits.'
+                                document.getElementById('summary').textContent = ''
                             }
                         });
                     }
                 )
                 .catch(function(err) {
-                    console.log('Fetch Query Error :-S', err);
+                    console.error('Fetch Query Error', err);
                 });
         }
 
         function annotateGene(gene) {
-            fetch("https://mygene.info/v3/gene/" + gene)
+            fetch('https://mygene.info/v3/gene/' + gene)
                 .then(
                     function(response) {
                         if (response.status !== 200) {
@@ -58,12 +59,12 @@
                         response.json().then(function(data) {
                             console.log(data);
                             var summary = data.summary
-                            document.getElementById("summary").textContent = 'Gene Summary: ' + summary;
+                            document.getElementById('summary').textContent = 'Gene Summary: ' + summary;
                         });
                     }
                 )
                 .catch(function(err) {
-                    console.log('Fetch Gene Annotation Error :-S', err);
+                    console.error('Fetch Gene Annotation Error', err);
                 });
         }
     })();
