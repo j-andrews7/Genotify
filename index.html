@@ -36,10 +36,20 @@
             <br>
             <button id="searchButton" type="button">Search</button>
         </div>
-        <div class="info">
+        <div class="info" id="info">
+            <label class="hidden" for="geneSymbol" id="geneSymbolLabel">HGNC Symbol:</label>
+            <textarea class="hidden" readonly rows="1" id="geneSymbol" disabled></textarea>
+            <br>
+            <label class="hidden" for="geneName" id="geneNameLabel">HGNC Name:</label>
+            <textarea class="hidden" readonly rows="1" id="geneName" disabled></textarea>
+            <br>
+            <label class="hidden" for="geneId" id="geneIdLabel">Entrez ID:</label>
+            <textarea class="hidden" readonly rows="1" id="geneId" disabled></textarea>
+            <br>
+            <label class="hidden" for="matchScore" id="matchScoreLabel">Match Score:</label>
+            <textarea class="hidden" readonly rows="1" id="matchScore" disabled></textarea>
+            <br>
             <p id="basics"></p>
-        </div>
-        <div class="info">
             <p id="summary"></p>
         </div>
     </div>
