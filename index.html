@@ -36,20 +36,25 @@
             <br>
             <button id="searchButton" type="button">Search</button>
         </div>
-        <div class="info" id="info">
-            <label class="hidden" for="geneSymbol" id="geneSymbolLabel">HGNC Symbol:</label>
+        <div id='hitDiv'>
+            <label class="hidden" for="hits" id="hitsLabel">Hits:</label><br>
+            <textarea class="hidden" readonly rows="1" id="hits" disabled></textarea>
+        </div>
+        <div class="info" id="infoDiv">
+            <label class="hidden" for="geneSymbol" id="geneSymbolLabel">HGNC Symbol:</label><br>
             <textarea class="hidden" readonly rows="1" id="geneSymbol" disabled></textarea>
             <br>
-            <label class="hidden" for="geneName" id="geneNameLabel">HGNC Name:</label>
+            <label class="hidden" for="geneName" id="geneNameLabel">HGNC Name:</label><br>
             <textarea class="hidden" readonly rows="1" id="geneName" disabled></textarea>
             <br>
-            <label class="hidden" for="geneId" id="geneIdLabel">Entrez ID:</label>
+            <label class="hidden" for="geneId" id="geneIdLabel">Entrez ID:</label><br>
             <textarea class="hidden" readonly rows="1" id="geneId" disabled></textarea>
             <br>
-            <label class="hidden" for="matchScore" id="matchScoreLabel">Match Score:</label>
+            <label class="hidden" for="matchScore" id="matchScoreLabel">Match Score:</label><br>
             <textarea class="hidden" readonly rows="1" id="matchScore" disabled></textarea>
             <br>
-            <p id="basics"></p>
+            <label class="hidden" for="hits" id="hitsLabel">Hits:</label><br>
+            <textarea class="hidden" readonly rows="1" id="hits" disabled></textarea>
             <p id="summary"></p>
         </div>
     </div>

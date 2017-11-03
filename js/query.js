@@ -27,12 +27,13 @@
                         console.log(data);
                         if (data.total !== 0 && data.success !== false) {
                             topHit = data.hits[0]
-                            var basics = { 'geneSymbol': topHit.symbol, 'geneName': topHit.name, 'geneId': topHit._id, 'matchScore': topHit._score };
+                            var basics = { 'geneSymbol': topHit.symbol, 'geneName': topHit.name, 'geneId': topHit._id, 'matchScore': topHit._score, 'hits': data.hits.length};
                             displayData(basics)
                             annotateGene(basics.geneId);
                         } else {
-                            document.getElementById('basics').textContent = 'No hits.';
+                            document.getElementById('hits').textContent = 'No hits.';
                             document.getElementById('summary').textContent = '';
+                            hideData(document.getElementById('infoDiv'));
                         }
                     });
                 }
@@ -44,23 +45,34 @@
 
     function displayData(dataArray) {
         for (data in dataArray) {
-            console.log(data)
             currentData = document.getElementById(data);
             currentData.classList.remove('hidden');
             currentLabel = document.getElementById(data + 'Label');
             currentLabel.classList.remove('hidden');
-            currentData.textContent = dataArray[data]
-
-            hideData(document.getElementById("info"))
+            currentData.textContent = dataArray[data];
         }
     }
 
     function hideData(divObj) {
         // Hide all data in child nodes of givin div element.
-        var children = divObj.querySelectorAll("label");
-        for (child in children) {
-            if (!(child.style.classList.contains('hidden'))) {
-                child.style.classList.add('hidden');
+        var labels = divObj.querySelectorAll("label");
+        var i;
+        var textArea = divObj.querySelectorAll("textarea");
+
+        for (i = 0; i < labels.length; i++) {
+            var childData = labels[i];
+
+            if (!(childData.classList.contains('hidden'))) {
+                childData.classList.add('hidden');
+            }
+        }
+
+        for (i = 0; i < textArea.length; i++) {
+            var childData = textArea[i];
+
+            if (!(childData.classList.contains('hidden'))) {
+                childData.classList.add('hidden');
+                childData.textContent = '';
             }
         }
     }
@@ -77,8 +89,8 @@
 
                     // Examine the text in the response
                     response.json().then(function(data) {
-                        console.log(data);
                         var summary = data.summary;
+
                         document.getElementById('summary').textContent = 'Gene Summary: ' + summary;
                     });
                 }

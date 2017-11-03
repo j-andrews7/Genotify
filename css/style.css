@@ -54,6 +54,7 @@ body {
     background-color: #BCCDC7;
     padding: 10px;
     margin: 0px 20px;
+    display: inline-block;
 }
 
 
@@ -83,9 +84,16 @@ body {
     padding: 0px;
 }
 
+#hitDiv {
+    margin: 0px 20px;
+    background-color: #BCCDC7;
+    padding: 10px;
+    display: inline-block;
+}
+
 
 /* For label hiding */
 
 .hidden {
-    visibility: hidden;
+    display: none;
 }
