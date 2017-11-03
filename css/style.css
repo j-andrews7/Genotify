@@ -12,13 +12,16 @@ body {
     width: 100%;
 }
 
+textarea {
+    resize: none;
+}
+
 
 /* Style query form */
 
 .queryform {
     overflow: hidden;
     background-color: #BCCDC7;
-    margin: auto;
     padding: 10px;
     margin: 20px 20px 0px;
 }
@@ -51,10 +54,10 @@ body {
 /* Style the info */
 
 .info {
-    background-color: #BCCDC7;
+    background-color: #BDDDC7;
     padding: 10px;
-    margin: 0px 20px;
-    display: inline-block;
+    margin: 0px;
+    flex: 2;
 }
 
 
@@ -74,7 +77,7 @@ body {
     padding: 10px;
     margin: 0px;
     color: #ffffff;
-    position: absolute;
+    position: relative;
     bottom: 0;
     width: 100%;
 }
@@ -85,15 +88,21 @@ body {
 }
 
 #hitDiv {
-    margin: 0px 20px;
     background-color: #BCCDC7;
     padding: 10px;
-    display: inline-block;
+    margin: 0px;
+    flex: 2;
 }
 
+#basicWrapDiv {
+    display: flex;
+    width: 100%;
+    background-color: #BCCDC7;
+    padding: 10px;
+    margin: 0px 20px 20px;
+}
 
 /* For label hiding */
-
 .hidden {
     display: none;
 }
