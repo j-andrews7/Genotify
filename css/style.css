@@ -12,14 +12,6 @@ body {
     width: 100%;
 }
 
-textarea {
-    resize: none;
-    white-space: pre-line;
-    text-align: justify;
-}
-
-
-
 /* Style query form */
 
 .queryform {
@@ -64,6 +56,8 @@ textarea {
     border-color: gray;
     padding: 1px 2px;
     text-align: justify;
+    width: auto;
+    height: auto;
 }
 
 .flex-container {
@@ -107,13 +101,6 @@ textarea {
     padding: 10px;
 }
 
-.full-text-area {
-    width: 100%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
 .flex-rule {
     padding: 0px;
     width: 100%;
@@ -144,3 +131,5 @@ textarea {
 .hidden {
     display: none;
 }
+
+.addlink {}

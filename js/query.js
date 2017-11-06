@@ -1,11 +1,6 @@
 (function() {
     document.addEventListener('DOMContentLoaded', function(event) {
         console.log('DOM fully loaded.');
-        /* var tx = document.getElementsByTagName('textarea');
-        for (var i = 0; i < tx.length; i++) {
-            tx[i].setAttribute('style', 'height:' + (tx[i].scrollHeight) + 'px;overflow-y:hidden;');
-            tx[i].addEventListener("input", OnInput, false);
-        } */
         document.getElementById('searchButton').addEventListener('click', newQuery);
         document.getElementById('query').addEventListener('keypress', function(e) {
             var key = e.which || e.keyCode;
@@ -14,11 +9,6 @@
             }
         });
     });
-
-    function OnInput() {
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
-    }
 
     function newQuery() {
         var term = document.getElementById('query').value;
@@ -40,16 +30,16 @@
                     }
 
                     response.json().then(function(data) {
-                        console.log(data);
                         if (data.total !== 0 && data.success !== false) {
                             topHit = data.hits[0]
-                            var basics = { 'geneSymbol': topHit.symbol, 'geneName': topHit.name, 'geneId': topHit._id, 'matchScore': topHit._score, 'hits': data.hits.length };
+                            var basics = { 'geneSymbol': topHit.symbol, 'geneName': topHit.name, 'geneId': {'db': 'https://www.ncbi.nlm.nih.gov/gene/', 'ident': topHit._id}, 'matchScore': topHit._score, 'hits': data.hits.length };
                             displayData(basics)
-                            annotateGene(basics.geneId);
+                            annotateGene(topHit._id);
                         } else {
                             var empty = { 'hits': 'No hits', 'matchScore': '0' };
                             displayData(empty)
                             hideData(document.getElementById('infoDiv'));
+                            hideData(document.getElementById('locDiv'));
                             hideData(document.getElementById('summaryDiv'));
                         }
                     });
@@ -66,15 +56,30 @@
             currentData.classList.remove('hidden');
             currentLabel = document.getElementById(data + 'Label');
             currentLabel.classList.remove('hidden');
-            currentData.textContent = dataArray[data];
+            // Add new/remove old links from appropriate divs.
+            if (currentData.classList.contains('addlink')) {
+                var oldLinks = currentData.getElementsByTagName('a');
+                while (oldLinks.length > 0) {
+                    oldLinks[0].parentNode.removeChild(oldLinks[0]);
+                }
+                var linkData = dataArray[data];
+                var link = linkData['db'] + linkData['ident'];
+                var aTag = document.createElement('a');
+                aTag.setAttribute('href', link);
+                aTag.textContent = linkData['ident'];
+                currentData.appendChild(aTag);
+            } else {
+                currentData.textContent = dataArray[data];
+            }
         }
     }
 
     function hideData(divObj) {
         // Hide all data in child nodes of givin div element.
         var labels = divObj.querySelectorAll("label");
+        var links = divObj.querySelectorAll('a');
         var i;
-        var textArea = divObj.querySelectorAll("textarea");
+        var textDivs = divObj.getElementsByClassName("text");
 
         for (i = 0; i < labels.length; i++) {
             var childData = labels[i];
@@ -84,13 +89,18 @@
             }
         }
 
-        for (i = 0; i < textArea.length; i++) {
-            var childData = textArea[i];
+        for (i = 0; i < textDivs.length; i++) {
+            var childData = textDivs[i];
 
             if (!(childData.classList.contains('hidden'))) {
                 childData.classList.add('hidden');
                 childData.textContent = '';
             }
+        }
+
+        for (i = 0; i < links.length; i++) {
+            var childData = links[i];
+            childData.remove();
         }
     }
 
@@ -107,7 +117,7 @@
                     // Examine the text in the response
                     response.json().then(function(data) {
                         console.log(data)
-                        var info = { 'summary': data.summary, 'alias': data.alias.join(', '), 'hgncId': '<a href=https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+data.HGNC+'>'+data.HGNC+'</a>' };
+                        var info = { 'summary': data.summary, 'alias': data.alias.join(', '), 'hgncId': { 'db': 'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=', 'ident': data.HGNC } };
                         displayData(info);
                     });
                 }
