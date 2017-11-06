@@ -1,8 +1,24 @@
 (function() {
     document.addEventListener('DOMContentLoaded', function(event) {
         console.log('DOM fully loaded.');
+        var tx = document.getElementsByTagName('textarea');
+        for (var i = 0; i < tx.length; i++) {
+            tx[i].setAttribute('style', 'height:' + (tx[i].scrollHeight) + 'px;overflow-y:hidden;');
+            tx[i].addEventListener("input", OnInput, false);
+        }
         document.getElementById('searchButton').addEventListener('click', newQuery);
+        document.getElementById('query').addEventListener('keypress', function(e) {
+            var key = e.which || e.keyCode;
+            if (key === 13) {
+                newQuery()
+            }
+        });
     });
+
+    function OnInput() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    }
 
     function newQuery() {
         var term = document.getElementById('query').value;
@@ -27,13 +43,14 @@
                         console.log(data);
                         if (data.total !== 0 && data.success !== false) {
                             topHit = data.hits[0]
-                            var basics = { 'geneSymbol': topHit.symbol, 'geneName': topHit.name, 'geneId': topHit._id, 'matchScore': topHit._score, 'hits': data.hits.length};
+                            var basics = { 'geneSymbol': topHit.symbol, 'geneName': topHit.name, 'geneId': topHit._id, 'matchScore': topHit._score, 'hits': data.hits.length };
                             displayData(basics)
                             annotateGene(basics.geneId);
                         } else {
-                            document.getElementById('hits').textContent = 'No hits.';
-                            document.getElementById('summary').textContent = '';
+                            var empty = { 'hits': 'No hits', 'matchScore': '0' };
+                            displayData(empty)
                             hideData(document.getElementById('infoDiv'));
+                            hideData(document.getElementById('summaryDiv'));
                         }
                     });
                 }
@@ -89,9 +106,8 @@
 
                     // Examine the text in the response
                     response.json().then(function(data) {
-                        var summary = data.summary;
-
-                        document.getElementById('summary').textContent = 'Gene Summary: ' + summary;
+                        var info = { 'summary': data.summary };
+                        displayData(info);
                     });
                 }
             )

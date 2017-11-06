@@ -14,6 +14,8 @@ body {
 
 textarea {
     resize: none;
+    white-space: pre-line;
+    text-align: justify;
 }
 
 
@@ -50,18 +52,55 @@ textarea {
     background-color: #83A298;
 }
 
-
-/* Style the info */
+.flex-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    background-color: #BCCDC7;
+    margin: 0px 20px;
+}
 
 .info {
-    background-color: #BDDDC7;
-    padding: 10px;
+    background-color: #BCCDC7;
     margin: 0px;
     flex: 2;
 }
 
+#genotifyheader {
+    margin: 0px;
+    padding: 0px;
+}
 
-/* Style the header */
+#hitDiv {
+    background-color: #BCCDC7;
+    margin: 0px;
+    flex: 2;
+}
+
+#basicWrapDiv {
+    display: -webkit-flex;
+    display: flex;
+    background-color: #BCCDC7;
+    padding: 10px;
+    margin: 0px;
+}
+
+#summaryDiv {
+    background-color: #BCCDC7;
+    margin: 0px;
+    flex: 4;
+    padding: 10px;
+}
+
+.rule {
+    margin: 0px 20px;
+}
+
+.flex-rule {
+    padding: 0px;
+    width: 100%;
+}
 
 .header {
     background-color: #516C63;
@@ -77,29 +116,9 @@ textarea {
     padding: 10px;
     margin: 0px;
     color: #ffffff;
-    position: relative;
+    position: absolute;
     bottom: 0;
     width: 100%;
-}
-
-#genotifyheader {
-    margin: 0px;
-    padding: 0px;
-}
-
-#hitDiv {
-    background-color: #BCCDC7;
-    padding: 10px;
-    margin: 0px;
-    flex: 2;
-}
-
-#basicWrapDiv {
-    display: flex;
-    width: 100%;
-    background-color: #BCCDC7;
-    padding: 10px;
-    margin: 0px 20px 20px;
 }
 
 /* For label hiding */

@@ -13,11 +13,10 @@
     </div>
     <div class="content">
         <div class="queryform">
-            <form>
-                Search for:
-                <br>
-                <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" size=30>
-            </form>
+            Search for:
+            <br>
+            <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" size=30>
+            <br>
             <br>
             <label>Limit Search to:</label>
             <br>
@@ -34,35 +33,40 @@
             </select>
             <br>
             <br>
-            <button id="searchButton" type="button">Search</button>
+            <button id="searchButton" type="submit">Search</button>
         </div>
-        <div id='basicWrapDiv'>
-            <div id='hitDiv'>
-                <label class="hidden" for="hits" id="hitsLabel">Hits:</label>
-                <br>
-                <textarea class="hidden" readonly rows="1" id="hits" disabled></textarea>
+        <hr class='rule'>
+        <div class='flex-container'>
+            <div id='basicWrapDiv'>
+                <div class="info" id="infoDiv">
+                    <label class="hidden" for="geneSymbol" id="geneSymbolLabel">HGNC Symbol:</label>
+                    <br>
+                    <textarea class="hidden" readonly rows="1" id="geneSymbol" disabled></textarea>
+                    <br>
+                    <label class="hidden" for="geneName" id="geneNameLabel">HGNC Name:</label>
+                    <br>
+                    <textarea class="hidden" readonly rows="1" id="geneName" disabled></textarea>
+                    <br>
+                    <label class="hidden" for="geneId" id="geneIdLabel">Entrez ID:</label>
+                    <br>
+                    <textarea class="hidden" readonly rows="1" id="geneId" disabled></textarea>
+                    <br>
+                </div>
+                <div id='hitDiv'>
+                    <label class="hidden" for="hits" id="hitsLabel">Hits:</label>
+                    <br>
+                    <textarea class="hidden" readonly rows="1" id="hits" disabled></textarea>
+                    <br>
+                    <label class="hidden" for="matchScore" id="matchScoreLabel">Match Score:</label>
+                    <br>
+                    <textarea class="hidden" readonly rows="1" id="matchScore" disabled></textarea>
+                </div>
             </div>
-            <div class="info" id="infoDiv">
-                <label class="hidden" for="geneSymbol" id="geneSymbolLabel">HGNC Symbol:</label>
+            <hr class='flex-rule'>
+            <div id='summaryDiv'>
+                <label class="hidden" for="summary" id="summaryLabel">Summary:</label>
                 <br>
-                <textarea class="hidden" readonly rows="1" id="geneSymbol" disabled></textarea>
-                <br>
-                <label class="hidden" for="geneName" id="geneNameLabel">HGNC Name:</label>
-                <br>
-                <textarea class="hidden" readonly rows="1" id="geneName" disabled></textarea>
-                <br>
-                <label class="hidden" for="geneId" id="geneIdLabel">Entrez ID:</label>
-                <br>
-                <textarea class="hidden" readonly rows="1" id="geneId" disabled></textarea>
-                <br>
-                <label class="hidden" for="matchScore" id="matchScoreLabel">Match Score:</label>
-                <br>
-                <textarea class="hidden" readonly rows="1" id="matchScore" disabled></textarea>
-                <br>
-                <label class="hidden" for="hits" id="hitsLabel">Hits:</label>
-                <br>
-                <textarea class="hidden" readonly rows="1" id="hits" disabled></textarea>
-                <p id="summary"></p>
+                <textarea class="hidden" readonly rows="1" id="summary" disabled></textarea>
             </div>
         </div>
     </div>
