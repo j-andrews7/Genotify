@@ -1,11 +1,11 @@
 (function() {
     document.addEventListener('DOMContentLoaded', function(event) {
         console.log('DOM fully loaded.');
-        var tx = document.getElementsByTagName('textarea');
+        /* var tx = document.getElementsByTagName('textarea');
         for (var i = 0; i < tx.length; i++) {
             tx[i].setAttribute('style', 'height:' + (tx[i].scrollHeight) + 'px;overflow-y:hidden;');
             tx[i].addEventListener("input", OnInput, false);
-        }
+        } */
         document.getElementById('searchButton').addEventListener('click', newQuery);
         document.getElementById('query').addEventListener('keypress', function(e) {
             var key = e.which || e.keyCode;
@@ -106,7 +106,8 @@
 
                     // Examine the text in the response
                     response.json().then(function(data) {
-                        var info = { 'summary': data.summary };
+                        console.log(data)
+                        var info = { 'summary': data.summary, 'alias': data.alias.join(', '), 'hgncId': '<a href=https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+data.HGNC+'>'+data.HGNC+'</a>' };
                         displayData(info);
                     });
                 }

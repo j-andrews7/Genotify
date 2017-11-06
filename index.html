@@ -11,63 +11,81 @@
     <div class="header">
         <h2 name="genotifyheader">Genotify</h2>
     </div>
-    <div class="content">
-        <div class="queryform">
-            Search for:
-            <br>
-            <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" size=30>
-            <br>
-            <br>
-            <label>Limit Search to:</label>
-            <br>
-            <select size=9 id="species" name="species">
-                <option value="human">Human</option>
-                <option value="mouse">Mouse</option>
-                <option value="rat">Rat</option>
-                <option value="fruitfly">Drosphila</option>
-                <option value="nematode">C. elegans</option>
-                <option value="thale-cress">Arabidopsis thaliana</option>
-                <option value="zebrafish">Zebrafish</option>
-                <option value="frog">Frog</option>
-                <option value="pig">Pig</option>
-            </select>
-            <br>
-            <br>
-            <button id="searchButton" type="submit">Search</button>
-        </div>
-        <hr class='rule'>
-        <div class='flex-container'>
-            <div id='basicWrapDiv'>
-                <div class="info" id="infoDiv">
-                    <label class="hidden" for="geneSymbol" id="geneSymbolLabel">HGNC Symbol:</label>
-                    <br>
-                    <textarea class="hidden" readonly rows="1" id="geneSymbol" disabled></textarea>
-                    <br>
-                    <label class="hidden" for="geneName" id="geneNameLabel">HGNC Name:</label>
-                    <br>
-                    <textarea class="hidden" readonly rows="1" id="geneName" disabled></textarea>
-                    <br>
-                    <label class="hidden" for="geneId" id="geneIdLabel">Entrez ID:</label>
-                    <br>
-                    <textarea class="hidden" readonly rows="1" id="geneId" disabled></textarea>
-                    <br>
-                </div>
-                <div id='hitDiv'>
-                    <label class="hidden" for="hits" id="hitsLabel">Hits:</label>
-                    <br>
-                    <textarea class="hidden" readonly rows="1" id="hits" disabled></textarea>
-                    <br>
-                    <label class="hidden" for="matchScore" id="matchScoreLabel">Match Score:</label>
-                    <br>
-                    <textarea class="hidden" readonly rows="1" id="matchScore" disabled></textarea>
-                </div>
-            </div>
-            <hr class='flex-rule'>
-            <div id='summaryDiv'>
-                <label class="hidden" for="summary" id="summaryLabel">Summary:</label>
+    <div class="content flex-container">
+        <div class="splitDiv">
+            <div class="queryform">
+                Search for:
                 <br>
-                <textarea class="hidden" readonly rows="1" id="summary" disabled></textarea>
+                <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" size=30>
+                <br>
+                <br>
+                <label>Limit Search to:</label>
+                <br>
+                <select size=9 id="species" name="species">
+                    <option value="human">Human</option>
+                    <option value="mouse">Mouse</option>
+                    <option value="rat">Rat</option>
+                    <option value="fruitfly">Drosphila</option>
+                    <option value="nematode">C. elegans</option>
+                    <option value="thale-cress">Arabidopsis thaliana</option>
+                    <option value="zebrafish">Zebrafish</option>
+                    <option value="frog">Frog</option>
+                    <option value="pig">Pig</option>
+                </select>
+                <br>
+                <br>
+                <button id="searchButton" type="submit">Search</button>
             </div>
+            <div id='hitDiv'>
+                <label class="hidden" for="hits" id="hitsLabel">Hits:</label>
+                <br>
+                <div class="hidden text" readonly rows="1" id="hits" disabled></div>
+                <br>
+                <label class="hidden" for="matchScore" id="matchScoreLabel">Match Score:</label>
+                <br>
+                <div class="hidden text" readonly rows="1" id="matchScore" disabled></div>
+            </div>
+        </div>
+        <hr class='flex-rule'>
+        <div class='splitDiv' id='basicWrapDiv'>
+            <div class="info" id="infoDiv">
+                <label class="hidden" for="geneSymbol" id="geneSymbolLabel">HGNC Symbol:</label>
+                <br>
+                <div class="hidden text" readonly rows="1" id="geneSymbol" disabled></div>
+                <br>
+                <label class="hidden" for="geneName" id="geneNameLabel">HGNC Name:</label>
+                <br>
+                <div class="hidden text" readonly rows="1" id="geneName" disabled></div>
+                <br>
+                <label class="hidden" for="hgncId" id="hgncIdLabel">HGNC ID:</label>
+                <br>
+                <div class="hidden text" readonly rows="1" id="hgncId" disabled></div>
+                <br>
+                <label class="hidden" for="alias" id="aliasLabel">Aliases:</label>
+                <br>
+                <div class="hidden text" readonly rows="1" id="alias" disabled></div>
+                <br>
+                <label class="hidden" for="tax" id="taxLabel">TaxID:</label>
+                <br>
+                <div class="hidden text" readonly rows="1" id="tax" disabled></div>
+            </div>
+            <div class='info' id='locDiv'>
+                <label class="hidden" for="geneId" id="geneIdLabel">Entrez ID:</label>
+                <br>
+                <div class="hidden text" readonly rows="1" id="geneId" disabled></div>
+                <br>
+                <label class="hidden" for="location" id="locationLabel">Chromosomal Location:</label>
+                <br>
+                <div class="hidden text" readonly rows="1" id="location" disabled></div>
+                <br>
+                
+            </div>
+        </div>
+        <hr class='flex-rule'>
+        <div id='summaryDiv'>
+            <label class="hidden" for="summary" id="summaryLabel">Summary:</label>
+            <br>
+            <div class="hidden text" readonly rows="1" id="summary" disabled></div>
         </div>
     </div>
     <div class="footer">

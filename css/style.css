@@ -19,14 +19,16 @@ textarea {
 }
 
 
+
 /* Style query form */
 
 .queryform {
     overflow: hidden;
     background-color: #BCCDC7;
-    padding: 10px;
-    margin: 20px 20px 0px;
+    margin: 0px;
+    flex: 2;
 }
+
 
 
 /* Style the past search links */
@@ -41,6 +43,7 @@ textarea {
 }
 
 
+
 /* Change color on hover */
 
 .history a:hover {
@@ -50,6 +53,17 @@ textarea {
 
 .content {
     background-color: #83A298;
+}
+
+.text {
+    background-color: #ffffff;
+    margin: 0px;
+    font-size: 10pt;
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+    padding: 1px 2px;
+    text-align: justify;
 }
 
 .flex-container {
@@ -78,7 +92,7 @@ textarea {
     flex: 2;
 }
 
-#basicWrapDiv {
+.splitDiv {
     display: -webkit-flex;
     display: flex;
     background-color: #BCCDC7;
@@ -93,8 +107,11 @@ textarea {
     padding: 10px;
 }
 
-.rule {
-    margin: 0px 20px;
+.full-text-area {
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .flex-rule {
@@ -121,7 +138,9 @@ textarea {
     width: 100%;
 }
 
+
 /* For label hiding */
+
 .hidden {
     display: none;
 }
