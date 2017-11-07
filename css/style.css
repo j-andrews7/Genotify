@@ -69,7 +69,13 @@ body {
     margin: 0px 20px;
 }
 
-.info {
+.info-left {
+    background-color: #BCCDC7;
+    margin: 0px 15px 0px 0px;
+    flex: 2;
+}
+
+.info-right {
     background-color: #BCCDC7;
     margin: 0px;
     flex: 2;
