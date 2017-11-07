@@ -21,11 +21,11 @@
                 <br>
                 <label>Limit Search to:</label>
                 <br>
-                <select size=9 id="species" name="species">
+                <select size=9 id="speciesSel" name="species">
                     <option value="human">Human</option>
                     <option value="mouse">Mouse</option>
                     <option value="rat">Rat</option>
-                    <option value="fruitfly">Drosphila</option>
+                    <option value="fruitfly">Drosphila melanogaster</option>
                     <option value="nematode">C. elegans</option>
                     <option value="thale-cress">Arabidopsis thaliana</option>
                     <option value="zebrafish">Zebrafish</option>
@@ -37,55 +37,74 @@
                 <button id="searchButton" type="submit">Search</button>
             </div>
             <div id='hitDiv'>
-                <label class="hidden" for="hits" id="hitsLabel">Hits:</label>
-                <br>
-                <div class="hidden text" readonly rows="1" id="hits" disabled></div>
-                <br>
-                <label class="hidden" for="matchScore" id="matchScoreLabel">Match Score:</label>
-                <br>
-                <div class="hidden text" readonly rows="1" id="matchScore" disabled></div>
+                <div id='flex-container'>
+                    <div>
+                        <label class="hidden" for="hits" id="hitsLabel">Hits:</label>
+                        <br>
+                        <div class="hidden text" id="hits" disabled></div>
+                        <br>
+                        <label class="hidden" for="matchScore" id="matchScoreLabel">Match Score:</label>
+                        <br>
+                        <div class="hidden text" id="matchScore" disabled></div>
+                        <br>
+                    </div>
+                    <div id='speciesDiv'>
+                        <label class="hidden" for="taxId" id="taxIdLabel">TaxID:</label>
+                        <br>
+                        <div class="hidden text" id="taxId" disabled></div>
+                        <br>
+                        <label class="hidden" for="species" id="speciesLabel">Species:</label>
+                        <br>
+                        <div class="hidden text" id="species" disabled></div>
+                        <br>
+                        <label class="hidden" for="geneId" id="geneIdLabel">Entrez ID:</label>
+                        <br>
+                        <div class="hidden text addlink" id="geneId" disabled></div>
+                        <br>
+                    </div>
+                </div>
             </div>
         </div>
         <hr class='flex-rule'>
+        <h3 class='sectHeader'>Gene Basics</h3>
         <div class='splitDiv' id='basicWrapDiv'>
             <div class="info-left" id="infoDiv">
                 <label class="hidden" for="geneSymbol" id="geneSymbolLabel">HGNC Symbol:</label>
                 <br>
-                <div class="hidden text" readonly rows="1" id="geneSymbol" disabled></div>
+                <div class="hidden text" id="geneSymbol" disabled></div>
                 <br>
                 <label class="hidden" for="geneName" id="geneNameLabel">HGNC Name:</label>
                 <br>
-                <div class="hidden text" readonly rows="1" id="geneName" disabled></div>
+                <div class="hidden text" id="geneName" disabled></div>
                 <br>
                 <label class="hidden" for="hgncId" id="hgncIdLabel">HGNC ID:</label>
                 <br>
-                <div class="hidden text addlink" readonly rows="1" id="hgncId" disabled></div>
+                <div class="hidden text addlink" id="hgncId" disabled></div>
                 <br>
                 <label class="hidden" for="alias" id="aliasLabel">Aliases:</label>
                 <br>
-                <div class="hidden text" readonly rows="1" id="alias" disabled></div>
+                <div class="hidden text" id="alias" disabled></div>
                 <br>
                 <label class="hidden" for="tax" id="taxLabel">TaxID:</label>
                 <br>
-                <div class="hidden text" readonly rows="1" id="tax" disabled></div>
+                <div class="hidden text" id="tax" disabled></div>
             </div>
             <div class='info-right' id='locDiv'>
-                <label class="hidden" for="geneId" id="geneIdLabel">Entrez ID:</label>
-                <br>
-                <div class="hidden text addlink" readonly rows="1" id="geneId" disabled></div>
-                <br>
                 <label class="hidden" for="location" id="locationLabel">Chromosomal Location:</label>
                 <br>
-                <div class="hidden text" readonly rows="1" id="location" disabled></div>
+                <div class="hidden text" id="location" disabled></div>
                 <br>
-                
+                <label class="hidden" for="genPos" id="genPosLabel">Genomic Position:</label>
+                <br>
+                <div class="hidden text" id="genPos" disabled></div>
+                <br>
             </div>
         </div>
         <hr class='flex-rule'>
         <div id='summaryDiv'>
             <label class="hidden" for="summary" id="summaryLabel">Summary:</label>
             <br>
-            <div class="hidden text" readonly rows="1" id="summary" disabled></div>
+            <div class="hidden text" id="summary" disabled></div>
         </div>
     </div>
     <div class="footer">
