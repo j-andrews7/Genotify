@@ -1,7 +1,7 @@
 * {
     margin: 0;
     box-sizing: border-box;
-    font-family: "Arial", serif;
+    font-family: Arial, serif;
 }
 
 body {
@@ -51,9 +51,7 @@ body {
     background-color: #ffffff;
     margin: 0px;
     font-size: 10pt;
-    border-style: solid;
-    border-width: 1px;
-    border-color: gray;
+    border: 1px solid gray;
     padding: 1px 2px;
     text-align: justify;
     width: auto;
@@ -61,9 +59,7 @@ body {
 }
 
 .flex-container {
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
     flex-direction: column;
     background-color: #BCCDC7;
     margin: 0px 20px;
@@ -93,7 +89,6 @@ body {
 }
 
 .splitDiv {
-    display: -webkit-flex;
     display: flex;
     background-color: #BCCDC7;
     padding: 10px;
@@ -131,11 +126,10 @@ body {
     width: 100%;
 }
 
-
 /* For label hiding */
-
 .hidden {
     display: none;
 }
 
+/* Used for dynamic link adding */
 .addlink {}

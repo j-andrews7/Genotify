@@ -5,7 +5,7 @@
         document.getElementById('query').addEventListener('keypress', function(e) {
             var key = e.which || e.keyCode;
             if (key === 13) {
-                newQuery()
+                newQuery();
             }
         });
     });
@@ -33,11 +33,11 @@
                         if (data.total !== 0 && data.success !== false) {
                             topHit = data.hits[0]
                             var basics = { 'geneSymbol': topHit.symbol, 'geneName': topHit.name, 'geneId': {'db': 'https://www.ncbi.nlm.nih.gov/gene/', 'ident': topHit._id}, 'matchScore': topHit._score, 'hits': data.hits.length };
-                            displayData(basics)
+                            displayData(basics);
                             annotateGene(topHit._id);
                         } else {
                             var empty = { 'hits': 'No hits', 'matchScore': '0' };
-                            displayData(empty)
+                            displayData(empty);
                             hideData(document.getElementById('infoDiv'));
                             hideData(document.getElementById('locDiv'));
                             hideData(document.getElementById('summaryDiv'));
@@ -51,7 +51,7 @@
     }
 
     function displayData(dataArray) {
-        for (data in dataArray) {
+        for (var i = 0; i < dataArray.length; i++) {
             currentData = document.getElementById(data);
             currentData.classList.remove('hidden');
             currentLabel = document.getElementById(data + 'Label');
@@ -116,7 +116,7 @@
 
                     // Examine the text in the response
                     response.json().then(function(data) {
-                        console.log(data)
+                        console.log(data);
                         var info = { 'summary': data.summary, 'alias': data.alias.join(', '), 'hgncId': { 'db': 'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=', 'ident': data.HGNC } };
                         displayData(info);
                     });
