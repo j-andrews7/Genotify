@@ -50,8 +50,8 @@
             });
     }
 
-    function displayData(dataArray) {
-        for (var i = 0; i < dataArray.length; i++) {
+    function displayData(dataObj) {
+        for (data in dataObj) {
             currentData = document.getElementById(data);
             currentData.classList.remove('hidden');
             currentLabel = document.getElementById(data + 'Label');
@@ -62,14 +62,14 @@
                 while (oldLinks.length > 0) {
                     oldLinks[0].parentNode.removeChild(oldLinks[0]);
                 }
-                var linkData = dataArray[data];
+                var linkData = dataObj[data];
                 var link = linkData['db'] + linkData['ident'];
                 var aTag = document.createElement('a');
                 aTag.setAttribute('href', link);
                 aTag.textContent = linkData['ident'];
                 currentData.appendChild(aTag);
             } else {
-                currentData.textContent = dataArray[data];
+                currentData.textContent = dataObj[data];
             }
         }
     }
