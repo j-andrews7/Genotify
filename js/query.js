@@ -156,19 +156,19 @@
         var hgnc;
         var coords;
 
-        if (typeof data.HGNC != 'undefined') {
+        if (data.hasOwnProperty('HGNC')) {
             hgnc = { 'db': 'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=', 'ident': data.HGNC };
         } else {
             hgnc = undefined;
         }
 
-        if (typeof data.alias != 'undefined' && typeof data.alias == 'string') {
+        if (data.hasOwnProperty('alias') && typeof data.alias == 'string') {
             aliases = data.alias;
-        } else if (typeof data.alias != 'undefined') {
+        } else if (data.hasOwnProperty('alias')) {
             aliases = data.alias.join(', ');
         }
 
-        if (typeof data.genomic_pos != 'undefined') {
+        if (data.hasOwnProperty('genomic_pos')) {
             coords = 'chr' + data.genomic_pos.chr + ':' + data.genomic_pos.start + '-' + data.genomic_pos.end;
         }
 
