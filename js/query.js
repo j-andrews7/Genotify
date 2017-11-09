@@ -1,3 +1,4 @@
+var Species = require('modules/Species');
 (function() {
     document.addEventListener('DOMContentLoaded', function(event) {
         console.log('DOM fully loaded.');
@@ -122,6 +123,7 @@
             }
         }
 
+        // Delete any links if necessary.
         for (i = 0; i < links.length; i++) {
             var childData = links[i];
             childData.remove();
@@ -162,7 +164,7 @@
             hgnc = undefined;
         }
 
-        if (data.hasOwnProperty('alias') && typeof data.alias == 'string') {
+        if (data.hasOwnProperty('alias') && typeof data.alias === 'string') {
             aliases = data.alias;
         } else if (data.hasOwnProperty('alias')) {
             aliases = data.alias.join(', ');
@@ -179,27 +181,9 @@
             'location': data.map_location,
             'genPos': coords,
             'taxId': data.taxid,
-            'species': getSpecies(data.taxid)
+            'species': Species.getSpecies(data.taxid)
         };
 
         return info;
-    }
-
-    function getSpecies(taxid) {
-        var taxKey = {
-            '9606': 'Human',
-            '10090': 'Mouse',
-            '10116': 'Rat',
-            '7227': 'Drosphila melanogaster',
-            '6329': 'C. elegans',
-            '3702': 'Arabidopsis thaliana',
-            '7955': 'Zebrafish',
-            '8364': 'Frog',
-            '9823': 'Pig'
-        }
-
-        var species = taxKey[taxid]
-
-        return species
     }
 })();
