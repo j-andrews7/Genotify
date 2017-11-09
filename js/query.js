@@ -1,20 +1,6 @@
 (function() {
-    var speciesObj;
-    fetch('http://localhost:8000/species.json')
-        .then(
-            function(response) {
-                if (response.status !== 200) {
-                    console.log('Looks like there was a problem. Status Code: ' +
-                        response.status);
-                    return;
-                }
-                response.json().then(function(data) {
-                    speciesObj = data;
-                })
-            })
-        .catch(function(err) {
-            console.error('Species Loading Error', err);
-        });
+    var speciesObj = loadSpecies();
+    console.log(speciesObj)
 
     document.addEventListener('DOMContentLoaded', function(event) {
         console.log('DOM fully loaded.');
@@ -28,16 +14,16 @@
     });
 
     function loadSpecies () {
-        fetch('http://localhost:8000/species.json')
-        .then(
-            function(response) {
+        return fetch('http://localhost:8000/species.json')
+        .then((response) => {
                 if (response.status !== 200) {
                     console.log('Looks like there was a problem. Status Code: ' +
                         response.status);
                     return;
                 }
                 response.json().then(function(data) {
-                    speciesObj = data;
+                    console.log(data)
+                    return data;
                 })
             })
         .catch(function(err) {
