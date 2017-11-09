@@ -53,9 +53,12 @@ body {
     font-size: 10pt;
     border: 1px solid gray;
     padding: 1px 2px;
-    text-align: justify;
     width: auto;
     height: auto;
+}
+
+.just-text {
+    text-align: justify;
 }
 
 .flex-container {

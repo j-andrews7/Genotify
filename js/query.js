@@ -1,5 +1,21 @@
-var Species = require('modules/Species');
 (function() {
+    var speciesObj;
+    fetch('http://localhost:8000/species.json')
+        .then(
+            function(response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' +
+                        response.status);
+                    return;
+                }
+                response.json().then(function(data) {
+                    speciesObj = data;
+                })
+            })
+        .catch(function(err) {
+            console.error('Species Loading Error', err);
+        });
+
     document.addEventListener('DOMContentLoaded', function(event) {
         console.log('DOM fully loaded.');
         document.getElementById('searchButton').addEventListener('click', newQuery);
@@ -10,6 +26,24 @@ var Species = require('modules/Species');
             }
         });
     });
+
+    function loadSpecies () {
+        fetch('http://localhost:8000/species.json')
+        .then(
+            function(response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' +
+                        response.status);
+                    return;
+                }
+                response.json().then(function(data) {
+                    speciesObj = data;
+                })
+            })
+        .catch(function(err) {
+            console.error('Species Loading Error', err);
+        });
+    }
 
     function newQuery() {
         var term = document.getElementById('query').value;
@@ -35,6 +69,7 @@ var Species = require('modules/Species');
                             topHit = data.hits[0];
                             var basics = { 'geneSymbol': topHit.symbol, 'geneName': topHit.name, 'geneId': { 'db': 'https://www.ncbi.nlm.nih.gov/gene/', 'ident': topHit._id }, 'matchScore': topHit._score, 'hits': data.hits.length };
                             displayData(basics);
+                            displayHeadings();
                             annotateGene(topHit._id);
                         } else {
                             var empty = { 'hits': 'No hits', 'matchScore': '0' };
@@ -43,6 +78,7 @@ var Species = require('modules/Species');
                             hideData(document.getElementById('locDiv'));
                             hideData(document.getElementById('summaryDiv'));
                             hideData(document.getElementById('speciesDiv'));
+                            hideHeadings();
                         }
                     });
                 }
@@ -181,9 +217,34 @@ var Species = require('modules/Species');
             'location': data.map_location,
             'genPos': coords,
             'taxId': data.taxid,
-            'species': Species.getSpecies(data.taxid)
+            'species': speciesObj[data.taxid]
         };
 
         return info;
+    }
+
+    // Display and hide section headings as appropriate.
+    function displayHeadings() {
+        var headers = document.querySelectorAll("h3");
+
+        for (var i = 0; i < headers.length; i++) {
+            var childData = headers[i];
+
+            if (childData.classList.contains('hidden')) {
+                childData.classList.remove('hidden');
+            }
+        }
+    }
+
+    function hideHeadings() {
+        var headers = document.querySelectorAll("h3");
+
+        for (var i = 0; i < headers.length; i++) {
+            var childData = headers[i];
+
+            if (!(childData.classList.contains('hidden'))) {
+                childData.classList.add('hidden');
+            }
+        }
     }
 })();
