@@ -1,5 +1,5 @@
 (function() {
-    var speciesObj;
+    var speciesObj = null;
     
     document.addEventListener('DOMContentLoaded', function(event) {
         retrieveSpeciesJSON();
@@ -33,6 +33,11 @@
     }
 
     function newQuery() {
+        if (speciesObj === null) {
+            return;
+        }
+        
+        
         var term = document.getElementById('query').value;
         var queryUrl = 'https://mygene.info/v3/query?q=' + term;
         var speciesOptions = document.getElementById('speciesSel');
