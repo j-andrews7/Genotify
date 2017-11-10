@@ -1,77 +1,95 @@
 (function() {
-    var speciesObj = loadSpecies();
-    console.log(speciesObj)
-
+    var speciesObj = null;
+    
     document.addEventListener('DOMContentLoaded', function(event) {
-        console.log('DOM fully loaded.');
+        retrieveSpeciesJSON();
+        
         document.getElementById('searchButton').addEventListener('click', newQuery);
         document.getElementById('query').addEventListener('keypress', function(e) {
             var key = e.which || e.keyCode;
+            
             if (key === 13) {
                 newQuery();
             }
         });
     });
+    
+    function retrieveSpeciesJSON() {
+        fetch('http://localhost:8080/species.json').then(function(response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' + response.status);
+                return;
+            }
 
-    function loadSpecies () {
-        return fetch('http://localhost:8000/species.json')
-        .then((response) => {
-                if (response.status !== 200) {
-                    console.log('Looks like there was a problem. Status Code: ' +
-                        response.status);
-                    return;
-                }
-                response.json().then(function(data) {
-                    console.log(data)
-                    return data;
-                })
-            })
-        .catch(function(err) {
-            console.error('Species Loading Error', err);
+            response.json().then(function(data) {
+                speciesObj = data;
+                console.log(speciesObj);
+            }).catch(function(error) {
+                console.log('Malformed or invalid species.json: ' + error);
+            });
+        }).catch(function(error) {
+            console.log('Unable to retrieve species.json: ' + error);
         });
     }
 
     function newQuery() {
+        if (speciesObj === null) {
+            return;
+        }
+        
+        
         var term = document.getElementById('query').value;
         var queryUrl = 'https://mygene.info/v3/query?q=' + term;
         var speciesOptions = document.getElementById('speciesSel');
 
         if (speciesOptions.selectedIndex !== -1) {
             var species = speciesOptions.options[speciesOptions.selectedIndex].value;
+            
             queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' + species;
         }
 
-        fetch(queryUrl)
-            .then(
-                function(response) {
-                    if (response.status !== 200) {
-                        console.log('Looks like there was a problem. Status Code: ' +
-                            response.status);
-                        return;
-                    }
+        fetch(queryUrl).then(function(response) {
+            if (response.status !== 200) {
+                console.log('Fetch Query Error. Status Code: ' +  response.status);
+                return;
+            }
 
-                    response.json().then(function(data) {
-                        if (data.total !== 0 && data.success !== false) {
-                            topHit = data.hits[0];
-                            var basics = { 'geneSymbol': topHit.symbol, 'geneName': topHit.name, 'geneId': { 'db': 'https://www.ncbi.nlm.nih.gov/gene/', 'ident': topHit._id }, 'matchScore': topHit._score, 'hits': data.hits.length };
-                            displayData(basics);
-                            displayHeadings();
-                            annotateGene(topHit._id);
-                        } else {
-                            var empty = { 'hits': 'No hits', 'matchScore': '0' };
-                            displayData(empty);
-                            hideData(document.getElementById('infoDiv'));
-                            hideData(document.getElementById('locDiv'));
-                            hideData(document.getElementById('summaryDiv'));
-                            hideData(document.getElementById('speciesDiv'));
-                            hideHeadings();
-                        }
-                    });
+            response.json().then(function(data) {
+                if (data.total !== 0 && data.success !== false) {
+                    topHit = data.hits[0];
+                    
+                    var basics = {
+                        'geneSymbol': topHit.symbol,
+                        'geneName': topHit.name,
+                        'geneId': {
+                            db: 'https://www.ncbi.nlm.nih.gov/gene/',
+                            ident: topHit._id
+                        },
+                        'matchScore': topHit._score,
+                        'hits': data.hits.length
+                    };
+                    
+                    displayData(basics);
+                    displayHeadings();
+                    annotateGene(topHit._id);
+                } else {
+                    var empty = {
+                        hits: 'No hits',
+                        matchScore: 0
+                    };
+                    
+                    displayData(empty);
+                    hideData(document.getElementById('infoDiv'));
+                    hideData(document.getElementById('locDiv'));
+                    hideData(document.getElementById('summaryDiv'));
+                    hideData(document.getElementById('speciesDiv'));
+                    hideHeadings();
                 }
-            )
-            .catch(function(err) {
-                console.error('Fetch Query Error', err);
             });
+        })
+        .catch(function(err) {
+            console.error('Fetch Query Error', err);
+        });
     }
 
     function displayData(dataObj) {
@@ -82,6 +100,7 @@
                 currentData.classList.remove('hidden');
                 currentLabel = document.getElementById(data + 'Label');
                 currentLabel.classList.remove('hidden');
+                
                 // Add new/remove old links from appropriate divs.
                 if (currentData.classList.contains('addlink')) {
                     var oldLinks = currentData.getElementsByTagName('a');
