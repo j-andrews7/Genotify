@@ -28,9 +28,22 @@
                     <option value="fruitfly">Drosphila melanogaster</option>
                     <option value="nematode">C. elegans</option>
                     <option value="thale-cress">Arabidopsis thaliana</option>
+                    <option value="4577">Zea mays</option>
+                    <option value="4530">Rice</option>
                     <option value="zebrafish">Zebrafish</option>
                     <option value="frog">Frog</option>
                     <option value="pig">Pig</option>
+                    <option value="562">E. coli</option>
+                    <option value="4932">S. cerevisiae</option>
+                    <option value="9913">Cow</option>
+                    <option value="3055">Green algea</option>
+                    <option value="44689">D. discoideum</option>
+                    <option value="11103">Hepatitis C</option>
+                    <option value="2104">M. pneumoniae</option>
+                    <option value="5833">P. falciparum</option>
+                    <option value="4754">P. carinii</option>
+                    <option value="4896">S. pombe</option>
+                    <option value="31033">Torafugu</option>
                 </select>
                 <br>
                 <br>
@@ -85,9 +98,9 @@
                 <br>
                 <div class="hidden text" id="alias" disabled></div>
                 <br>
-                <label class="hidden" for="tax" id="taxLabel">TaxID:</label>
+                <label class="hidden" for="otherNames" id="otherNamesLabel">Other Names:</label>
                 <br>
-                <div class="hidden text" id="tax" disabled></div>
+                <div class="hidden text" id="otherNames" disabled></div>
             </div>
             <div class='info-right' id='locDiv'>
                 <label class="hidden" for="location" id="locationLabel">Chromosomal Location:</label>
@@ -98,13 +111,31 @@
                 <br>
                 <div class="hidden text" id="genPos" disabled></div>
                 <br>
+                <label class="hidden" for="19genPos" id="19genPosLabel">hg19 Genomic Position:</label>
+                <br>
+                <div class="hidden text" id="19genPos" disabled></div>
+                <br>
+                <label class="hidden" for="mm9genPos" id="mm9genPosLabel">mm9 Genomic Position:</label>
+                <br>
+                <div class="hidden text" id="mm9genPos" disabled></div>
+                <br>
+                <label class="hidden" for="geneType" id="geneTypeLabel">Gene Type:</label>
+                <br>
+                <div class="hidden text" id="geneType" disabled></div>
+                <br>
             </div>
         </div>
         <hr class='flex-rule'>
+        <h3 class='sectHeader hidden'>Function</h3>
         <div id='summaryDiv'>
-            <label class="hidden" for="summary" id="summaryLabel">Summary:</label>
+            <label class="hidden" for="entrezSummary" id="entrezSummaryLabel">Entrez Summary:</label>
             <br>
-            <div class="hidden text just-text" id="summary" disabled></div>
+            <div class="hidden text just-text" id="entrezSummary" disabled></div>
+            <br>
+            <label class="hidden" for="uniprotSummary" id="uniprotSummaryLabel">Uniprot Summary:</label>
+            <br>
+            <div class="hidden text just-text" id="uniprotSummary" disabled></div>
+            <br>
         </div>
     </div>
     <div class="footer">

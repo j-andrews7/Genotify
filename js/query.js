@@ -1,19 +1,20 @@
 (function() {
     var speciesObj = null;
-    
+    var xmlParser = new DOMParser();
+
     document.addEventListener('DOMContentLoaded', function(event) {
         retrieveSpeciesJSON();
-        
+
         document.getElementById('searchButton').addEventListener('click', newQuery);
         document.getElementById('query').addEventListener('keypress', function(e) {
             var key = e.which || e.keyCode;
-            
+
             if (key === 13) {
                 newQuery();
             }
         });
     });
-    
+
     function retrieveSpeciesJSON() {
         fetch('http://localhost:8000/species.json').then(function(response) {
             if (response.status !== 200) {
@@ -23,7 +24,6 @@
 
             response.json().then(function(data) {
                 speciesObj = data;
-                console.log(speciesObj);
             }).catch(function(error) {
                 console.log('Malformed or invalid species.json: ' + error);
             });
@@ -36,71 +36,71 @@
         if (speciesObj === null) {
             return;
         }
-        
-        
+
+
         var term = document.getElementById('query').value;
         var queryUrl = 'https://mygene.info/v3/query?q=' + term;
         var speciesOptions = document.getElementById('speciesSel');
 
         if (speciesOptions.selectedIndex !== -1) {
             var species = speciesOptions.options[speciesOptions.selectedIndex].value;
-            
+
             queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' + species;
         }
 
         fetch(queryUrl).then(function(response) {
-            if (response.status !== 200) {
-                console.log('Fetch Query Error. Status Code: ' +  response.status);
-                return;
-            }
-
-            response.json().then(function(data) {
-                if (data.total !== 0 && data.success !== false) {
-                    topHit = data.hits[0];
-                    
-                    var basics = {
-                        'geneSymbol': topHit.symbol,
-                        'geneName': topHit.name,
-                        'geneId': {
-                            db: 'https://www.ncbi.nlm.nih.gov/gene/',
-                            ident: topHit._id
-                        },
-                        'matchScore': topHit._score,
-                        'hits': data.hits.length
-                    };
-                    
-                    displayData(basics);
-                    displayHeadings();
-                    annotateGene(topHit._id);
-                } else {
-                    var empty = {
-                        hits: 'No hits',
-                        matchScore: 0
-                    };
-                    
-                    displayData(empty);
-                    hideData(document.getElementById('infoDiv'));
-                    hideData(document.getElementById('locDiv'));
-                    hideData(document.getElementById('summaryDiv'));
-                    hideData(document.getElementById('speciesDiv'));
-                    hideHeadings();
+                if (response.status !== 200) {
+                    console.log('Fetch Query Error. Status Code: ' + response.status);
+                    return;
                 }
+
+                response.json().then(function(data) {
+                    console.log(data);
+                    if (data.total !== 0 && data.success !== false) {
+                        topHit = data.hits[0];
+
+                        var basics = {
+                            'geneSymbol': topHit.symbol,
+                            'geneName': topHit.name,
+                            'geneId': {
+                                db: 'https://www.ncbi.nlm.nih.gov/gene/',
+                                ident: topHit._id
+                            },
+                            'matchScore': topHit._score,
+                            'hits': data.hits.length
+                        };
+
+                        displayData(basics);
+                        displayHeadings();
+                        annotateGene(topHit._id);
+                    } else {
+                        var empty = {
+                            hits: 'No hits',
+                            matchScore: 0
+                        };
+
+                        displayData(empty);
+                        hideData(document.getElementById('infoDiv'));
+                        hideData(document.getElementById('locDiv'));
+                        hideData(document.getElementById('summaryDiv'));
+                        hideData(document.getElementById('speciesDiv'));
+                        hideHeadings();
+                    }
+                });
+            })
+            .catch(function(err) {
+                console.error('Fetch Query Error', err);
             });
-        })
-        .catch(function(err) {
-            console.error('Fetch Query Error', err);
-        });
     }
 
     function displayData(dataObj) {
         for (data in dataObj) {
             if (typeof dataObj[data] != 'undefined') {
-                console.log(typeof dataObj[data])
                 currentData = document.getElementById(data);
                 currentData.classList.remove('hidden');
                 currentLabel = document.getElementById(data + 'Label');
                 currentLabel.classList.remove('hidden');
-                
+
                 // Add new/remove old links from appropriate divs.
                 if (currentData.classList.contains('addlink')) {
                     var oldLinks = currentData.getElementsByTagName('a');
@@ -198,6 +198,10 @@
         var aliases;
         var hgnc;
         var coords;
+        var hg19coords;
+        var mm9coords;
+        var names;
+        var uniprotSum;
 
         if (data.hasOwnProperty('HGNC')) {
             hgnc = { 'db': 'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=', 'ident': data.HGNC };
@@ -215,17 +219,69 @@
             coords = 'chr' + data.genomic_pos.chr + ':' + data.genomic_pos.start + '-' + data.genomic_pos.end;
         }
 
+        if (data.hasOwnProperty('genomic_pos_hg19')) {
+            hg19coords = 'chr' + data.genomic_pos_hg19.chr + ':' + data.genomic_pos_hg19.start + '-' + data.genomic_pos_hg19.end;
+        }
+
+        if (data.hasOwnProperty('genomic_pos_mm9')) {
+            mm9coords = 'chr' + data.genomic_pos_mm9.chr + ':' + data.genomic_pos_mm9.start + '-' + data.genomic_pos_mm9.end;
+        }
+
+        if (data.hasOwnProperty('other_names') && typeof data.other_names === 'string') {
+            names = data.other_names;
+        } else if (data.hasOwnProperty('other_names')) {
+            names = data.other_names.join(', ');
+        }
+
+        if (data.hasOwnProperty('uniprot')) {
+            uniprotSum = getUniprotSummary(data.uniprot['Swiss-Prot']);
+            console.log(uniprotSum);
+        }
+
         var info = {
-            'summary': data.summary,
+            'entrezSummary': data.summary,
             'alias': aliases,
             'hgncId': hgnc,
             'location': data.map_location,
             'genPos': coords,
+            '19genPos': hg19coords,
+            'mm9genPos': mm9coords,
             'taxId': data.taxid,
-            'species': speciesObj[data.taxid]
+            'species': speciesObj[data.taxid],
+            'otherNames': names,
+            'geneType': data.type_of_gene,
+            'uniprotSummary': uniprotSum
         };
 
         return info;
+    }
+
+    function getUniprotSummary(id) {
+        if (id === undefined) {
+            return;
+        }
+        var summary;
+
+        fetch('http://www.uniprot.org/uniprot/' + id + '.xml')
+            .then(
+                function(response) {
+                    if (response.status !== 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+
+                    response.text().then(function(data) {
+                        var parsedXML = xmlParser.parseFromString(data, "text/xml");
+                        summary = parsedXML.querySelectorAll('comment[type="function"]')[0].textContent;
+                        console.log(summary);
+                        return summary;
+                    })
+                }
+            )
+            .catch(function(err) {
+                console.error('Fetch Uniprot Error', err);
+            });
     }
 
     // Display and hide section headings as appropriate.
