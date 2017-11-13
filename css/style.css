@@ -127,6 +127,7 @@ body {
     position: absolute;
     bottom: 0;
     width: 100%;
+    display: flex;
 }
 
 /* For label hiding */
@@ -137,5 +138,3 @@ body {
 .sectHeader {
     margin: 5px 5px 0px;
 }
-
-/* Used for dynamic link adding */

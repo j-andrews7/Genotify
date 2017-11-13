@@ -95,7 +95,7 @@
 
     function displayData(dataObj) {
         for (data in dataObj) {
-            if (typeof dataObj[data] != 'undefined') {
+            if (typeof dataObj[data] !== 'undefined' && dataObj[data] !== null) {
                 currentData = document.getElementById(data);
                 currentData.classList.remove('hidden');
                 currentLabel = document.getElementById(data + 'Label');
@@ -186,7 +186,7 @@
                         console.log(data);
                         parseGeneData(data).then(function(data) {
                             displayData(data)
-                            });
+                        });
                     });
                 }
             )
@@ -204,6 +204,14 @@
             var mm9coords;
             var names;
             var uniprotSum;
+            var wiki;
+            var omim;
+            var ensembl;
+            var vega;
+            var pfam;
+            var uniprot;
+            var pharmgkb;
+            var prosite;
 
             if (data.hasOwnProperty('HGNC')) {
                 hgnc = {
@@ -212,6 +220,69 @@
                 };
             } else {
                 hgnc = null;
+            }
+
+            if (data.hasOwnProperty('wikipedia')) {
+                wiki = {
+                    db: 'https://en.wikipedia.org/wiki/',
+                    ident: data.wikipedia['url_stub'].replace(/ /g, '_')
+                };
+            } else {
+                wiki = null;
+            }
+
+            if (data.hasOwnProperty('MIM')) {
+                omim = {
+                    db: 'http://omim.org/entry/',
+                    ident: data.MIM
+                };
+            } else {
+                omim = null;
+            }
+
+            if (data.hasOwnProperty('ensembl')) {
+                ensembl = {
+                    db: 'https://www.ensembl.org/Gene/Summary?g=',
+                    ident: data.ensembl['gene']
+                };
+            } else {
+                ensembl = null;
+            }
+
+            if (data.hasOwnProperty('Vega')) {
+                vega = {
+                    db: 'http://vega.archive.ensembl.org/Gene/Summary?g=',
+                    ident: data.Vega
+                };
+            } else {
+                Vega = null;
+            }
+
+            if (data.hasOwnProperty('pfam')) {
+                pfam = {
+                    db: 'http://pfam.xfam.org/family/',
+                    ident: data.pfam
+                };
+            } else {
+                pfam = null;
+            }
+
+            if (data.hasOwnProperty('pharmgkb')) {
+                pharmgkb = {
+                    db: 'https://www.pharmgkb.org/gene/',
+                    ident: data.pharmgkb
+                };
+            } else {
+                pharmgkb = null;
+            }
+
+            if (data.hasOwnProperty('prosite')) {
+                prosite = {
+                    db: 'https://prosite.expasy.org/',
+                    ident: data.prosite
+                };
+            } else {
+                prosite = null;
             }
 
             if (data.hasOwnProperty('alias') && typeof data.alias === 'string') {
@@ -238,9 +309,12 @@
                 names = data.other_names.join(', ');
             }
 
-            if (data.hasOwnProperty('uniprot')) {
+            if (data.hasOwnProperty('uniprot') && data.uniprot['Swiss-Prot'] !== undefined) {
+                uniprot = {
+                    db: 'http://www.uniprot.org/uniprot/',
+                    ident: data.uniprot['Swiss-Prot']
+                };
                 getUniprotSummary(data.uniprot['Swiss-Prot']).then(function(uniprotSum) {
-                    console.log(uniprotSum);
 
                     resolve({
                         'entrezSummary': data.summary,
@@ -254,6 +328,14 @@
                         'species': speciesObj[data.taxid],
                         'otherNames': names,
                         'geneType': data.type_of_gene,
+                        'wikipedia': wiki,
+                        'omim': omim,
+                        'ensembl': ensembl,
+                        'vega': vega,
+                        'uniprot': uniprot,
+                        'pfam': pfam,
+                        'pharmgkb': pharmgkb,
+                        'prosite': prosite,
                         'uniprotSummary': uniprotSum
                     });
                 }).catch(function(error) {
@@ -272,7 +354,15 @@
                         'species': speciesObj[data.taxid],
                         'otherNames': names,
                         'geneType': data.type_of_gene,
-                        'uniprotSummary': ''
+                        'wikipedia': wiki,
+                        'omim': omim,
+                        'ensembl': ensembl,
+                        'vega': vega,
+                        'uniprot': uniprot,
+                        'pfam': pfam,
+                        'pharmgkb': pharmgkb,
+                        'prosite': prosite,
+                        'uniprotSummary': null
                     });
                 });
             } else {
@@ -288,7 +378,15 @@
                     'species': speciesObj[data.taxid],
                     'otherNames': names,
                     'geneType': data.type_of_gene,
-                    'uniprotSummary': ''
+                    'wikipedia': wiki,
+                    'omim': omim,
+                    'ensembl': ensembl,
+                    'vega': vega,
+                    'uniprot': uniprot,
+                    'pfam': pfam,
+                    'pharmgkb': pharmgkb,
+                    'prosite': prosite,
+                    'uniprotSummary': null
                 });
             }
         });
@@ -312,8 +410,11 @@
 
                 response.text().then(function(data) {
                     var parsedXML = xmlParser.parseFromString(data, "text/xml");
+                    var comments = parsedXML.querySelectorAll('comment[type="function"]');
 
-                    summary = parsedXML.querySelectorAll('comment[type="function"]')[0].textContent;
+                    for (var i = 0; i < comments.length; i++) {
+                        summary = comments[0].textContent;
+                    }
                     resolve(summary);
                 })
             }).catch(function(err) {
