@@ -15,18 +15,12 @@ body {
     width: 100%;
 }
 
-/* Style query form */
-
-.queryform {
+.query-form {
     overflow: hidden;
     background-color: #BCCDC7;
     margin: 0px;
     flex: 2;
 }
-
-
-
-/* Style the past search links */
 
 .history a {
     float: left;
@@ -36,10 +30,6 @@ body {
     padding: 14px 16px;
     text-decoration: none;
 }
-
-
-
-/* Change color on hover */
 
 .history a:hover {
     background-color: #ddd;
@@ -89,20 +79,20 @@ body {
     padding: 0px;
 }
 
-#hitDiv {
+#hit-div {
     background-color: #BCCDC7;
     margin: 0px;
     flex: 2;
 }
 
-.splitDiv {
+.split-div {
     display: flex;
     background-color: #BCCDC7;
     padding: 10px;
     margin: 0px;
 }
 
-#summaryDiv {
+#summary-div {
     background-color: #BCCDC7;
     margin: 0px;
     flex: 4;
@@ -132,11 +122,10 @@ body {
     display: flex;
 }
 
-/* For label hiding */
 .hidden {
     display: none;
 }
 
-.sectHeader {
+.sect-header {
     margin: 5px 5px 0px;
 }

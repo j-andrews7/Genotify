@@ -12,8 +12,8 @@
         <h2 name="genotifyheader">Genotify</h2>
     </div>
     <div class="content flex-container">
-        <div class="splitDiv">
-            <div class="queryform">
+        <div class="split-div">
+            <div class="query-form">
                 Search for:
                 <br>
                 <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" size=30>
@@ -21,7 +21,7 @@
                 <br>
                 <label>Limit Search to:</label>
                 <br>
-                <select size=9 id="speciesSel" name="species">
+                <select size=9 id="species-sel" name="species">
                     <option value="human">Human</option>
                     <option value="mouse">Mouse</option>
                     <option value="rat">Rat</option>
@@ -47,131 +47,131 @@
                 </select>
                 <br>
                 <br>
-                <button id="searchButton" type="submit">Search</button>
+                <button id="search-button" type="submit">Search</button>
             </div>
-            <div id='hitDiv'>
+            <div id='hit-div'>
                 <div id='flex-container'>
                     <div>
-                        <label class="hidden" for="hits" id="hitsLabel">Hits:</label>
+                        <label class="hidden" for="hits" id="hits-label">Hits:</label>
                         <br>
                         <div class="hidden text" id="hits" disabled></div>
                         <br>
-                        <label class="hidden" for="matchScore" id="matchScoreLabel">Match Score:</label>
+                        <label class="hidden" for="match-score" id="match-score-label">Match Score:</label>
                         <br>
-                        <div class="hidden text" id="matchScore" disabled></div>
+                        <div class="hidden text" id="match-score" disabled></div>
                         <br>
                     </div>
-                    <div id='speciesDiv'>
-                        <label class="hidden" for="taxId" id="taxIdLabel">TaxID:</label>
+                    <div id='species-div'>
+                        <label class="hidden" for="tax-id" id="tax-id-label">TaxID:</label>
                         <br>
-                        <div class="hidden text" id="taxId" disabled></div>
+                        <div class="hidden text" id="tax-id" disabled></div>
                         <br>
-                        <label class="hidden" for="species" id="speciesLabel">Species:</label>
+                        <label class="hidden" for="species" id="species-label">Species:</label>
                         <br>
                         <div class="hidden text" id="species" disabled></div>
                         <br>
-                        <label class="hidden" for="geneId" id="geneIdLabel">Entrez ID:</label>
+                        <label class="hidden" for="gene-id" id="gene-id-label">Entrez ID:</label>
                         <br>
-                        <div class="hidden text addlink" id="geneId" disabled></div>
+                        <div class="hidden text addlink" id="gene-id" disabled></div>
                         <br>
                     </div>
                 </div>
             </div>
         </div>
         <hr class='flex-rule'>
-        <h3 class='sectHeader hidden'>Gene Basics</h3>
-        <div class='splitDiv' id='basicWrapDiv'>
-            <div class="info-left" id="infoDiv">
-                <label class="hidden" for="geneSymbol" id="geneSymbolLabel">Symbol:</label>
+        <h3 class='sect-header hidden'>Gene Basics</h3>
+        <div class='split-div' id='basic-wrap-div'>
+            <div class="info-left" id="info-div">
+                <label class="hidden" for="gene-symbol" id="gene-symbol-label">Symbol:</label>
                 <br>
-                <div class="hidden text" id="geneSymbol" disabled></div>
+                <div class="hidden text" id="gene-symbol" disabled></div>
                 <br>
-                <label class="hidden" for="geneName" id="geneNameLabel">Name:</label>
+                <label class="hidden" for="gene-name" id="gene-name-label">Name:</label>
                 <br>
-                <div class="hidden text" id="geneName" disabled></div>
+                <div class="hidden text" id="gene-name" disabled></div>
                 <br>
-                <label class="hidden" for="hgncId" id="hgncIdLabel">HGNC ID:</label>
+                <label class="hidden" for="hgnc-id" id="hgnc-id-label">HGNC ID:</label>
                 <br>
-                <div class="hidden text addlink" id="hgncId" disabled></div>
+                <div class="hidden text addlink" id="hgnc-id" disabled></div>
                 <br>
-                <label class="hidden" for="alias" id="aliasLabel">Aliases:</label>
+                <label class="hidden" for="alias" id="alias-label">Aliases:</label>
                 <br>
                 <div class="hidden text" id="alias" disabled></div>
                 <br>
-                <label class="hidden" for="otherNames" id="otherNamesLabel">Other Names:</label>
+                <label class="hidden" for="other-names" id="other-names-label">Other Names:</label>
                 <br>
-                <div class="hidden text" id="otherNames" disabled></div>
+                <div class="hidden text" id="other-names" disabled></div>
             </div>
-            <div class='info-right' id='locDiv'>
-                <label class="hidden" for="location" id="locationLabel">Chromosomal Location:</label>
+            <div class='info-right' id='lo-div'>
+                <label class="hidden" for="location" id="location-label">Chromosomal Location:</label>
                 <br>
                 <div class="hidden text" id="location" disabled></div>
                 <br>
-                <label class="hidden" for="genPos" id="genPosLabel">Genomic Position:</label>
+                <label class="hidden" for="gen-pos" id="gen-pos-label">Genomic Position:</label>
                 <br>
-                <div class="hidden text" id="genPos" disabled></div>
+                <div class="hidden text" id="gen-pos" disabled></div>
                 <br>
-                <label class="hidden" for="19genPos" id="19genPosLabel">hg19 Genomic Position:</label>
+                <label class="hidden" for="19gen-pos" id="19gen-pos-label">hg19 Genomic Position:</label>
                 <br>
-                <div class="hidden text" id="19genPos" disabled></div>
+                <div class="hidden text" id="19gen-pos" disabled></div>
                 <br>
-                <label class="hidden" for="mm9genPos" id="mm9genPosLabel">mm9 Genomic Position:</label>
+                <label class="hidden" for="mm9gen-pos" id="mm9gen-pos-label">mm9 Genomic Position:</label>
                 <br>
-                <div class="hidden text" id="mm9genPos" disabled></div>
+                <div class="hidden text" id="mm9gen-pos" disabled></div>
                 <br>
-                <label class="hidden" for="geneType" id="geneTypeLabel">Gene Type:</label>
+                <label class="hidden" for="gene-type" id="gene-type-label">Gene Type:</label>
                 <br>
-                <div class="hidden text" id="geneType" disabled></div>
+                <div class="hidden text" id="gene-type" disabled></div>
                 <br>
             </div>
         </div>
         <hr class='flex-rule'>
-        <h3 class='sectHeader hidden'>Function</h3>
-        <div id='summaryDiv'>
-            <label class="hidden" for="entrezSummary" id="entrezSummaryLabel">Entrez Summary:</label>
+        <h3 class='sect-header hidden'>Function</h3>
+        <div id='summary-div'>
+            <label class="hidden" for="entrez-summary" id="entrez-summary-label">Entrez Summary:</label>
             <br>
-            <div class="hidden text just-text" id="entrezSummary" disabled></div>
+            <div class="hidden text just-text" id="entrez-summary" disabled></div>
             <br>
-            <label class="hidden" for="uniprotSummary" id="uniprotSummaryLabel">Uniprot Summary:</label>
+            <label class="hidden" for="uniprot-summary" id="uniprot-summary-label">Uniprot Summary:</label>
             <br>
-            <div class="hidden text just-text" id="uniprotSummary" disabled></div>
+            <div class="hidden text just-text" id="uniprot-summary" disabled></div>
             <br>
-            <label class="hidden" for="wikipedia" id="wikipediaLabel">Wikipedia:</label>
+            <label class="hidden" for="wikipedia" id="wikipedia-label">Wikipedia:</label>
             <br>
             <div class="hidden text addlink" id="wikipedia" disabled></div>
             <br>
         </div>
         <hr class='flex-rule'>
-        <h3 class='sectHeader hidden'>Databases</h3>
-        <div class='splitDiv' id='basicWrapDiv'>
-            <div class="info-left" id="dbDiv">
-                <label class="hidden" for="ensembl" id="ensemblLabel">Ensembl:</label>
+        <h3 class='sect-header hidden'>Databases</h3>
+        <div class='split-div' id='basic-wrap-div'>
+            <div class="info-left" id="db-div">
+                <label class="hidden" for="ensembl" id="ensembl-label">Ensembl:</label>
                 <br>
                 <div class="hidden text addlink" id="ensembl" disabled></div>
                 <br>
-                <label class="hidden" for="omim" id="omimLabel">OMIM:</label>
+                <label class="hidden" for="omim" id="omim-label">OMIM:</label>
                 <br>
                 <div class="hidden text addlink" id="omim" disabled></div>
                 <br>
-                <label class="hidden" for="vega" id="vegaLabel">Vega:</label>
+                <label class="hidden" for="vega" id="vega-label">Vega:</label>
                 <br>
                 <div class="hidden text addlink" id="vega" disabled></div>
                 <br>
-                <label class="hidden" for="pfam" id="pfamLabel">Pfam:</label>
+                <label class="hidden" for="pfam" id="pfam-label">Pfam:</label>
                 <br>
                 <div class="hidden text addlink" id="pfam" disabled></div>
                 <br>
             </div>
-            <div class='info-right' id='dbDiv'>
-                <label class="hidden" for="uniprot" id="uniprotLabel">UniProtKB:</label>
+            <div class='info-right' id='db-div'>
+                <label class="hidden" for="uniprot" id="uniprot-label">UniProtKB:</label>
                 <br>
                 <div class="hidden text addlink" id="uniprot" disabled></div>
                 <br>
-                <label class="hidden" for="pharmgkb" id="pharmgkbLabel">PharmGKB:</label>
+                <label class="hidden" for="pharmgkb" id="pharmgkb-label">PharmGKB:</label>
                 <br>
                 <div class="hidden text addlink" id="pharmgkb" disabled></div>
                 <br>
-                <label class="hidden" for="prosite" id="prositeLabel">PROSITE:</label>
+                <label class="hidden" for="prosite" id="prosite-label">PROSITE:</label>
                 <br>
                 <div class="hidden text addlink" id="prosite" disabled></div>
                 <br>

@@ -40,7 +40,7 @@
 
         var term = document.getElementById('query').value;
         var queryUrl = 'https://mygene.info/v3/query?q=' + term;
-        var speciesOptions = document.getElementById('speciesSel');
+        var speciesOptions = document.getElementById('species-sel');
 
         if (speciesOptions.selectedIndex !== -1) {
             var species = speciesOptions.options[speciesOptions.selectedIndex].value;
@@ -60,13 +60,13 @@
                         topHit = data.hits[0];
 
                         var basics = {
-                            'geneSymbol': topHit.symbol,
-                            'geneName': topHit.name,
-                            'geneId': {
+                            'gene-symbol': topHit.symbol,
+                            'gene-name': topHit.name,
+                            'gene-id': {
                                 db: 'https://www.ncbi.nlm.nih.gov/gene/',
                                 ident: topHit._id
                             },
-                            'matchScore': topHit._score,
+                            'match-score': topHit._score,
                             'hits': data.hits.length
                         };
 
@@ -80,10 +80,10 @@
                         };
 
                         displayData(empty);
-                        hideData(document.getElementById('infoDiv'));
-                        hideData(document.getElementById('locDiv'));
-                        hideData(document.getElementById('summaryDiv'));
-                        hideData(document.getElementById('speciesDiv'));
+                        hideData(document.getElementById('info-div'));
+                        hideData(document.getElementById('loc-div'));
+                        hideData(document.getElementById('summary-div'));
+                        hideData(document.getElementById('species-div'));
                         hideHeadings();
                     }
                 });
@@ -98,7 +98,7 @@
             if (typeof dataObj[data] !== 'undefined' && dataObj[data] !== null) {
                 currentData = document.getElementById(data);
                 currentData.classList.remove('hidden');
-                currentLabel = document.getElementById(data + 'Label');
+                currentLabel = document.getElementById(data + '-label');
                 currentLabel.classList.remove('hidden');
 
                 // Add new/remove old links from appropriate divs.
@@ -131,7 +131,7 @@
                     }
                 }
                 // Hide labels too.
-                currentLabel = document.getElementById(data + 'Label');
+                currentLabel = document.getElementById(data + '-label');
                 if (!currentLabel.classList.contains('hidden')) {
                     currentLabel.classList.add('hidden');
                 }
@@ -317,17 +317,17 @@
                 getUniprotSummary(data.uniprot['Swiss-Prot']).then(function(uniprotSum) {
 
                     resolve({
-                        'entrezSummary': data.summary,
+                        'entrez-summary': data.summary,
                         'alias': aliases,
-                        'hgncId': hgnc,
+                        'hgnc-id': hgnc,
                         'location': data.map_location,
-                        'genPos': coords,
-                        '19genPos': hg19coords,
-                        'mm9genPos': mm9coords,
-                        'taxId': data.taxid,
+                        'gen-pos': coords,
+                        '19gen-pos': hg19coords,
+                        'mm9gen-pos': mm9coords,
+                        'tax-id': data.taxid,
                         'species': speciesObj[data.taxid],
-                        'otherNames': names,
-                        'geneType': data.type_of_gene,
+                        'other-names': names,
+                        'gene-type': data.type_of_gene,
                         'wikipedia': wiki,
                         'omim': omim,
                         'ensembl': ensembl,
@@ -336,24 +336,24 @@
                         'pfam': pfam,
                         'pharmgkb': pharmgkb,
                         'prosite': prosite,
-                        'uniprotSummary': uniprotSum
+                        'uniprot-summary': uniprotSum
                     });
                 }).catch(function(error) {
                     console.error(error);
 
                     // Resolve without the uniprot summary if we can't get it
                     resolve({
-                        'entrezSummary': data.summary,
+                        'entrez-summary': data.summary,
                         'alias': aliases,
-                        'hgncId': hgnc,
+                        'hgnc-id': hgnc,
                         'location': data.map_location,
-                        'genPos': coords,
-                        '19genPos': hg19coords,
-                        'mm9genPos': mm9coords,
-                        'taxId': data.taxid,
+                        'gen-pos': coords,
+                        '19gen-pos': hg19coords,
+                        'mm9gen-pos': mm9coords,
+                        'tax-id': data.taxid,
                         'species': speciesObj[data.taxid],
-                        'otherNames': names,
-                        'geneType': data.type_of_gene,
+                        'other-names': names,
+                        'gene-type': data.type_of_gene,
                         'wikipedia': wiki,
                         'omim': omim,
                         'ensembl': ensembl,
@@ -362,22 +362,22 @@
                         'pfam': pfam,
                         'pharmgkb': pharmgkb,
                         'prosite': prosite,
-                        'uniprotSummary': null
+                        'uniprot-summary': null
                     });
                 });
             } else {
                 resolve({
-                    'entrezSummary': data.summary,
+                    'entrez-summary': data.summary,
                     'alias': aliases,
-                    'hgncId': hgnc,
+                    'hgnc-id': hgnc,
                     'location': data.map_location,
-                    'genPos': coords,
-                    '19genPos': hg19coords,
-                    'mm9genPos': mm9coords,
-                    'taxId': data.taxid,
+                    'gen-pos': coords,
+                    '19gen-pos': hg19coords,
+                    'mm9gen-pos': mm9coords,
+                    'tax-id': data.taxid,
                     'species': speciesObj[data.taxid],
-                    'otherNames': names,
-                    'geneType': data.type_of_gene,
+                    'other-names': names,
+                    'gene-type': data.type_of_gene,
                     'wikipedia': wiki,
                     'omim': omim,
                     'ensembl': ensembl,
@@ -386,7 +386,7 @@
                     'pfam': pfam,
                     'pharmgkb': pharmgkb,
                     'prosite': prosite,
-                    'uniprotSummary': null
+                    'uniprot-summary': null
                 });
             }
         });
