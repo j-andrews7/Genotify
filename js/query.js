@@ -5,7 +5,7 @@
     document.addEventListener('DOMContentLoaded', function(event) {
         retrieveSpeciesJSON();
 
-        document.getElementById('searchButton').addEventListener('click', newQuery);
+        document.getElementById('search-button').addEventListener('click', newQuery);
         document.getElementById('query').addEventListener('keypress', function(e) {
             var key = e.which || e.keyCode;
 
