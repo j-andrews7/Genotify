@@ -49,48 +49,48 @@
         }
 
         fetch(queryUrl).then(function(response) {
-                if (response.status !== 200) {
-                    console.log('Fetch Query Error. Status Code: ' + response.status);
-                    return;
+            if (response.status !== 200) {
+                console.log('Fetch Query Error. Status Code: ' + response.status);
+                return;
+            }
+
+            response.json().then(function(data) {
+                console.log(data);
+                if (data.total !== 0 && data.success !== false) {
+                    topHit = data.hits[0];
+
+                    var basics = {
+                        'gene-symbol': topHit.symbol,
+                        'gene-name': topHit.name,
+                        'gene-id': {
+                            db: 'https://www.ncbi.nlm.nih.gov/gene/',
+                            ident: topHit._id
+                        },
+                        'match-score': topHit._score,
+                        'hits': data.hits.length
+                    };
+
+                    displayData(basics);
+                    displayHeadings();
+                    annotateGene(topHit._id);
+                } else {
+                    var empty = {
+                        hits: 'No hits',
+                        matchScore: 0
+                    };
+
+                    displayData(empty);
+                    hideData(document.getElementById('info-div'));
+                    hideData(document.getElementById('loc-div'));
+                    hideData(document.getElementById('summary-div'));
+                    hideData(document.getElementById('species-div'));
+                    hideHeadings();
                 }
-
-                response.json().then(function(data) {
-                    console.log(data);
-                    if (data.total !== 0 && data.success !== false) {
-                        topHit = data.hits[0];
-
-                        var basics = {
-                            'gene-symbol': topHit.symbol,
-                            'gene-name': topHit.name,
-                            'gene-id': {
-                                db: 'https://www.ncbi.nlm.nih.gov/gene/',
-                                ident: topHit._id
-                            },
-                            'match-score': topHit._score,
-                            'hits': data.hits.length
-                        };
-
-                        displayData(basics);
-                        displayHeadings();
-                        annotateGene(topHit._id);
-                    } else {
-                        var empty = {
-                            hits: 'No hits',
-                            matchScore: 0
-                        };
-
-                        displayData(empty);
-                        hideData(document.getElementById('info-div'));
-                        hideData(document.getElementById('loc-div'));
-                        hideData(document.getElementById('summary-div'));
-                        hideData(document.getElementById('species-div'));
-                        hideHeadings();
-                    }
-                });
-            })
-            .catch(function(err) {
-                console.error('Fetch Query Error', err);
             });
+        })
+        .catch(function(err) {
+            console.error('Fetch Query Error', err);
+        });
     }
 
     function displayData(dataObj) {
@@ -102,7 +102,7 @@
                 currentLabel.classList.remove('hidden');
 
                 // Add new/remove old links from appropriate divs.
-                if (currentData.classList.contains('addlink')) {
+                if (currentData.classList.contains('add-link')) {
                     var oldLinks = currentData.getElementsByTagName('a');
                     while (oldLinks.length > 0) {
                         oldLinks[0].parentNode.removeChild(oldLinks[0]);
@@ -120,11 +120,10 @@
                 // Hide and clear any previous results.
                 currentData = document.getElementById(data);
                 if (!currentData.classList.contains('hidden')) {
-                    currentData.textContent = '';
                     currentData.classList.add('hidden');
                 }
                 // Remove links of previous results.
-                if (currentData.classList.contains('addlink')) {
+                if (currentData.classList.contains('add-link')) {
                     var oldLinks = currentData.getElementsByTagName('a');
                     while (oldLinks.length > 0) {
                         oldLinks[0].parentNode.removeChild(oldLinks[0]);
@@ -142,10 +141,10 @@
 
     function hideData(divObj) {
         // Hide all data in child nodes of givin div element.
-        var labels = divObj.querySelectorAll("label");
+        var labels = divObj.querySelectorAll('label');
         var links = divObj.querySelectorAll('a');
         var i;
-        var textDivs = divObj.getElementsByClassName("text");
+        var textDivs = divObj.getElementsByClassName('text');
 
         for (i = 0; i < labels.length; i++) {
             var childData = labels[i];
@@ -255,7 +254,7 @@
                     ident: data.Vega
                 };
             } else {
-                Vega = null;
+                vega = null;
             }
 
             if (data.hasOwnProperty('pfam')) {
@@ -285,10 +284,12 @@
                 prosite = null;
             }
 
-            if (data.hasOwnProperty('alias') && typeof data.alias === 'string') {
-                aliases = data.alias;
-            } else if (data.hasOwnProperty('alias')) {
-                aliases = data.alias.join(', ');
+            if (data.hasOwnProperty('alias')) {
+                if (typeof data.alias === 'string') {
+                    aliases = data.alias;
+                } else {
+                    aliases = data.alias.join(', ');
+                }
             }
 
             if (data.hasOwnProperty('genomic_pos')) {
@@ -409,7 +410,7 @@
                 }
 
                 response.text().then(function(data) {
-                    var parsedXML = xmlParser.parseFromString(data, "text/xml");
+                    var parsedXML = xmlParser.parseFromString(data, 'text/xml');
                     var comments = parsedXML.querySelectorAll('comment[type="function"]');
 
                     for (var i = 0; i < comments.length; i++) {
@@ -427,7 +428,7 @@
 
     // Display and hide section headings as appropriate.
     function displayHeadings() {
-        var headers = document.querySelectorAll("h3");
+        var headers = document.querySelectorAll('h3');
 
         for (var i = 0; i < headers.length; i++) {
             var childData = headers[i];
@@ -439,7 +440,7 @@
     }
 
     function hideHeadings() {
-        var headers = document.querySelectorAll("h3");
+        var headers = document.querySelectorAll('h3');
 
         for (var i = 0; i < headers.length; i++) {
             var childData = headers[i];
