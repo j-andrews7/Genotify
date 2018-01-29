@@ -1,3 +1,5 @@
+const loadJsonFile = require('load-json-file');
+
 (function() {
     var speciesObj = null;
     var xmlParser = new DOMParser();
@@ -16,19 +18,8 @@
     });
 
     function retrieveSpeciesJSON() {
-        fetch('http://localhost:8000/species.json').then(function(response) {
-            if (response.status !== 200) {
-                console.log('Looks like there was a problem. Status Code: ' + response.status);
-                return;
-            }
-
-            response.json().then(function(data) {
-                speciesObj = data;
-            }).catch(function(error) {
-                console.log('Malformed or invalid species.json: ' + error);
-            });
-        }).catch(function(error) {
-            console.log('Unable to retrieve species.json: ' + error);
+        loadJsonFile('species.json').then(function(json) {
+            speciesObj = json;
         });
     }
 
