@@ -196,83 +196,69 @@
 
     function parseGeneData(data) {
         return new Promise(function(resolve, reject) {
-            var aliases;
-            var hgnc;
-            var coords;
-            var hg19coords;
-            var mm9coords;
-            var names;
-            var uniprotSum;
-            var wiki;
-            var omim;
-            var ensembl;
-            var vega;
-            var pfam;
-            var uniprot;
-            var pharmgkb;
-            var prosite;
+            var aliases = null;
+            var hgnc = null;
+            var coords = null;
+            var hg19coords = null;
+            var mm9coords = null;
+            var names = null;
+            var uniprotSum = null;
+            var wiki = null;
+            var omim = null;
+            var ensembl = null;
+            var vega = null;
+            var pfam = null;
+            var uniprot = null;
+            var pharmgkb = null;
+            var prosite = null;
 
             if (data.hasOwnProperty('HGNC')) {
                 hgnc = {
                     db: 'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=',
                     ident: data.HGNC
                 };
-            } else {
-                hgnc = null;
-            }
+            } 
 
             if (data.hasOwnProperty('wikipedia')) {
                 wiki = {
                     db: 'https://en.wikipedia.org/wiki/',
                     ident: data.wikipedia['url_stub'].replace(/ /g, '_')
                 };
-            } else {
-                wiki = null;
-            }
+            } 
 
             if (data.hasOwnProperty('MIM')) {
                 omim = {
                     db: 'http://omim.org/entry/',
                     ident: data.MIM
                 };
-            } else {
-                omim = null;
-            }
+            } 
 
             if (data.hasOwnProperty('ensembl')) {
                 ensembl = {
                     db: 'https://www.ensembl.org/Gene/Summary?g=',
                     ident: data.ensembl['gene']
                 };
-            } else {
-                ensembl = null;
-            }
+            } 
 
             if (data.hasOwnProperty('Vega')) {
                 vega = {
                     db: 'http://vega.archive.ensembl.org/Gene/Summary?g=',
                     ident: data.Vega
                 };
-            } else {
-                vega = null;
-            }
+            } 
 
             if (data.hasOwnProperty('pfam')) {
                 pfam = {
                     db: 'http://pfam.xfam.org/family/',
                     ident: data.pfam
                 };
-            } else {
-                pfam = null;
-            }
+            } 
 
             if (data.hasOwnProperty('pharmgkb')) {
                 pharmgkb = {
                     db: 'https://www.pharmgkb.org/gene/',
                     ident: data.pharmgkb
                 };
-            } else {
-                pharmgkb = null;
             }
 
             if (data.hasOwnProperty('prosite')) {
@@ -280,9 +266,7 @@
                     db: 'https://prosite.expasy.org/',
                     ident: data.prosite
                 };
-            } else {
-                prosite = null;
-            }
+            } 
 
             if (data.hasOwnProperty('alias')) {
                 if (typeof data.alias === 'string') {
