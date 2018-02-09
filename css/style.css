@@ -43,7 +43,7 @@ body {
 
 .text {
     background-color: #ffffff;
-    margin: 0px;
+    margin: 0px 0px 10px;
     font-size: 10pt;
     border: 1px solid gray;
     padding: 1px 2px;

@@ -1,6 +1,7 @@
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
+app.setName('Genotify');
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
@@ -13,14 +14,19 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({width: 500, height: 1280})
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
+    pathname: path.join(__dirname, 'tabs.html'),
     protocol: 'file:',
     slashes: true
   }))
+
+  mainWindow.on('ready-to-show', function () {
+    mainWindow.show();
+    mainWindow.focus();
+  });
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()

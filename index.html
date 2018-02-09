@@ -12,6 +12,11 @@
 </head>
 
 <body>
+    <div class="etabs-tabgroup">
+        <div class="etabs-tabs"></div>
+        <div class="etabs-buttons"></div>
+    </div>
+    <div class="etabs-views"></div>
     <div class="header">
         <h2 name="genotifyheader">Genotify</h2>
     </div>
@@ -20,7 +25,7 @@
             <div class="query-form">
                 Search for:
                 <br>
-                <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" size=30>
+                <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" class="text" length=30>
                 <br>
                 <br>
                 <label>Limit Search to:</label>
@@ -59,25 +64,20 @@
                         <label class="hidden" for="hits" id="hits-label">Hits:</label>
                         <br>
                         <div class="hidden text" id="hits" disabled></div>
-                        <br>
                         <label class="hidden" for="match-score" id="match-score-label">Match Score:</label>
                         <br>
                         <div class="hidden text" id="match-score" disabled></div>
-                        <br>
                     </div>
                     <div id='species-div'>
                         <label class="hidden" for="tax-id" id="tax-id-label">TaxID:</label>
                         <br>
                         <div class="hidden text" id="tax-id" disabled></div>
-                        <br>
                         <label class="hidden" for="species" id="species-label">Species:</label>
                         <br>
                         <div class="hidden text" id="species" disabled></div>
-                        <br>
                         <label class="hidden" for="gene-id" id="gene-id-label">Entrez ID:</label>
                         <br>
                         <div class="hidden text add-link" id="gene-id" disabled></div>
-                        <br>
                     </div>
                 </div>
             </div>
@@ -89,19 +89,15 @@
                 <label class="hidden" for="gene-symbol" id="gene-symbol-label">Symbol:</label>
                 <br>
                 <div class="hidden text" id="gene-symbol" disabled></div>
-                <br>
                 <label class="hidden" for="gene-name" id="gene-name-label">Name:</label>
                 <br>
                 <div class="hidden text" id="gene-name" disabled></div>
-                <br>
                 <label class="hidden" for="hgnc-id" id="hgnc-id-label">HGNC ID:</label>
                 <br>
                 <div class="hidden text add-link" id="hgnc-id" disabled></div>
-                <br>
                 <label class="hidden" for="alias" id="alias-label">Aliases:</label>
                 <br>
                 <div class="hidden text" id="alias" disabled></div>
-                <br>
                 <label class="hidden" for="other-names" id="other-names-label">Other Names:</label>
                 <br>
                 <div class="hidden text" id="other-names" disabled></div>
@@ -110,23 +106,18 @@
                 <label class="hidden" for="location" id="location-label">Chromosomal Location:</label>
                 <br>
                 <div class="hidden text" id="location" disabled></div>
-                <br>
                 <label class="hidden" for="gen-pos" id="gen-pos-label">Genomic Position:</label>
                 <br>
                 <div class="hidden text" id="gen-pos" disabled></div>
-                <br>
                 <label class="hidden" for="19gen-pos" id="19gen-pos-label">hg19 Genomic Position:</label>
                 <br>
                 <div class="hidden text" id="19gen-pos" disabled></div>
-                <br>
                 <label class="hidden" for="mm9gen-pos" id="mm9gen-pos-label">mm9 Genomic Position:</label>
                 <br>
                 <div class="hidden text" id="mm9gen-pos" disabled></div>
-                <br>
                 <label class="hidden" for="gene-type" id="gene-type-label">Gene Type:</label>
                 <br>
                 <div class="hidden text" id="gene-type" disabled></div>
-                <br>
             </div>
         </div>
         <hr class='flex-rule'>
@@ -135,15 +126,12 @@
             <label class="hidden" for="entrez-summary" id="entrez-summary-label">Entrez Summary:</label>
             <br>
             <div class="hidden text just-text" id="entrez-summary" disabled></div>
-            <br>
             <label class="hidden" for="uniprot-summary" id="uniprot-summary-label">Uniprot Summary:</label>
             <br>
             <div class="hidden text just-text" id="uniprot-summary" disabled></div>
-            <br>
             <label class="hidden" for="wikipedia" id="wikipedia-label">Wikipedia:</label>
             <br>
             <div class="hidden text add-link" id="wikipedia" disabled></div>
-            <br>
         </div>
         <hr class='flex-rule'>
         <h3 class='sect-header hidden'>Databases</h3>
@@ -152,38 +140,31 @@
                 <label class="hidden" for="ensembl" id="ensembl-label">Ensembl:</label>
                 <br>
                 <div class="hidden text add-link" id="ensembl" disabled></div>
-                <br>
                 <label class="hidden" for="omim" id="omim-label">OMIM:</label>
                 <br>
                 <div class="hidden text add-link" id="omim" disabled></div>
-                <br>
                 <label class="hidden" for="vega" id="vega-label">Vega:</label>
                 <br>
                 <div class="hidden text add-link" id="vega" disabled></div>
-                <br>
                 <label class="hidden" for="pfam" id="pfam-label">Pfam:</label>
                 <br>
                 <div class="hidden text add-link" id="pfam" disabled></div>
-                <br>
             </div>
             <div class='info-right' id='db-div'>
                 <label class="hidden" for="uniprot" id="uniprot-label">UniProtKB:</label>
                 <br>
                 <div class="hidden text add-link" id="uniprot" disabled></div>
-                <br>
                 <label class="hidden" for="pharmgkb" id="pharmgkb-label">PharmGKB:</label>
                 <br>
                 <div class="hidden text add-link" id="pharmgkb" disabled></div>
-                <br>
                 <label class="hidden" for="prosite" id="prosite-label">PROSITE:</label>
                 <br>
                 <div class="hidden text add-link" id="prosite" disabled></div>
-                <br>
             </div>
         </div>
     </div>
     <div class="footer">
-        <p>(C) Copyright 2017 Jared Andrews - Powered by the <a href="http://mygene.info">MyGene API</a></p>
+        <p>(C) Copyright 2018 Jared Andrews - Powered by the <a href="http://mygene.info">MyGene API</a></p>
     </div>
 </body>
 
