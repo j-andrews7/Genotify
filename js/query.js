@@ -86,12 +86,12 @@ const loadJsonFile = require('load-json-file');
 
     function displayData(dataObj) {
         for (data in dataObj) {
-            if (typeof dataObj[data] !== 'undefined' && dataObj[data] !== null) {
+            if (dataObj.hasOwnProperty(data) && dataObj[data]) {
                 currentData = document.getElementById(data);
                 currentData.classList.remove('hidden');
                 currentLabel = document.getElementById(data + '-label');
                 currentLabel.classList.remove('hidden');
-
+                
                 // Add new/remove old links from appropriate divs.
                 if (currentData.classList.contains('add-link')) {
                     var oldLinks = currentData.getElementsByTagName('a');
@@ -110,11 +110,11 @@ const loadJsonFile = require('load-json-file');
             } else {
                 // Hide and clear any previous results.
                 currentData = document.getElementById(data);
-                if (!currentData.classList.contains('hidden')) {
+                if (currentData !== null && !currentData.classList.contains('hidden')) {
                     currentData.classList.add('hidden');
                 }
                 // Remove links of previous results.
-                if (currentData.classList.contains('add-link')) {
+                if (currentData !== null && currentData.classList.contains('add-link')) {
                     var oldLinks = currentData.getElementsByTagName('a');
                     while (oldLinks.length > 0) {
                         oldLinks[0].parentNode.removeChild(oldLinks[0]);
@@ -122,7 +122,7 @@ const loadJsonFile = require('load-json-file');
                 }
                 // Hide labels too.
                 currentLabel = document.getElementById(data + '-label');
-                if (!currentLabel.classList.contains('hidden')) {
+                if (currentLabel !== null && !currentLabel.classList.contains('hidden')) {
                     currentLabel.classList.add('hidden');
                 }
             }
