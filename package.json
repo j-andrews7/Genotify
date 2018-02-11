@@ -1,6 +1,8 @@
 {
   "name": "genotify",
   "version": "0.1.0",
+  "author": "Jared Andrews",
+  "repository": "https://github.com/j-andrews7/GenotifyDesktop",
   "main": "main.js",
   "scripts": {
     "start": "electron ."

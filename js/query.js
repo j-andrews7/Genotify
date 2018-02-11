@@ -66,8 +66,8 @@ const loadJsonFile = require('load-json-file');
                     annotateGene(topHit._id);
                 } else {
                     var empty = {
-                        hits: 'No hits',
-                        matchScore: 0
+                        'hits': 'No hits',
+                        'match-score': 0
                     };
 
                     displayData(empty);
@@ -75,6 +75,8 @@ const loadJsonFile = require('load-json-file');
                     hideData(document.getElementById('loc-div'));
                     hideData(document.getElementById('summary-div'));
                     hideData(document.getElementById('species-div'));
+                    hideData(document.getElementById('db-div'));
+                    hideData(document.getElementById('db-div2'));
                     hideHeadings();
                 }
             });

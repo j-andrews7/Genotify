@@ -120,6 +120,7 @@ body {
     color: #ffffff;
     width: 100%;
     display: flex;
+    font-size: 10pt;
 }
 
 .hidden {
