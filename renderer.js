@@ -2,8 +2,13 @@ const loadJsonFile = require('load-json-file');
 const ipcRenderer = require('electron').ipcRenderer;
 const clipboard = require('electron').clipboard;
 
+window.$ = window.jQuery = require('jquery')
+window.Bootstrap = require('bootstrap')
+
 var speciesObj = null;
 var xmlParser = new DOMParser();
+
+// const $ = require('jquery');
 
 document.addEventListener('DOMContentLoaded', function(event) {
     retrieveSpeciesJSON();
@@ -12,18 +17,29 @@ document.addEventListener('DOMContentLoaded', function(event) {
     
     // Listen for command to read from clipboard.
     ipcRenderer.on('queryFromClipboard', function(event, clipboardContents) {
-        console.log(clipboardContents);
         document.getElementById('query').value = clipboardContents;
         newQuery(clipboardContents);
     });
 
-    var textDivs = document.getElementsByClassName("text");
+    // Used for tooltip to tell user text has been copied to clipboard.
+    // https://stackoverflow.com/questions/37381640/tooltips-highlight-animation-with-clipboard-js-click/37395225
+    $('.text').tooltip({
+        trigger: 'click',
+        placement: 'top',
+        title: 'Copied!',
+        delay: {show: 0, hide: 500}
+    });
 
+    // Copies a clicked div element text to the clipboard.
 	var copyToClipboard = function() {
+        var pop = $(this);
 	    var text = this.textContent;
-	    console.log(text);
 	    clipboard.writeText(text);
+        $(this).tooltip('show');
+        $(this).tooltip('hide', {delay: {show: 0, hide: 500}});
 	};
+
+    var textDivs = document.getElementsByClassName("text");
 
 	for (var i = 0; i < textDivs.length; i++) {
 	    textDivs[i].addEventListener('click', copyToClipboard, false);
