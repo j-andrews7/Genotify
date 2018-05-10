@@ -17,7 +17,8 @@ function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 500,
-        height: 1280
+        height: 1280,
+        minWidth: 450
     });
 
     // and load the index.html of the app.
@@ -39,7 +40,7 @@ function createWindow() {
         windowSender = event.sender;
     });
     
-    const ret = globalShortcut.register('CommandOrControl+K', function() {
+    const ret = globalShortcut.register('CommandOrControl+Q', function() {
         windowSender.send('queryFromClipboard', clipboard.readText());
     });
 }

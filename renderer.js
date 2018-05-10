@@ -1,5 +1,6 @@
 const loadJsonFile = require('load-json-file');
 const ipcRenderer = require('electron').ipcRenderer;
+const clipboard = require('electron').clipboard;
 
 var speciesObj = null;
 var xmlParser = new DOMParser();
@@ -9,9 +10,24 @@ document.addEventListener('DOMContentLoaded', function(event) {
     
     ipcRenderer.send('loaded'); 
     
+    // Listen for command to read from clipboard.
     ipcRenderer.on('queryFromClipboard', function(event, clipboardContents) {
         console.log(clipboardContents);
+        document.getElementById('query').value = clipboardContents;
+        newQuery(clipboardContents);
     });
+
+    var textDivs = document.getElementsByClassName("text");
+
+	var copyToClipboard = function() {
+	    var text = this.textContent;
+	    console.log(text);
+	    clipboard.writeText(text);
+	};
+
+	for (var i = 0; i < textDivs.length; i++) {
+	    textDivs[i].addEventListener('click', copyToClipboard, false);
+	}
 
     document.getElementById('search-button').addEventListener('click', newQuery);
     document.getElementById('query').addEventListener('keypress', function(e) {
@@ -29,13 +45,14 @@ function retrieveSpeciesJSON() {
     });
 }
 
-function newQuery() {
+function newQuery(term = null) {
     if (speciesObj === null) {
         return;
     }
 
-
-    var term = document.getElementById('query').value;
+    if (term == null) {
+    	var term = document.getElementById('query').value;
+    }
     var queryUrl = 'https://mygene.info/v3/query?q=' + term;
     var speciesOptions = document.getElementById('species-sel');
 
