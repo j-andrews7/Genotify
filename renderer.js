@@ -2,13 +2,11 @@ const loadJsonFile = require('load-json-file');
 const ipcRenderer = require('electron').ipcRenderer;
 const clipboard = require('electron').clipboard;
 
-window.$ = window.jQuery = require('jquery')
-window.Bootstrap = require('bootstrap')
+window.$ = window.jQuery = require('jquery');
+window.Bootstrap = require('bootstrap');
 
 var speciesObj = null;
 var xmlParser = new DOMParser();
-
-// const $ = require('jquery');
 
 document.addEventListener('DOMContentLoaded', function(event) {
     retrieveSpeciesJSON();
@@ -22,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
     });
 
     // Used for tooltip to tell user text has been copied to clipboard.
-    // https://stackoverflow.com/questions/37381640/tooltips-highlight-animation-with-clipboard-js-click/37395225
     $('.text').tooltip({
         trigger: 'click',
         placement: 'top',
@@ -30,13 +27,19 @@ document.addEventListener('DOMContentLoaded', function(event) {
         delay: {show: 0, hide: 500}
     });
 
+    function hideTooltip(x) {
+        setTimeout(function() {
+          x.tooltip('hide');
+        }, 1000);
+    }
+
     // Copies a clicked div element text to the clipboard.
 	var copyToClipboard = function() {
         var pop = $(this);
 	    var text = this.textContent;
 	    clipboard.writeText(text);
         $(this).tooltip('show');
-        $(this).tooltip('hide', {delay: {show: 0, hide: 500}});
+        hideTooltip($(this));
 	};
 
     var textDivs = document.getElementsByClassName("text");
@@ -45,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	    textDivs[i].addEventListener('click', copyToClipboard, false);
 	}
 
+    // Listeners for search button click or enter key press to initiate query.
     document.getElementById('search-button').addEventListener('click', newQuery);
     document.getElementById('query').addEventListener('keypress', function(e) {
         var key = e.which || e.keyCode;
@@ -65,8 +69,11 @@ function newQuery(term = null) {
     if (speciesObj === null) {
         return;
     }
-
-    if (term == null) {
+    
+    // Check if no term was passed and pull it from the input value if so.
+    // Also does an ugly check to make sure click event itself isn't passed as the term if 
+    // search button used.
+    if (term == null || term instanceof Event) {
     	var term = document.getElementById('query').value;
     }
     var queryUrl = 'https://mygene.info/v3/query?q=' + term;
@@ -115,7 +122,7 @@ function newQuery(term = null) {
                 hideData(document.getElementById('summary-div'));
                 hideData(document.getElementById('species-div'));
                 hideData(document.getElementById('db-div'));
-                hideData(document.getElementById('db-div2'));
+                hideData(document.getElementById('db2-div'));
                 hideHeadings();
             }
         });
@@ -173,6 +180,7 @@ function displayData(dataObj) {
 
 function hideData(divObj) {
     // Hide all data in child nodes of givin div element.
+    console.log(divObj);
     var labels = divObj.querySelectorAll('label');
     var links = divObj.querySelectorAll('a');
     var i;
@@ -456,11 +464,11 @@ function displayHeadings() {
 }
 
 function hideHeadings() {
-    var headers = document.querySelectorAll('h3');
+    var headers = document.getElementsByClassName("sect-header");
 
     for (var i = 0; i < headers.length; i++) {
         var childData = headers[i];
-
+        console.log(childData);
         if (!(childData.classList.contains('hidden'))) {
             childData.classList.add('hidden');
         }

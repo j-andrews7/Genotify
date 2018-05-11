@@ -3,10 +3,9 @@
 
 <head>
     <link rel='stylesheet' type='text/css' href='css/style.css'>
-    <script>window.$ = window.jQuery = require('jquery');</script>
     <script>
-      // You can also require other files to run in this process
-      require('./renderer.js');
+        window.$ = window.jQuery = require('jquery');
+        require('./renderer.js');
     </script>
     <title>Genotify</title>
 </head>
@@ -25,7 +24,7 @@
             <div class='query-form'>
                 Search for:
                 <br>
-                <input type='text' id='query' placeholder='CDK2, cyclin kinase 2, Entrez ID, etc' class='text' length=30>
+                <input type='text' id='query' placeholder='CDK2, cyclin kinase 2, Entrez ID, etc' class='inp' length=30>
                 <br>
                 <br>
                 <label>Limit Search to:</label>
@@ -155,7 +154,7 @@
         <hr class='flex-rule'>
         <h3 class='sect-header hidden'>Databases</h3>
         <div class='split-div' id='basic-wrap-div'>
-            <div class='info-left'>
+            <div class='info-left' id='db-div'>
                 <label class='hidden' for='ensembl' id='ensembl-label'>
                     Ensembl:
                     <div class='hidden text add-link' id='ensembl' disabled></div>
@@ -173,7 +172,7 @@
                     <div class='hidden text add-link' id='pfam' disabled></div>
                 </label>
             </div>
-            <div class='info-right'>
+            <div class='info-right' id='db2-div'>
                 <label class='hidden' for='uniprot' id='uniprot-label'>
                     UniProtKB:
                     <div class='hidden text add-link' id='uniprot' disabled></div>
