@@ -103,7 +103,7 @@ const template = [
   submenu: [
     {
       label: 'How to Use',
-      click () { require('electron').shell.openExternal('https://electronjs.org') }
+      click () { require('electron').shell.openExternal('https://github.com/j-andrews7/GenotifyDesktop/') }
     }
   ]
 }
