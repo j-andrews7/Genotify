@@ -79,7 +79,7 @@ body {
     padding: 0px;
 }
 
-#hit-div, #db-div {
+#hit-div {
     background-color: #BCCDC7;
     margin: 0px;
     flex: 2;

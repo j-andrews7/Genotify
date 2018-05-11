@@ -8,6 +8,15 @@ window.Bootstrap = require('bootstrap');
 var speciesObj = null;
 var xmlParser = new DOMParser();
 
+// Open all links in external browser
+let shell = require('electron').shell
+document.addEventListener('click', function (event) {
+  if (event.target.tagName === 'A' && event.target.href.startsWith('http')) {
+    event.preventDefault()
+    shell.openExternal(event.target.href)
+  }
+})
+
 document.addEventListener('DOMContentLoaded', function(event) {
     retrieveSpeciesJSON();
     
@@ -48,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	    textDivs[i].addEventListener('click', copyToClipboard, false);
 	}
 
-    // Listeners for search button click or enter key press to initiate query.
+    // Listen for search button click or enter key press to initiate query.
     document.getElementById('search-button').addEventListener('click', newQuery);
     document.getElementById('query').addEventListener('keypress', function(e) {
         var key = e.which || e.keyCode;
