@@ -17,9 +17,10 @@ app.setName('Genotify');
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 500,
-        height: 1280,
-        minWidth: 450
+        width: 450,
+        height: 1250,
+        minWidth: 450,
+        icon: path.join(__dirname, 'assets/icons/png/64x64.png')
     });
 
     // and load the index.html of the app.
@@ -88,7 +89,8 @@ const template = [
     {role: 'resetzoom'},
     {role: 'zoomin'},
     {role: 'zoomout'},
-    {role: 'togglefullscreen'}
+    {role: 'togglefullscreen'},
+    {role: 'toggledevtools'}
   ]
 },
 {
