@@ -1,6 +1,7 @@
 const electron = require('electron');
 const {Menu} = require('electron');
-const app = electron.app;
+const {app} = require('electron');
+// const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const clipboard = electron.clipboard;
 const globalShortcut = electron.globalShortcut;

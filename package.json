@@ -3,7 +3,7 @@
   "productName": "Genotify",
   "version": "0.1.0",
   "author": "Jared Andrews",
-  "license": "GPL-3.0-or-later",
+  "license": "GPL-3.0",
   "repository": "https://github.com/j-andrews7/GenotifyDesktop",
   "main": "main.js",
   "scripts": {

@@ -1,12 +1,15 @@
 const loadJsonFile = require('load-json-file');
 const ipcRenderer = require('electron').ipcRenderer;
 const clipboard = require('electron').clipboard;
+const {app} = require('electron').remote;
 
 window.$ = window.jQuery = require('jquery');
 window.Bootstrap = require('bootstrap');
 
 var speciesObj = null;
 var xmlParser = new DOMParser();
+
+var basepath = app.getAppPath();
 
 // Open all links in external browser
 let shell = require('electron').shell
@@ -69,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 });
 
 function retrieveSpeciesJSON() {
-    loadJsonFile('species.json').then(function(json) {
+    loadJsonFile(basepath + '/species.json').then(function(json) {
         speciesObj = json;
     });
 }
