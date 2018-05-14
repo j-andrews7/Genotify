@@ -1,0 +1,22 @@
+{
+  "name": "Genotify",
+  "productName": "Genotify",
+  "version": "0.1.0",
+  "author": "Jared Andrews",
+  "license": "GPL-3.0",
+  "repository": "https://github.com/j-andrews7/GenotifyDesktop",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "1.8.2"
+  },
+  "dependencies": {
+    "jquery": "3.3.1",
+    "jsdom": "11.10.0",
+    "bootstrap": "4.1.1",
+    "popper.js": "1.14.3",
+    "load-json-file": "~4.0.0"
+  }
+}
