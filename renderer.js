@@ -192,7 +192,6 @@ function displayData(dataObj) {
 
 function hideData(divObj) {
     // Hide all data in child nodes of givin div element.
-    console.log(divObj);
     var labels = divObj.querySelectorAll('label');
     var links = divObj.querySelectorAll('a');
     var i;
@@ -333,11 +332,17 @@ function parseGeneData(data) {
         }
 
         if (data.hasOwnProperty('genomic_pos_hg19')) {
-            hg19coords = 'chr' + data.genomic_pos_hg19.chr + ':' + data.genomic_pos_hg19.start + '-' + data.genomic_pos_hg19.end;
+            hg19coords = {
+                db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg19&position=",
+                ident: 'chr' + data.genomic_pos_hg19.chr + ':' + data.genomic_pos_hg19.start + '-' + data.genomic_pos_hg19.end
+            };
         }
 
         if (data.hasOwnProperty('genomic_pos_mm9')) {
-            mm9coords = 'chr' + data.genomic_pos_mm9.chr + ':' + data.genomic_pos_mm9.start + '-' + data.genomic_pos_mm9.end;
+            mm9coords = {
+                db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&position=",
+                ident: 'chr' + data.genomic_pos_mm9.chr + ':' + data.genomic_pos_mm9.start + '-' + data.genomic_pos_mm9.end
+            };
         }
 
         if (data.hasOwnProperty('other_names') && typeof data.other_names === 'string') {
