@@ -131,11 +131,6 @@ function createMenu() {
       }, {
         type: 'separator'
       }, {
-        role: 'services',
-        submenu: []
-      }, {
-        type: 'separator'
-      }, {
         role: 'hide'
       }, {
         role: 'hideothers'
@@ -145,18 +140,6 @@ function createMenu() {
         type: 'separator'
       }, {
         role: 'quit'
-      }]
-    })
-
-    // Edit menu
-    template[1].submenu.push({
-      type: 'separator'
-    }, {
-      label: 'Speech',
-      submenu: [{
-        role: 'startspeaking'
-      }, {
-        role: 'stopspeaking'
       }]
     })
 
