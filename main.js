@@ -49,6 +49,8 @@ function createWindow() {
   const ret = globalShortcut.register('CommandOrControl+Q', function() {
     windowSender.send('queryFromClipboard', clipboard.readText());
   });
+
+  createMenu();
 }
 
 // This method will be called when Electron has finished
@@ -76,100 +78,103 @@ app.on('activate', function() {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-const template = [{
-  label: 'Edit',
-  submenu: [{
-    role: 'cut'
-  }, {
-    role: 'copy'
-  }, {
-    role: 'paste'
-  }]
-}, {
-  label: 'View',
-  submenu: [{
-    role: 'reload'
-  }, {
-    role: 'forcereload'
-  }, {
-    role: 'resetzoom'
-  }, {
-    role: 'zoomin'
-  }, {
-    role: 'zoomout'
-  }, {
-    role: 'togglefullscreen'
-  }, {
-    role: 'toggledevtools'
-  }]
-}, {
-  role: 'window',
-  submenu: [{
-    role: 'minimize'
-  }, {
-    role: 'close'
-  }]
-}, {
-  role: 'help',
-  submenu: [{
-    label: 'How to Use',
-    click() {
-      require('electron').shell.openExternal(
-        'https://github.com/j-andrews7/GenotifyDesktop/')
-    }
-  }]
-}]
-
-if (process.platform === 'darwin') {
-  template.unshift({
-    label: app.getName(),
+function createMenu() {
+  const template = [{
+    label: 'Edit',
     submenu: [{
-      role: 'about'
+      role: 'cut'
     }, {
-      type: 'separator'
+      role: 'copy'
     }, {
-      role: 'services',
-      submenu: []
-    }, {
-      type: 'separator'
-    }, {
-      role: 'hide'
-    }, {
-      role: 'hideothers'
-    }, {
-      role: 'unhide'
-    }, {
-      type: 'separator'
-    }, {
-      role: 'quit'
+      role: 'paste'
     }]
-  })
-
-  // Edit menu
-  template[1].submenu.push({
-    type: 'separator'
   }, {
-    label: 'Speech',
+    label: 'View',
     submenu: [{
-      role: 'startspeaking'
+      role: 'reload'
     }, {
-      role: 'stopspeaking'
+      role: 'forcereload'
+    }, {
+      role: 'resetzoom'
+    }, {
+      role: 'zoomin'
+    }, {
+      role: 'zoomout'
+    }, {
+      role: 'togglefullscreen'
+    }, {
+      role: 'toggledevtools'
     }]
-  })
-
-  // Window menu
-  template[3].submenu = [{
-    role: 'close'
   }, {
-    role: 'minimize'
+    role: 'window',
+    submenu: [{
+      role: 'minimize'
+    }, {
+      role: 'close'
+    }]
   }, {
-    role: 'zoom'
-  }, {
-    type: 'separator'
-  }, {
-    role: 'front'
+    role: 'help',
+    submenu: [{
+      label: 'How to Use',
+      click() {
+        require('electron').shell.openExternal(
+          'https://github.com/j-andrews7/GenotifyDesktop/')
+      }
+    }]
   }]
-}
 
-const menu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(menu)
+  if (process.platform === 'darwin') {
+    template.unshift({
+      label: app.getName(),
+      submenu: [{
+        role: 'about'
+      }, {
+        type: 'separator'
+      }, {
+        role: 'services',
+        submenu: []
+      }, {
+        type: 'separator'
+      }, {
+        role: 'hide'
+      }, {
+        role: 'hideothers'
+      }, {
+        role: 'unhide'
+      }, {
+        type: 'separator'
+      }, {
+        role: 'quit'
+      }]
+    })
+
+    // Edit menu
+    template[1].submenu.push({
+      type: 'separator'
+    }, {
+      label: 'Speech',
+      submenu: [{
+        role: 'startspeaking'
+      }, {
+        role: 'stopspeaking'
+      }]
+    })
+
+    // Window menu
+    template[3].submenu = [{
+      role: 'close'
+    }, {
+      role: 'minimize'
+    }, {
+      role: 'zoom'
+    }, {
+      type: 'separator'
+    }, {
+      role: 'front'
+    }]
+  }
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
+
+};
