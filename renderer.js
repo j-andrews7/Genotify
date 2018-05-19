@@ -383,7 +383,6 @@ function parseGeneData(data) {
       };
       getUniprotSummary(data.uniprot['Swiss-Prot']).then(function(
         uniprotSum) {
-        console.log(speciesObj[data.taxid]);
         resolve({
           'entrez-summary': data.summary,
           'alias': aliases,
@@ -408,7 +407,6 @@ function parseGeneData(data) {
         });
       }).catch(function(error) {
         console.error(error);
-        console.log(speciesObj[data.taxid]);
 
         // Resolve without the uniprot summary if we can't get it
         resolve({
@@ -435,7 +433,6 @@ function parseGeneData(data) {
         });
       });
     } else {
-      console.log(speciesObj[data.taxid]);
       resolve({
         'entrez-summary': data.summary,
         'alias': aliases,
