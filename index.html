@@ -2,188 +2,188 @@
 <html>
 
 <head>
-    <link rel='stylesheet' type='text/css' href='assets/css/style.css'>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <script>
-        require('./renderer.js');
+        require("./renderer.js");
     </script>
     <title>Genotify</title>
 </head>
 
 <body>
-    <div class='header'>
-        <h2 name='genotifyheader'>Genotify</h2>
+    <div class="header">
+        <h2 name="genotifyheader">Genotify</h2>
     </div>
-    <div class='content flex-container'>
-        <div class='split-div'>
-            <div class='query-form'>
+    <div class="content flex-container">
+        <div class="split-div">
+            <div class="query-form">
                 Search for:
                 <br>
-                <input type='text' id='query' placeholder='CDK2, cyclin kinase 2, Entrez ID, etc' class='inp' length=30>
+                <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" class="inp" length="30">
                 <br>
                 <br>
                 <label>Limit Search to:</label>
                 <br>
-                <select size=9 id='species-sel' name='species'>
-                    <option value='human'>Human</option>
-                    <option value='mouse'>Mouse</option>
-                    <option value='rat'>Rat</option>
-                    <option value='fruitfly'>D. melanogaster</option>
-                    <option value='nematode'>C. elegans</option>
-                    <option value='thale-cress'>A. thaliana</option>
-                    <option value='4577'>Zea mays</option>
-                    <option value='4530'>Rice</option>
-                    <option value='zebrafish'>Zebrafish</option>
-                    <option value='frog'>Frog</option>
-                    <option value='pig'>Pig</option>
-                    <option value='562'>E. coli</option>
-                    <option value='4932'>S. cerevisiae</option>
-                    <option value='9913'>Cow</option>
-                    <option value='3055'>Green algea</option>
-                    <option value='44689'>D. discoideum</option>
-                    <option value='11103'>Hepatitis C</option>
-                    <option value='2104'>M. pneumoniae</option>
-                    <option value='5833'>P. falciparum</option>
-                    <option value='4754'>P. carinii</option>
-                    <option value='4896'>S. pombe</option>
-                    <option value='31033'>Torafugu</option>
+                <select size="9" id="species-sel" name="species">
+                    <option value="human">Human</option>
+                    <option value="mouse">Mouse</option>
+                    <option value="rat">Rat</option>
+                    <option value="fruitfly">D. melanogaster</option>
+                    <option value="nematode">C. elegans</option>
+                    <option value="thale-cress">A. thaliana</option>
+                    <option value="4577">Zea mays</option>
+                    <option value="4530">Rice</option>
+                    <option value="zebrafish">Zebrafish</option>
+                    <option value="frog">Frog</option>
+                    <option value="pig">Pig</option>
+                    <option value="562">E. coli</option>
+                    <option value="4932">S. cerevisiae</option>
+                    <option value="9913">Cow</option>
+                    <option value="3055">Green algea</option>
+                    <option value="44689">D. discoideum</option>
+                    <option value="11103">Hepatitis C</option>
+                    <option value="2104">M. pneumoniae</option>
+                    <option value="5833">P. falciparum</option>
+                    <option value="4754">P. carinii</option>
+                    <option value="4896">S. pombe</option>
+                    <option value="31033">Torafugu</option>
                 </select>
                 <br>
                 <br>
-                <button id='search-button' type='submit'>Search</button>
+                <button id="search-button" type="submit">Search</button>
             </div>
-            <div id='hit-div'>
-                <div id='flex-container'>
+            <div id="hit-div">
+                <div id="flex-container">
                     <div>
-                        <label class='hidden' for='hits' id='hits-label'>
+                        <label class="hidden" for="hits" id="hits-label">
                             Hits:
-                            <div class='hidden text' id='hits' disabled></div>
+                            <div class="hidden text" id="hits" disabled></div>
                         </label>
-                        <div class='hidden text' id='hits' disabled></div>
-                        <label class='hidden' for='match-score' id='match-score-label'>
+                        <div class="hidden text" id="hits" disabled></div>
+                        <label class="hidden" for="match-score" id="match-score-label">
                             Match Score:
-                            <div class='hidden text' id='match-score' disabled></div>
+                            <div class="hidden text" id="match-score" disabled></div>
                         </label>
                     </div>
-                    <div id='species-div'>
-                        <label class='hidden' for='tax-id' id='tax-id-label'>
+                    <div id="species-div">
+                        <label class="hidden" for="tax-id" id="tax-id-label">
                             TaxID:
-                            <div class='hidden text' id='tax-id' disabled></div>
+                            <div class="hidden text" id="tax-id" disabled></div>
                         </label>
-                        <label class='hidden' for='species' id='species-label'>
+                        <label class="hidden" for="species" id="species-label">
                             Species:
-                            <div class='hidden text' id='species' disabled></div>
+                            <div class="hidden text" id="species" disabled></div>
                         </label>
-                        <label class='hidden' for='gene-id' id='gene-id-label'>
+                        <label class="hidden" for="gene-id" id="gene-id-label">
                             Entrez ID:
-                            <div class='hidden text add-link' id='gene-id' disabled></div>
+                            <div class="hidden text add-link" id="gene-id" disabled></div>
                         </label>
                     </div>
                 </div>
             </div>
         </div>
-        <hr class='flex-rule'>
-        <h3 class='sect-header hidden'>Gene Basics</h3>
-        <div class='split-div' id='basic-wrap-div'>
-            <div class='info-left' id='info-div'>
-                <label class='hidden' for='gene-symbol' id='gene-symbol-label'>
+        <hr class="flex-rule">
+        <h3 class="sect-header hidden">Gene Basics</h3>
+        <div class="split-div" id="basic-wrap-div">
+            <div class="info-left" id="info-div">
+                <label class="hidden" for="gene-symbol" id="gene-symbol-label">
                     Symbol:
-                    <div class='hidden text' id='gene-symbol' disabled></div>
+                    <div class="hidden text" id="gene-symbol" disabled></div>
                 </label>
-                <label class='hidden' for='gene-name' id='gene-name-label'>
+                <label class="hidden" for="gene-name" id="gene-name-label">
                     Name:
-                    <div class='hidden text' id='gene-name' disabled></div>
+                    <div class="hidden text" id="gene-name" disabled></div>
                 </label>
-                <label class='hidden' for='hgnc-id' id='hgnc-id-label'>
+                <label class="hidden" for="hgnc-id" id="hgnc-id-label">
                     HGNC ID:
-                    <div class='hidden text add-link' id='hgnc-id' disabled></div>
+                    <div class="hidden text add-link" id="hgnc-id" disabled></div>
                 </label>
-                <label class='hidden' for='alias' id='alias-label'>
+                <label class="hidden" for="alias" id="alias-label">
                     Aliases:
-                    <div class='hidden text' id='alias' disabled></div>
+                    <div class="hidden text" id="alias" disabled></div>
                 </label>
-                <label class='hidden' for='other-names' id='other-names-label'>
+                <label class="hidden" for="other-names" id="other-names-label">
                     Other Names:
-                    <div class='hidden text' id='other-names' disabled></div>
+                    <div class="hidden text" id="other-names" disabled></div>
                 </label>
             </div>
-            <div class='info-right' id='loc-div'>
-                <label class='hidden' for='location' id='location-label'>
+            <div class="info-right" id="loc-div">
+                <label class="hidden" for="location" id="location-label">
                     Chromosomal Location:
-                    <div class='hidden text' id='location' disabled></div>
+                    <div class="hidden text" id="location" disabled></div>
                 </label>
-                <label class='hidden' for='gen-pos' id='gen-pos-label'>
+                <label class="hidden" for="gen-pos" id="gen-pos-label">
                     Genomic Position:
-                    <div class='hidden text' id='gen-pos' disabled></div>
+                    <div class="hidden text" id="gen-pos" disabled></div>
                 </label>
-                <label class='hidden' for='19gen-pos' id='19gen-pos-label'>
+                <label class="hidden" for="19gen-pos" id="19gen-pos-label">
                     hg19 Genomic Position:
-                    <div class='hidden text' id='19gen-pos' disabled></div>
+                    <div class="hidden text add-link" id="19gen-pos" disabled></div>
                 </label>
-                <label class='hidden' for='mm9gen-pos' id='mm9gen-pos-label'>
+                <label class="hidden" for="mm9gen-pos" id="mm9gen-pos-label">
                     mm9 Genomic Position:
-                    <div class='hidden text' id='mm9gen-pos' disabled></div>
+                    <div class="hidden text add-link" id="mm9gen-pos" disabled></div>
                 </label>
-                <label class='hidden' for='gene-type' id='gene-type-label'>
+                <label class="hidden" for="gene-type" id="gene-type-label">
                     Gene Type:
-                    <div class='hidden text' id='gene-type' disabled></div>
+                    <div class="hidden text" id="gene-type" disabled></div>
                 </label>
             </div>
         </div>
-        <hr class='flex-rule'>
-        <h3 class='sect-header hidden'>Function</h3>
-        <div id='summary-div'>
-            <label class='hidden' for='entrez-summary' id='entrez-summary-label'>
+        <hr class="flex-rule">
+        <h3 class="sect-header hidden">Function</h3>
+        <div id="summary-div">
+            <label class="hidden" for="entrez-summary" id="entrez-summary-label">
                 Entrez Summary:
-                <div class='hidden text just-text' id='entrez-summary' disabled></div>
+                <div class="hidden text just-text" id="entrez-summary" disabled></div>
             </label>
-            <label class='hidden' for='uniprot-summary' id='uniprot-summary-label'>
+            <label class="hidden" for="uniprot-summary" id="uniprot-summary-label">
                 Uniprot Summary:
-                <div class='hidden text just-text' id='uniprot-summary' disabled></div>
+                <div class="hidden text just-text" id="uniprot-summary" disabled></div>
             </label>
-            <label class='hidden' for='wikipedia' id='wikipedia-label'>
+            <label class="hidden" for="wikipedia" id="wikipedia-label">
                 Wikipedia:
-                <div class='hidden text add-link' id='wikipedia' disabled></div>
+                <div class="hidden text add-link" id="wikipedia" disabled></div>
             </label>
         </div>
-        <hr class='flex-rule'>
-        <h3 class='sect-header hidden'>Databases</h3>
-        <div class='split-div' id='basic-wrap-div'>
-            <div class='info-left' id='db-div'>
-                <label class='hidden' for='ensembl' id='ensembl-label'>
+        <hr class="flex-rule">
+        <h3 class="sect-header hidden">Databases</h3>
+        <div class="split-div" id="basic-wrap-div">
+            <div class="info-left" id="db-div">
+                <label class="hidden" for="ensembl" id="ensembl-label">
                     Ensembl:
-                    <div class='hidden text add-link' id='ensembl' disabled></div>
+                    <div class="hidden text add-link" id="ensembl" disabled></div>
                 </label>
-                <label class='hidden' for='omim' id='omim-label'>
+                <label class="hidden" for="omim" id="omim-label">
                     OMIM:
-                    <div class='hidden text add-link' id='omim' disabled></div>
+                    <div class="hidden text add-link" id="omim" disabled></div>
                 </label>
-                <label class='hidden' for='vega' id='vega-label'>
+                <label class="hidden" for="vega" id="vega-label">
                     Vega:
-                    <div class='hidden text add-link' id='vega' disabled></div>
+                    <div class="hidden text add-link" id="vega" disabled></div>
                 </label>
-                <label class='hidden' for='pfam' id='pfam-label'>
+                <label class="hidden" for="pfam" id="pfam-label">
                     Pfam:
-                    <div class='hidden text add-link' id='pfam' disabled></div>
+                    <div class="hidden text add-link" id="pfam" disabled></div>
                 </label>
             </div>
-            <div class='info-right' id='db2-div'>
-                <label class='hidden' for='uniprot' id='uniprot-label'>
+            <div class="info-right" id="db2-div">
+                <label class="hidden" for="uniprot" id="uniprot-label">
                     UniProtKB:
-                    <div class='hidden text add-link' id='uniprot' disabled></div>
+                    <div class="hidden text add-link" id="uniprot" disabled></div>
                 </label>
-                <label class='hidden' for='pharmgkb' id='pharmgkb-label'>
+                <label class="hidden" for="pharmgkb" id="pharmgkb-label">
                     PharmGKB:
-                    <div class='hidden text add-link' id='pharmgkb' disabled></div>
+                    <div class="hidden text add-link" id="pharmgkb" disabled></div>
                 </label>
-                <label class='hidden' for='prosite' id='prosite-label'>
+                <label class="hidden" for="prosite" id="prosite-label">
                     PROSITE:
-                    <div class='hidden text add-link' id='prosite' disabled></div>
+                    <div class="hidden text add-link" id="prosite" disabled></div>
                 </label>
             </div>
         </div>
     </div>
-    <div class='footer'>
-        <p>(C) Copyright 2018 Jared Andrews - Powered by the <a href='http://mygene.info'>MyGene API</a></p>
+    <div class="footer">
+        <p>&copy; 2018 Jared Andrews - Powered by the <a href="http://mygene.info">MyGene API</a></p>
     </div>
 </body>
 
