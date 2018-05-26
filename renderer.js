@@ -91,7 +91,7 @@ function newQuery(term = null) {
   // Check if no term was passed and pull it from the input value if so.
   // Also does an ugly check to make sure click event itself isn't passed as the term if
   // search button used.
-  if (term == null || term instanceof Event) {
+  if (term == null || term instanceof MouseEvent) {
     var term = document.getElementById('query').value;
   }
   var queryUrl = 'https://mygene.info/v3/query?q=' + term;
@@ -108,7 +108,6 @@ function newQuery(term = null) {
         console.log('Fetch Query Error. Status Code: ' + response.status);
         return;
       }
-
       response.json().then(function(data) {
         console.log(data);
         if (data.total !== 0 && data.success !== false) {

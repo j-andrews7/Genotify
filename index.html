@@ -2,10 +2,21 @@
 <html>
 
 <head>
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
     <script>
         require("./renderer.js");
     </script>
+    <script>if (window.module) module = window.module;</script>
     <title>Genotify</title>
 </head>
 
@@ -16,13 +27,25 @@
     <div class="content flex-container">
         <div class="split-div">
             <div class="query-form">
-                Search for:
-                <br>
-                <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" class="inp" length="30">
-                <br>
+                <label for="query" id="query-label">Search for:</label>
+                <form>
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" id="query">
+                    <div class="input-group-btn">
+                      <button class="btn btn-default" type="button" id="search-button">
+                        <i class="glyphicon glyphicon-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
                 <br>
                 <label>Limit Search to:</label>
                 <br>
+                <select class="selectpicker show-tick" multiple data-live-search="true" data-width="95%" data-selected-text-format="count > 2">
+                  <option>Mustard</option>
+                  <option>Ketchup</option>
+                  <option>Relish</option>
+                </select>
                 <select size="9" id="species-sel" name="species">
                     <option value="human">Human</option>
                     <option value="mouse">Mouse</option>
@@ -47,16 +70,12 @@
                     <option value="4896">S. pombe</option>
                     <option value="31033">Torafugu</option>
                 </select>
-                <br>
-                <br>
-                <button id="search-button" type="submit">Search</button>
             </div>
             <div id="hit-div">
                 <div id="flex-container">
                     <div>
                         <label class="hidden" for="hits" id="hits-label">
                             Hits:
-                            <div class="hidden text" id="hits" disabled></div>
                         </label>
                         <div class="hidden text" id="hits" disabled></div>
                         <label class="hidden" for="match-score" id="match-score-label">
@@ -146,7 +165,7 @@
             </label>
         </div>
         <hr class="flex-rule">
-        <h3 class="sect-header hidden">Databases</h3>
+        <h3 class="sect-header hidden">Accessions</h3>
         <div class="split-div" id="basic-wrap-div">
             <div class="info-left" id="db-div">
                 <label class="hidden" for="ensembl" id="ensembl-label">
