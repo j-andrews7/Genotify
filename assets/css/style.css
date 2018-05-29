@@ -27,7 +27,6 @@ label {
 }
 
 .query-form {
-  overflow: hidden;
   background-color: #bccdc7;
   margin: 0;
   flex: 2;

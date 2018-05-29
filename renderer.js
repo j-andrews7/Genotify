@@ -8,13 +8,16 @@ const {
 window.$ = window.jQuery = require('jquery');
 window.Bootstrap = require('bootstrap');
 
+require('bootstrap-select');
+
 var speciesObj = null;
 var xmlParser = new DOMParser();
+var species = [];
 
 var basepath = app.getAppPath();
 
 // Open all links in external browser
-let shell = require('electron').shell
+let shell = require('electron').shell;
 document.addEventListener('click', function(event) {
   if (event.target.tagName === 'A' && event.target.href.startsWith('http')) {
     event.preventDefault()
@@ -26,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
   retrieveSpeciesJSON();
 
   ipcRenderer.send('loaded');
-
   // Listen for command to read from clipboard.
   ipcRenderer.on('queryFromClipboard', function(event, clipboardContents) {
     document.getElementById('query').value = clipboardContents;
@@ -42,6 +44,10 @@ document.addEventListener('DOMContentLoaded', function(event) {
       show: 0,
       hide: 500
     }
+  });
+
+  $('.selectpicker').on('change', function(){
+    species = $('.selectpicker').val()
   });
 
   function hideTooltip(x) {
@@ -81,6 +87,25 @@ function retrieveSpeciesJSON() {
   loadJsonFile(basepath + '/species.json').then(function(json) {
     speciesObj = json;
   });
+  var dropdown = document.getElementById('species-sel');
+  // Dynamically add all of the species to the dropdown.
+  for (x in speciesObj) {
+    var option = document.createElement('option');
+    option.text = speciesObj[x];
+    option.value = x;
+    dropdown.add(option);
+  }
+  $('#species-sel').selectpicker('refresh');
+}
+
+function populateDropdown() {
+  var opts = [];
+  for (var x in speciesObj) {
+    opts.push('<option value="' + x + '">' + speciesObj[x] + '</option>');
+  }
+  var addOpts = opts.join();
+  $('#species-sel').append(addOpts);
+  $('#species-sel').selectpicker('refresh');
 }
 
 function newQuery(term = null) {
@@ -94,13 +119,15 @@ function newQuery(term = null) {
   if (term == null || term instanceof MouseEvent) {
     term = document.getElementById('query').value;
   }
-  var queryUrl = 'https://mygene.info/v3/query?q=' + term + "&fields=all";
-  var speciesOptions = document.getElementById('species-sel');
+  var queryUrl = 'https://mygene.info/v3/query?q=' + term + '&fields=all';
+  var querySpecies = '';
 
-  if (speciesOptions.selectedIndex !== -1) {
-    var species = speciesOptions.options[speciesOptions.selectedIndex].value;
-
-    queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' + species;
+  if (species.length > 0) {
+    querySpecies = species[0]
+    for (var i = 1; i < species.length; i++){
+      querySpecies = querySpecies + "%2C" + species[i]
+    }
+    queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' + querySpecies;
   }
 
   fetch(queryUrl).then(function(response) {
