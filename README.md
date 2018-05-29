@@ -14,12 +14,23 @@ Just download the release for your OS, unzip, and run. To build from source with
 
 ## Usage
 
-Genotify is dead simple to use. Type a query into the search box and click the search button, hit enter, or use the hotkey `ctrl+q` (or `cmd+q`) to query from clipboard. Read what said gene does. Select a species from the list to limit the search to that species. Fin.
+Genotify is dead simple to use. Type a query into the search box and click the search button, hit enter, or use the hotkey `ctrl+q` (or `cmd+q`) to query from clipboard. Read what said gene does. Select one or more species from the list to limit the search to those species. Fin.
 
 ## Issues/Comments
 Hit up the issues pages here and drop a line. I'm usually pretty quick to respond. I'm also open to suggestions for new features.
 
-#### No Guarantees
-This software is released under the GPL 3.0 license. You are free to use it pretty much however you want, but you must include this license if you redistribute it in any way. There are no guarantees that any information provided by this software is accurate - you use it at your own risk.
+## License
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
 
 Copyright 2018, Jared Andrews

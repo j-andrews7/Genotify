@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     var key = e.which || e.keyCode;
 
     if (key === 13) {
-      newQuery();
+      newQuery(term = document.getElementById('query').value);
     }
   });
 });
@@ -92,9 +92,9 @@ function newQuery(term = null) {
   // Also does an ugly check to make sure click event itself isn't passed as the term if
   // search button used.
   if (term == null || term instanceof MouseEvent) {
-    var term = document.getElementById('query').value;
+    term = document.getElementById('query').value;
   }
-  var queryUrl = 'https://mygene.info/v3/query?q=' + term;
+  var queryUrl = 'https://mygene.info/v3/query?q=' + term + "&fields=all";
   var speciesOptions = document.getElementById('species-sel');
 
   if (speciesOptions.selectedIndex !== -1) {
@@ -126,7 +126,9 @@ function newQuery(term = null) {
 
           displayData(basics);
           displayHeadings();
-          annotateGene(topHit._id);
+          parseGeneData(topHit).then(function(topHit) {
+            displayData(topHit)
+          });
         } else {
           var empty = {
             'hits': 'No hits',
@@ -238,30 +240,6 @@ function hideData(divObj) {
     var childData = links[i];
     childData.remove();
   }
-}
-
-function annotateGene(gene) {
-  fetch('https://mygene.info/v3/gene/' + gene)
-    .then(
-      function(response) {
-        if (response.status !== 200) {
-          console.log('Looks like there was a problem. Status Code: ' +
-            response.status);
-          return;
-        }
-
-        // Examine the text in the response
-        response.json().then(function(data) {
-          console.log(data);
-          parseGeneData(data).then(function(data) {
-            displayData(data)
-          });
-        });
-      }
-    )
-    .catch(function(err) {
-      console.error('Fetch Gene Annotation Error', err);
-    });
 }
 
 function parseGeneData(data) {
