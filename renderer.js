@@ -20,10 +20,10 @@ var basepath = app.getAppPath();
 let shell = require('electron').shell;
 document.addEventListener('click', function(event) {
   if (event.target.tagName === 'A' && event.target.href.startsWith('http')) {
-    event.preventDefault()
-    shell.openExternal(event.target.href)
+    event.preventDefault();
+    shell.openExternal(event.target.href);
   }
-})
+});
 
 document.addEventListener('DOMContentLoaded', function(event) {
   retrieveSpeciesJSON();
