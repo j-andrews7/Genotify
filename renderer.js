@@ -7,8 +7,7 @@ const {
 
 window.$ = window.jQuery = require('jquery');
 window.Bootstrap = require('bootstrap');
-
-require('bootstrap-select');
+require('./assets/js/jquery.flexdatalist.min.js');
 
 var speciesObj = null;
 var xmlParser = new DOMParser();
@@ -46,8 +45,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
   });
 
-  $('.selectpicker').on('change', function(){
-    species = $('.selectpicker').val()
+  $('.flexdatalist').flexdatalist({
+    minLength: 1,
+    searchIn: 'name',
+    textProperty: 'name',
+    valueProperty: 'id',
+    data: 'countries.json'
+  });
+
+  $('.flexdatalist').on('change:flexdatalist', function() {
+    species = $('.flexdatalist').flexdatalist('value');
+    console.log(species);
   });
 
   function hideTooltip(x) {
@@ -87,25 +95,6 @@ function retrieveSpeciesJSON() {
   loadJsonFile(basepath + '/species.json').then(function(json) {
     speciesObj = json;
   });
-  var dropdown = document.getElementById('species-sel');
-  // Dynamically add all of the species to the dropdown.
-  for (x in speciesObj) {
-    var option = document.createElement('option');
-    option.text = speciesObj[x];
-    option.value = x;
-    dropdown.add(option);
-  }
-  $('#species-sel').selectpicker('refresh');
-}
-
-function populateDropdown() {
-  var opts = [];
-  for (var x in speciesObj) {
-    opts.push('<option value="' + x + '">' + speciesObj[x] + '</option>');
-  }
-  var addOpts = opts.join();
-  $('#species-sel').append(addOpts);
-  $('#species-sel').selectpicker('refresh');
 }
 
 function newQuery(term = null) {
@@ -124,10 +113,11 @@ function newQuery(term = null) {
 
   if (species.length > 0) {
     querySpecies = species[0]
-    for (var i = 1; i < species.length; i++){
+    for (var i = 1; i < species.length; i++) {
       querySpecies = querySpecies + "%2C" + species[i]
     }
-    queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' + querySpecies;
+    queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' +
+      querySpecies + '&fields=all';
   }
 
   fetch(queryUrl).then(function(response) {
@@ -472,19 +462,22 @@ function getUniprotSummary(id) {
 
     var summary;
 
-    fetch('http://www.uniprot.org/uniprot/' + id + '.xml').then(function(
+    fetch('https://www.uniprot.org/uniprot/' + id + '.xml').then(function(
       response) {
       if (response.status !== 200) {
         console.log('Looks like there was a problem. Status Code: ' +
           response.status);
 
-        reject();
+        //reject();
       }
 
       response.text().then(function(data) {
+        console.log(id);
         var parsedXML = xmlParser.parseFromString(data, 'text/xml');
         var comments = parsedXML.querySelectorAll(
           'comment[type="function"]');
+        console.log(comments);
+        console.log(parsedXML);
 
         for (var i = 0; i < comments.length; i++) {
           summary = comments[0].textContent;
@@ -493,8 +486,7 @@ function getUniprotSummary(id) {
       })
     }).catch(function(err) {
       console.error('Fetch Uniprot Error', err);
-
-      reject();
+      //reject();
     });
   });
 }
