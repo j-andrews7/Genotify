@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     searchIn: 'name',
     textProperty: 'name',
     valueProperty: 'id',
-    data: 'species.new.new.json'
+    data: 'species_search.json'
   });
 
   $('.flexdatalist').on('change:flexdatalist', function() {
