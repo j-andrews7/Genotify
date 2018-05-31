@@ -50,12 +50,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
     searchIn: 'name',
     textProperty: 'name',
     valueProperty: 'id',
-    data: 'countries.json'
+    data: 'species.new.new.json'
   });
 
   $('.flexdatalist').on('change:flexdatalist', function() {
     species = $('.flexdatalist').flexdatalist('value');
-    console.log(species);
   });
 
   function hideTooltip(x) {
@@ -468,16 +467,13 @@ function getUniprotSummary(id) {
         console.log('Looks like there was a problem. Status Code: ' +
           response.status);
 
-        //reject();
+        reject();
       }
 
       response.text().then(function(data) {
-        console.log(id);
         var parsedXML = xmlParser.parseFromString(data, 'text/xml');
         var comments = parsedXML.querySelectorAll(
           'comment[type="function"]');
-        console.log(comments);
-        console.log(parsedXML);
 
         for (var i = 0; i < comments.length; i++) {
           summary = comments[0].textContent;
@@ -486,7 +482,7 @@ function getUniprotSummary(id) {
       })
     }).catch(function(err) {
       console.error('Fetch Uniprot Error', err);
-      //reject();
+      reject();
     });
   });
 }

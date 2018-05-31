@@ -1,8 +1,9 @@
 ## Change log
 
 ### _**v1.1.0**_
-**Release date: May 19, 2018**
- - Fixed multiple entries for PFAM/PROSITE causing issues with both the UI and links themself.
+**Release date: May 31, 2018**
+ - Added ability to limit to multiple species rather than just one.
+ - Fixed multiple entries for PFAM/PROSITE causing issues with both the UI and links themselves.
  - Fixed menu on OSX, which also resolved a bug with the hotkey command.
  - Added UCSC browser links for mouse and human genomic positions (mm9/hg19).
  - Moved around various elements for better organization.
