@@ -275,6 +275,7 @@ function parseGeneData(data) {
     var uniprot = null;
     var pharmgkb = null;
     var prosite = null;
+    var interpro = null;
 
     if (data.hasOwnProperty('HGNC')) {
       hgnc = {
@@ -328,7 +329,14 @@ function parseGeneData(data) {
     if (data.hasOwnProperty('prosite')) {
       prosite = {
         db: 'https://prosite.expasy.org/',
-        ident: data.pfam
+        ident: data.prosite
+      };
+    }
+
+    if (data.hasOwnProperty('interpro')) {
+      interpro = {
+        db: 'http://www.ebi.ac.uk/interpro/entry/',
+        ident: data.interpro
       };
     }
 

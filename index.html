@@ -63,17 +63,13 @@
                             Species:
                         </label>
                         <div class="hidden text" id="species" disabled></div>
-                        <label class="hidden" for="gene-id" id="gene-id-label">
-                            Entrez ID:
-                        </label>
-                        <div class="hidden text add-link" id="gene-id" disabled></div>
                     </div>
                 </div>
             </div>
         </div>
         <hr class="flex-rule">
         <h3 class="sect-header hidden">Gene Basics</h3>
-        <div class="split-div" id="basic-wrap-div">
+        <div class="split-div basic-wrap-div" id="basics">
             <div class="info-left" id="info-div">
                 <label class="hidden" for="gene-symbol" id="gene-symbol-label">
                     Symbol:
@@ -130,6 +126,10 @@
                 Uniprot Summary:
             </label>
             <div class="hidden text just-text" id="uniprot-summary" disabled></div>
+            <label class="hidden" for="interpro-domains" id="interpro-domains-label">
+                Interpro Domains:
+            </label>
+            <div class="hidden text add-link" id="interpro-domains" disabled></div>
             <label class="hidden" for="wikipedia" id="wikipedia-label">
                 Wikipedia:
             </label>
@@ -137,8 +137,12 @@
         </div>
         <hr class="flex-rule">
         <h3 class="sect-header hidden">Accessions</h3>
-        <div class="split-div" id="basic-wrap-div">
+        <div class="split-div basic-wrap-div" id="accessions">
             <div class="info-left" id="db-div">
+                <label class="hidden" for="gene-id" id="gene-id-label">
+                  Entrez ID:
+                </label>
+                <div class="hidden text add-link" id="gene-id" disabled></div>
                 <label class="hidden" for="ensembl" id="ensembl-label">
                     Ensembl:
                 </label>
@@ -151,10 +155,6 @@
                     Vega:
                 </label>
                 <div class="hidden text add-link" id="vega" disabled></div>
-                <label class="hidden" for="pfam" id="pfam-label">
-                    Pfam:
-                </label>
-                <div class="hidden text add-link" id="pfam" disabled></div>
             </div>
             <div class="info-right" id="db2-div">
                 <label class="hidden" for="uniprot" id="uniprot-label">
@@ -169,6 +169,10 @@
                     PROSITE:
                 </label>
                 <div class="hidden text add-link" id="prosite" disabled></div>
+                <label class="hidden" for="pfam" id="pfam-label">
+                    Pfam:
+                </label>
+                <div class="hidden text add-link" id="pfam" disabled></div>
             </div>
         </div>
     </div>
