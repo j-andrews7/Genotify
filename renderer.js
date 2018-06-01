@@ -185,14 +185,24 @@ function displayData(dataObj) {
         // Handle potential multiple links that needs to be added.
         if (linkData['ident'].constructor === Array) {
           for (i in linkData['ident']) {
-            var link = linkData['db'] + linkData['ident'][i];
-            var aTag = document.createElement('a');
-            var spacer = document.createElement('span');
-            spacer.textContent = " "
-            aTag.setAttribute('href', link);
-            aTag.textContent = linkData['ident'][i];
-            currentData.appendChild(aTag);
-            currentData.appendChild(spacer);
+            if (currentData.classList.contains('interpro')) {
+              var link = linkData['db'] + linkData['ident'][i].id;
+              var aTag = document.createElement('a');
+              var spacer = document.createElement('br');
+              aTag.setAttribute('href', link);
+              aTag.textContent = linkData['ident'][i].desc;
+              currentData.appendChild(aTag);
+              currentData.appendChild(spacer);
+            } else {
+              var link = linkData['db'] + linkData['ident'][i];
+              var aTag = document.createElement('a');
+              var spacer = document.createElement('span');
+              spacer.textContent = " "
+              aTag.setAttribute('href', link);
+              aTag.textContent = linkData['ident'][i];
+              currentData.appendChild(aTag);
+              currentData.appendChild(spacer);
+            }
           }
         } else {
           var link = linkData['db'] + linkData['ident'];
@@ -404,6 +414,7 @@ function parseGeneData(data) {
           'pfam': pfam,
           'pharmgkb': pharmgkb,
           'prosite': prosite,
+          'interpro': interpro,
           'uniprot-summary': uniprotSum
         });
       }).catch(function(error) {
@@ -430,6 +441,7 @@ function parseGeneData(data) {
           'pfam': pfam,
           'pharmgkb': pharmgkb,
           'prosite': prosite,
+          'interpro': interpro,
           'uniprot-summary': null
         });
       });
@@ -454,6 +466,7 @@ function parseGeneData(data) {
         'pfam': pfam,
         'pharmgkb': pharmgkb,
         'prosite': prosite,
+        'interpro': interpro,
         'uniprot-summary': null
       });
     }

@@ -22,7 +22,7 @@ function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 450,
-    height: 1250,
+    height: 1200,
     minWidth: 450,
     icon: path.join(__dirname, 'assets/icons/png/64x64.png')
   });
