@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
   });
 
+  // Species search input setup.
   $('.flexdatalist').flexdatalist({
     minLength: 1,
     searchIn: 'name',
@@ -55,6 +56,40 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
   $('.flexdatalist').on('change:flexdatalist', function() {
     species = $('.flexdatalist').flexdatalist('value');
+  });
+
+  // Used for header collapse.
+  $("#summary-div").on("hide.bs.collapse", function() {
+    $("#function-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Function'
+    );
+  });
+  $("#summary-div").on("show.bs.collapse", function() {
+    $("#function-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Function'
+    );
+  });
+
+  $("#basics").on("hide.bs.collapse", function() {
+    $("#basics-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Gene Basics'
+    );
+  });
+  $("#basics").on("show.bs.collapse", function() {
+    $("#basics-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Gene Basics'
+    );
+  });
+
+  $("#accessions").on("hide.bs.collapse", function() {
+    $("#accessions-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Accessions'
+    );
+  });
+  $("#accessions").on("show.bs.collapse", function() {
+    $("#accessions-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Accessions'
+    );
   });
 
   function hideTooltip(x) {

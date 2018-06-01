@@ -21,9 +21,6 @@
 </head>
 
 <body>
-    <div class="header">
-        <h2 name="genotifyheader">Genotify</h2>
-    </div>
     <div class="content flex-container">
         <div class="split-div">
             <div class="query-form">
@@ -68,9 +65,9 @@
             </div>
         </div>
         <hr class="flex-rule">
-        <h3 class="sect-header hidden">Gene Basics</h3>
+        <h3 class="sect-header" data-toggle="collapse" data-target="#info-div,#loc-div" id="basics-header"><span class="glyphicon glyphicon-collapse-down"></span>Gene Basics</h3>
         <div class="split-div basic-wrap-div" id="basics">
-            <div class="info-left" id="info-div">
+            <div class="info-left collapse" id="info-div">
                 <label class="hidden" for="gene-symbol" id="gene-symbol-label">
                     Symbol:
                 </label>
@@ -92,7 +89,7 @@
                 </label>
                 <div class="hidden text" id="other-names" disabled></div>
             </div>
-            <div class="info-right" id="loc-div">
+            <div class="info-right collapse" id="loc-div">
                 <label class="hidden" for="location" id="location-label">
                     Chromosomal Location:
                 </label>
@@ -116,8 +113,8 @@
             </div>
         </div>
         <hr class="flex-rule">
-        <h3 class="sect-header hidden">Function</h3>
-        <div id="summary-div">
+        <h3 class="sect-header" data-toggle="collapse" data-target="#summary-div" id="function-header"><span class="glyphicon glyphicon-collapse-down"></span>Function</h3>
+        <div id="summary-div" class="collapse">
             <label class="hidden" for="wikipedia" id="wikipedia-label">
                 Wikipedia:
             </label>
@@ -148,9 +145,9 @@
             <div class="hidden add-link text go" id="gocc" disabled></div>
         </div>
         <hr class="flex-rule">
-        <h3 class="sect-header hidden">Accessions</h3>
+        <h3 class="sect-header" data-toggle="collapse" data-target="#db-div,#db2-div" id="accessions-header"><span class="glyphicon glyphicon-collapse-down"></span>Accessions</h3>
         <div class="split-div basic-wrap-div" id="accessions">
-            <div class="info-left" id="db-div">
+            <div class="info-left collapse" id="db-div">
                 <label class="hidden" for="gene-id" id="gene-id-label">
                   Entrez ID:
                 </label>
@@ -168,7 +165,7 @@
                 </label>
                 <div class="hidden text add-link" id="vega" disabled></div>
             </div>
-            <div class="info-right" id="db2-div">
+            <div class="info-right collapse" id="db2-div">
                 <label class="hidden" for="uniprot" id="uniprot-label">
                     UniProtKB:
                 </label>

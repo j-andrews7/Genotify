@@ -72,6 +72,9 @@ label {
 
 .just-text {
   text-align: justify;
+  max-height: 150px;
+  overflow-y: scroll;
+  line-height: 1.2;
 }
 
 .flex-container {
@@ -149,8 +152,20 @@ label {
   display: none;
 }
 
+.glyphicon-collapse-down {
+  font-size: 14px;
+}
+
+.glyphicon-collapse-up {
+  font-size: 14px;
+}
+
 .sect-header {
   margin: 5px 5px 0;
+}
+
+.sect-header:hover {
+  text-decoration: underline;
 }
 
 .tooltip {
