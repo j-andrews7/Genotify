@@ -185,6 +185,8 @@ function displayData(dataObj) {
         // Handle potential multiple links that needs to be added.
         // And special cases like GO terms. Kind of messy.
         if (linkData['ident'].constructor === Array) {
+          // Used to potentially check for redundant GO terms.
+          var old = [];
           for (i in linkData['ident']) {
             if (currentData.classList.contains('interpro')) {
               var link = linkData['db'] + linkData['ident'][i].id;
@@ -192,10 +194,15 @@ function displayData(dataObj) {
               aTag.setAttribute('href', link);
               aTag.textContent = linkData['ident'][i].desc;
             } else if (currentData.classList.contains('go')) {
+              // Skip redundant GO terms.
+              if (old.includes(linkData['ident'][i].term)) {
+                continue;
+              }
               var link = linkData['db'] + linkData['ident'][i].id;
               var aTag = document.createElement('a');
               aTag.setAttribute('href', link);
               aTag.textContent = linkData['ident'][i].term;
+              old.push(linkData['ident'][i].term);
             } else {
               var link = linkData['db'] + linkData['ident'][i];
               var aTag = document.createElement('a');
