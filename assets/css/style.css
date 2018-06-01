@@ -26,6 +26,11 @@ label {
   margin-bottom: 2px;
 }
 
+.go {
+  max-height: 70px;
+  overflow-y: scroll;
+}
+
 .query-form {
   background-color: #bccdc7;
   margin: 0;

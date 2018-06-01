@@ -183,26 +183,28 @@ function displayData(dataObj) {
         }
         var linkData = dataObj[data];
         // Handle potential multiple links that needs to be added.
+        // And special cases like GO terms. Kind of messy.
         if (linkData['ident'].constructor === Array) {
           for (i in linkData['ident']) {
             if (currentData.classList.contains('interpro')) {
               var link = linkData['db'] + linkData['ident'][i].id;
               var aTag = document.createElement('a');
-              var spacer = document.createElement('br');
               aTag.setAttribute('href', link);
               aTag.textContent = linkData['ident'][i].desc;
-              currentData.appendChild(aTag);
-              currentData.appendChild(spacer);
+            } else if (currentData.classList.contains('go')) {
+              var link = linkData['db'] + linkData['ident'][i].id;
+              var aTag = document.createElement('a');
+              aTag.setAttribute('href', link);
+              aTag.textContent = linkData['ident'][i].term;
             } else {
               var link = linkData['db'] + linkData['ident'][i];
               var aTag = document.createElement('a');
-              var spacer = document.createElement('span');
-              spacer.textContent = " "
               aTag.setAttribute('href', link);
               aTag.textContent = linkData['ident'][i];
-              currentData.appendChild(aTag);
-              currentData.appendChild(spacer);
             }
+            var spacer = document.createElement('br');
+            currentData.appendChild(aTag);
+            currentData.appendChild(spacer);
           }
         } else {
           var link = linkData['db'] + linkData['ident'];
@@ -286,6 +288,30 @@ function parseGeneData(data) {
     var pharmgkb = null;
     var prosite = null;
     var interpro = null;
+    var gobp = null;
+    var gomf = null;
+    var gocc = null;
+
+    if (data.hasOwnProperty('go')) {
+      if (data.go.hasOwnProperty('BP')) {
+        gobp = {
+          db: 'https://www.ebi.ac.uk/QuickGO/term/',
+          ident: data.go.BP
+        }
+      };
+      if (data.go.hasOwnProperty('MF')) {
+        gomf = {
+          db: 'https://www.ebi.ac.uk/QuickGO/term/',
+          ident: data.go.MF
+        }
+      };
+      if (data.go.hasOwnProperty('CC')) {
+        gocc = {
+          db: 'https://www.ebi.ac.uk/QuickGO/term/',
+          ident: data.go.CC
+        }
+      };
+    }
 
     if (data.hasOwnProperty('HGNC')) {
       hgnc = {
@@ -415,6 +441,9 @@ function parseGeneData(data) {
           'pharmgkb': pharmgkb,
           'prosite': prosite,
           'interpro': interpro,
+          'gobp': gobp,
+          'gomf': gomf,
+          'gocc': gocc,
           'uniprot-summary': uniprotSum
         });
       }).catch(function(error) {
@@ -442,6 +471,9 @@ function parseGeneData(data) {
           'pharmgkb': pharmgkb,
           'prosite': prosite,
           'interpro': interpro,
+          'gobp': gobp,
+          'gomf': gomf,
+          'gocc': gocc,
           'uniprot-summary': null
         });
       });
@@ -467,6 +499,9 @@ function parseGeneData(data) {
         'pharmgkb': pharmgkb,
         'prosite': prosite,
         'interpro': interpro,
+        'gobp': gobp,
+        'gomf': gomf,
+        'gocc': gocc,
         'uniprot-summary': null
       });
     }

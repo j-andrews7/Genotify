@@ -118,6 +118,10 @@
         <hr class="flex-rule">
         <h3 class="sect-header hidden">Function</h3>
         <div id="summary-div">
+            <label class="hidden" for="wikipedia" id="wikipedia-label">
+                Wikipedia:
+            </label>
+            <div class="hidden text add-link" id="wikipedia" disabled></div>
             <label class="hidden" for="entrez-summary" id="entrez-summary-label">
                 Entrez Summary:
             </label>
@@ -130,10 +134,18 @@
                 Interpro Domains:
             </label>
             <div class="hidden text add-link interpro" id="interpro" disabled></div>
-            <label class="hidden" for="wikipedia" id="wikipedia-label">
-                Wikipedia:
+            <label class="hidden" for="gobp" id="gobp-label">
+                GO Biological Processes:
             </label>
-            <div class="hidden text add-link" id="wikipedia" disabled></div>
+            <div class="hidden add-link text go" id="gobp" disabled></div>
+            <label class="hidden" for="gomf" id="gomf-label">
+                GO Molecular Function:
+            </label>
+            <div class="hidden add-link text go" id="gomf" disabled></div>
+            <label class="hidden" for="gocc" id="gocc-label">
+                GO Cellular Component:
+            </label>
+            <div class="hidden add-link text go" id="gocc" disabled></div>
         </div>
         <hr class="flex-rule">
         <h3 class="sect-header hidden">Accessions</h3>
