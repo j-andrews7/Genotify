@@ -210,11 +210,15 @@ function displayData(dataObj) {
       currentLabel = document.getElementById(data + '-label');
       currentLabel.classList.remove('hidden');
 
-      // Add new/remove old links from appropriate divs.
+      // Add new/remove old links and linebreaks from appropriate divs.
       if (currentData.classList.contains('add-link')) {
         var oldLinks = currentData.getElementsByTagName('a');
+        var oldBreaks = currentData.getElementsByTagName('br');
         while (oldLinks.length > 0) {
           oldLinks[0].parentNode.removeChild(oldLinks[0]);
+        }
+        while (oldBreaks.length > 0) {
+          oldBreaks[0].parentNode.removeChild(oldBreaks[0]);
         }
         var linkData = dataObj[data];
         // Handle potential multiple links that needs to be added.
