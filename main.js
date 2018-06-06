@@ -51,6 +51,15 @@ function createWindow() {
   });
 
   createMenu();
+
+  // Opens all new windows in external browser.
+  let wc = mainWindow.webContents
+  wc.on('will-navigate', function(e, url) {
+    if (url != wc.getURL()) {
+      e.preventDefault()
+      electron.shell.openExternal(url)
+    }
+  })
 }
 
 // This method will be called when Electron has finished

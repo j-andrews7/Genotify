@@ -4,6 +4,8 @@ const clipboard = require('electron').clipboard;
 const {
   app
 } = require('electron').remote;
+//const expressionAtlasHeatmapHighcharts = require(
+//'expression-atlas-heatmap-highcharts');
 
 window.$ = window.jQuery = require('jquery');
 window.Bootstrap = require('bootstrap');
@@ -14,15 +16,6 @@ var xmlParser = new DOMParser();
 var species = [];
 
 var basepath = app.getAppPath();
-
-// Open all links in external browser
-let shell = require('electron').shell;
-document.addEventListener('click', function(event) {
-  if (event.target.tagName === 'A' && event.target.href.startsWith('http')) {
-    event.preventDefault();
-    shell.openExternal(event.target.href);
-  }
-});
 
 document.addEventListener('DOMContentLoaded', function(event) {
   retrieveSpeciesJSON();
@@ -178,7 +171,12 @@ function newQuery(term = null) {
           displayData(basics);
           displayHeadings();
           parseGeneData(topHit).then(function(topHit) {
-            displayData(topHit)
+            var expGene = topHit.ensembl.ident;
+            var expSpecies = speciesObj[topHit['tax-id']];
+            console.log(expGene);
+            console.log(expSpecies);
+            renderExpression(expGene, expSpecies);
+            displayData(topHit);
           });
         } else {
           var empty = {
@@ -190,6 +188,7 @@ function newQuery(term = null) {
           hideData(document.getElementById('info-div'));
           hideData(document.getElementById('loc-div'));
           hideData(document.getElementById('summary-div'));
+          hideData(document.getElementById('expression-div'));
           hideData(document.getElementById('species-div'));
           hideData(document.getElementById('db-div'));
           hideData(document.getElementById('db2-div'));
@@ -200,6 +199,16 @@ function newQuery(term = null) {
     .catch(function(err) {
       console.error('Fetch Query Error', err);
     });
+}
+
+function renderExpression(geneTarget, speciesTarget) {
+  expressionAtlasHeatmapHighcharts.render({
+    query: {
+      gene: geneTarget,
+      species: speciesTarget,
+    },
+    target: 'highchartsContainer'
+  });
 }
 
 function displayData(dataObj) {

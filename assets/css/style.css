@@ -20,7 +20,11 @@ p {
   margin: 0;
 }
 
-label {
+.row {
+  margin: 0;
+}
+
+.my-label {
   display: inline-block;
   padding-bottom: 2px;
   margin-bottom: 2px;
@@ -118,6 +122,13 @@ label {
 #summary-div {
   background-color: #bccdc7;
   margin: 0;
+  flex: 4;
+  padding: 10px;
+}
+
+#highchartsContainer {
+  background-color: #fff;
+  margin: 10px;
   flex: 4;
   padding: 10px;
 }
