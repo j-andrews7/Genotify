@@ -180,11 +180,6 @@ function newQuery(term = null) {
           displayData(basics);
           displayHeadings();
           parseGeneData(topHit).then(function(topHit) {
-            var expGene = topHit.ensembl.ident;
-            var expSpecies = speciesObj[topHit['tax-id']];
-            console.log(expGene);
-            console.log(expSpecies);
-            renderExpression(expGene, expSpecies);
             displayData(topHit);
           });
         } else {
@@ -210,11 +205,14 @@ function newQuery(term = null) {
     });
 }
 
-function renderExpression(geneTarget, speciesTarget) {
+function renderExpression(data) {
+  if (data[0] == null || data[1] == null) {
+    return;
+  };
   expressionAtlasHeatmapHighcharts.render({
     query: {
-      gene: geneTarget,
-      species: speciesTarget,
+      gene: data[0],
+      species: data[1],
     },
     target: 'highchartsContainer'
   });
@@ -223,6 +221,7 @@ function renderExpression(geneTarget, speciesTarget) {
 function displayData(dataObj) {
   for (data in dataObj) {
     if (dataObj.hasOwnProperty(data) && dataObj[data]) {
+      // TODO add check for expression here so it is properly revealed/hidden and call render function
       currentData = document.getElementById(data);
       currentData.classList.remove('hidden');
       currentLabel = document.getElementById(data + '-label');
@@ -349,6 +348,7 @@ function parseGeneData(data) {
     var pfam = null;
     var uniprot = null;
     var pharmgkb = null;
+    var expression: null;
     var prosite = null;
     var interpro = null;
     var gobp = null;
@@ -486,6 +486,7 @@ function parseGeneData(data) {
           'mm9gen-pos': mm9coords,
           'tax-id': data.taxid,
           'species': speciesObj[data.taxid],
+          'expression': [ensembl, speciesObj[data.taxid]],
           'other-names': names,
           'gene-type': data.type_of_gene,
           'wikipedia': wiki,
@@ -517,6 +518,7 @@ function parseGeneData(data) {
           'species': speciesObj[data.taxid],
           'other-names': names,
           'gene-type': data.type_of_gene,
+          'expression': [ensembl, speciesObj[data.taxid]],
           'wikipedia': wiki,
           'omim': omim,
           'ensembl': ensembl,
@@ -542,6 +544,7 @@ function parseGeneData(data) {
         'mm9gen-pos': mm9coords,
         'tax-id': data.taxid,
         'species': speciesObj[data.taxid],
+        'expression': [ensembl, speciesObj[data.taxid]],
         'other-names': names,
         'gene-type': data.type_of_gene,
         'wikipedia': wiki,
