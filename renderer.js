@@ -38,6 +38,15 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
   });
 
+  // Help tooltip functionality.
+  $('[data-toggle="tooltip"]').tooltip({
+    placement: 'top',
+    delay: {
+      show: 300,
+      hide: 300
+    }
+  });
+
   // Species search input setup.
   $('.flexdatalist').flexdatalist({
     minLength: 1,
@@ -337,7 +346,6 @@ function parseGeneData(data) {
     var wiki = null;
     var omim = null;
     var ensembl = null;
-    var vega = null;
     var pfam = null;
     var uniprot = null;
     var pharmgkb = null;
@@ -393,13 +401,6 @@ function parseGeneData(data) {
       ensembl = {
         db: 'https://www.ensembl.org/Gene/Summary?g=',
         ident: data.ensembl['gene']
-      };
-    }
-
-    if (data.hasOwnProperty('Vega')) {
-      vega = {
-        db: 'http://vega.archive.ensembl.org/Gene/Summary?g=',
-        ident: data.Vega
       };
     }
 
@@ -490,7 +491,6 @@ function parseGeneData(data) {
           'wikipedia': wiki,
           'omim': omim,
           'ensembl': ensembl,
-          'vega': vega,
           'uniprot': uniprot,
           'pfam': pfam,
           'pharmgkb': pharmgkb,
@@ -520,7 +520,6 @@ function parseGeneData(data) {
           'wikipedia': wiki,
           'omim': omim,
           'ensembl': ensembl,
-          'vega': vega,
           'uniprot': uniprot,
           'pfam': pfam,
           'pharmgkb': pharmgkb,
@@ -548,7 +547,6 @@ function parseGeneData(data) {
         'wikipedia': wiki,
         'omim': omim,
         'ensembl': ensembl,
-        'vega': vega,
         'uniprot': uniprot,
         'pfam': pfam,
         'pharmgkb': pharmgkb,
