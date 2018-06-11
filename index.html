@@ -157,6 +157,22 @@
           <div id="highchartsContainer"></div>
         </div>
         <hr class="flex-rule">
+        <h3 class="sect-header" data-toggle="collapse" data-target="#diseases" id="diseases-header">
+          <span class="glyphicon glyphicon-collapse-down"></span>Disease Associations</h3>
+        <hr class="flex-rule">
+        <div class="collapse hidden" id="diseases">
+          <table class="table table-bordered table-hover table-condensed" id="disease-table">
+            <thead class="thead-light">
+              <tr>
+                <th>Disease Name</th>
+                <th>Disease ID</th>
+                <th>PubMed/OMIM IDs</th>
+              </tr>
+            </thead>
+            <tbody id="diseasebody">
+            </tbody>
+          </table>
+        </div>
         <h3 class="sect-header" data-toggle="collapse" data-target="#db-div,#db2-div" id="accessions-header">
           <span class="glyphicon glyphicon-collapse-down"></span>Accessions</h3>
         <div class="split-div" id="accessions">

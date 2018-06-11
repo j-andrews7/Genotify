@@ -103,6 +103,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
     );
   });
 
+  $("#diseases").on("hide.bs.collapse", function() {
+    $("#diseases-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Disease Associations'
+    );
+  });
+  $("#diseases").on("show.bs.collapse", function() {
+    $("#diseases-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Disease Associations'
+    );
+  });
+
   function hideTooltip(x) {
     setTimeout(function() {
       x.tooltip('hide');
@@ -176,13 +187,6 @@ function newQuery(term = null) {
           topHit = data.hits[0];
 
           var basics = {
-            'gene-symbol': topHit.symbol,
-            'gene-name': topHit.name,
-            'gene-id': {
-              db: 'https://www.ncbi.nlm.nih.gov/gene/',
-              ident: topHit._id
-            },
-            'match-score': topHit._score,
             'hits': data.hits.length
           };
 
@@ -202,6 +206,7 @@ function newQuery(term = null) {
           hideData(document.getElementById('loc-div'));
           hideData(document.getElementById('summary-div'));
           hideData(document.getElementById('expression'));
+          hideData(document.getElementById('diseases'));
           hideData(document.getElementById('species-div'));
           hideData(document.getElementById('db-div'));
           hideData(document.getElementById('db2-div'));
@@ -236,6 +241,14 @@ function displayData(dataObj) {
         currentData.classList.remove('hidden');
         renderExpression(dataObj[data]);
         continue;
+      } else if (currentData.id === "species" && dataObj[data].toLowerCase() ===
+        "homo sapiens") {
+        getCTDAssociations(dataObj['gene-id'].ident);
+        diseaseData = document.getElementById('diseases');
+        diseaseData.classList.remove('hidden');
+        currentData.classList.remove('hidden');
+        currentLabel = document.getElementById(data + '-label');
+        currentLabel.classList.remove('hidden');
       } else {
         currentData.classList.remove('hidden');
         currentLabel = document.getElementById(data + '-label');
@@ -318,11 +331,12 @@ function displayData(dataObj) {
 }
 
 function hideData(divObj) {
-  // Hide all data in child nodes of givin div element.
+  // Hide all data in child nodes of given div element.
   var labels = divObj.querySelectorAll('label');
   var links = divObj.querySelectorAll('a');
   var i;
   var textDivs = divObj.getElementsByClassName('text');
+  $('table tbody tr').remove();
 
   for (i = 0; i < labels.length; i++) {
     var childData = labels[i];
@@ -520,7 +534,14 @@ function parseGeneData(data) {
           'gobp': gobp,
           'gomf': gomf,
           'gocc': gocc,
-          'uniprot-summary': uniprotSum
+          'uniprot-summary': uniprotSum,
+          'gene-symbol': data.symbol,
+          'gene-name': data.name,
+          'gene-id': {
+            db: 'https://www.ncbi.nlm.nih.gov/gene/',
+            ident: data._id
+          },
+          'match-score': data._score
         });
       }).catch(function(error) {
         console.error(error);
@@ -550,7 +571,14 @@ function parseGeneData(data) {
           'gobp': gobp,
           'gomf': gomf,
           'gocc': gocc,
-          'uniprot-summary': null
+          'uniprot-summary': null,
+          'gene-symbol': data.symbol,
+          'gene-name': data.name,
+          'gene-id': {
+            db: 'https://www.ncbi.nlm.nih.gov/gene/',
+            ident: data._id
+          },
+          'match-score': data._score
         });
       });
     } else {
@@ -578,7 +606,14 @@ function parseGeneData(data) {
         'gobp': gobp,
         'gomf': gomf,
         'gocc': gocc,
-        'uniprot-summary': null
+        'uniprot-summary': null,
+        'gene-symbol': data.symbol,
+        'gene-name': data.name,
+        'gene-id': {
+          db: 'https://www.ncbi.nlm.nih.gov/gene/',
+          ident: data._id
+        },
+        'match-score': data._score
       });
     }
   });
@@ -617,6 +652,62 @@ function getUniprotSummary(id) {
       reject();
     });
   });
+}
+
+function getCTDAssociations(id) {
+  var queryUrl =
+    'http://ctdbase.org/tools/batchQuery.go?inputType=gene&inputTerms=' + id +
+    '&report=diseases_curated&format=json';
+
+  fetch(queryUrl).then(function(response) {
+      if (response.status !== 200) {
+        console.log('CTD Fetch Query Error. Status Code: ' + response.status);
+        return;
+      }
+      response.json().then(function(data) {
+        // Remove all old rows.
+        $('#diseasebody').empty();
+        var table = document.getElementById('diseasebody');
+        if (data[0].hasOwnProperty('DiseaseName')) {
+          for (var x in data) {
+            x = data[x];
+            var row = table.insertRow(0);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+
+            cell1.innerHTML = x.DiseaseName;
+            cell2.innerHTML = '<a href=https://id.nlm.nih.gov/mesh/' + x.DiseaseID
+              .split(':')[1] + '.html>' + x.DiseaseID + '</a>';
+            var linkList = [];
+            if (x.hasOwnProperty('PubMedIDs')) {
+              var pubs = x.PubMedIDs.split('|');
+              for (i in pubs) {
+                var newLink =
+                  '<a href=https://www.ncbi.nlm.nih.gov/pubmed/' + pubs[i] +
+                  '>' +
+                  pubs[i] + '</a>';
+                linkList.push(newLink);
+              }
+            } else {
+              var pubs = x.OmimIDs.split('|');
+              for (i in pubs) {
+                var newLink =
+                  '<a href=https://www.omim.org/entry/' + pubs[i] +
+                  '>' +
+                  pubs[i] + '</a>';
+                linkList.push(newLink);
+              }
+            }
+            cell3.innerHTML = linkList.join(' ');
+
+          }
+        }
+      });
+    })
+    .catch(function(err) {
+      console.error('Fetch Query Error', err);
+    });
 }
 
 // Display and hide section headings as appropriate.
