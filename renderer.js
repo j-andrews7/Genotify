@@ -4,8 +4,6 @@ const clipboard = require('electron').clipboard;
 const {
   app
 } = require('electron').remote;
-//const expressionAtlasHeatmapHighcharts = require(
-//'expression-atlas-heatmap-highcharts');
 
 window.$ = window.jQuery = require('jquery');
 window.Bootstrap = require('bootstrap');
@@ -91,6 +89,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
   $("#accessions").on("show.bs.collapse", function() {
     $("#accessions-header").html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Accessions'
+    );
+  });
+
+  $("#expression").on("hide.bs.collapse", function() {
+    $("#expression-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Expression'
+    );
+  });
+  $("#expression").on("show.bs.collapse", function() {
+    $("#expression-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Expression'
     );
   });
 
@@ -192,7 +201,7 @@ function newQuery(term = null) {
           hideData(document.getElementById('info-div'));
           hideData(document.getElementById('loc-div'));
           hideData(document.getElementById('summary-div'));
-          hideData(document.getElementById('expression-div'));
+          hideData(document.getElementById('expression'));
           hideData(document.getElementById('species-div'));
           hideData(document.getElementById('db-div'));
           hideData(document.getElementById('db2-div'));
@@ -206,7 +215,7 @@ function newQuery(term = null) {
 }
 
 function renderExpression(data) {
-  if (data[0] == null || data[1] == null) {
+  if (data[0] === null || data[1] === null) {
     return;
   };
   expressionAtlasHeatmapHighcharts.render({
@@ -221,11 +230,17 @@ function renderExpression(data) {
 function displayData(dataObj) {
   for (data in dataObj) {
     if (dataObj.hasOwnProperty(data) && dataObj[data]) {
-      // TODO add check for expression here so it is properly revealed/hidden and call render function
+      // Check/call expression widget rendering.
       currentData = document.getElementById(data);
-      currentData.classList.remove('hidden');
-      currentLabel = document.getElementById(data + '-label');
-      currentLabel.classList.remove('hidden');
+      if (currentData.id === "expression") {
+        currentData.classList.remove('hidden');
+        renderExpression(dataObj[data]);
+        continue;
+      } else {
+        currentData.classList.remove('hidden');
+        currentLabel = document.getElementById(data + '-label');
+        currentLabel.classList.remove('hidden');
+      }
 
       // Add new/remove old links and linebreaks from appropriate divs.
       if (currentData.classList.contains('add-link')) {
@@ -326,6 +341,11 @@ function hideData(divObj) {
     }
   }
 
+  // Handle the expression data.
+  if (divObj.id === "expression") {
+    divObj.classList.add('hidden');
+  }
+
   // Delete any links if necessary.
   for (i = 0; i < links.length; i++) {
     var childData = links[i];
@@ -348,7 +368,7 @@ function parseGeneData(data) {
     var pfam = null;
     var uniprot = null;
     var pharmgkb = null;
-    var expression: null;
+    var expression = null;
     var prosite = null;
     var interpro = null;
     var gobp = null;
@@ -486,7 +506,7 @@ function parseGeneData(data) {
           'mm9gen-pos': mm9coords,
           'tax-id': data.taxid,
           'species': speciesObj[data.taxid],
-          'expression': [ensembl, speciesObj[data.taxid]],
+          'expression': [ensembl.ident, speciesObj[data.taxid]],
           'other-names': names,
           'gene-type': data.type_of_gene,
           'wikipedia': wiki,
@@ -518,7 +538,7 @@ function parseGeneData(data) {
           'species': speciesObj[data.taxid],
           'other-names': names,
           'gene-type': data.type_of_gene,
-          'expression': [ensembl, speciesObj[data.taxid]],
+          'expression': [ensembl.ident, speciesObj[data.taxid]],
           'wikipedia': wiki,
           'omim': omim,
           'ensembl': ensembl,
@@ -544,7 +564,7 @@ function parseGeneData(data) {
         'mm9gen-pos': mm9coords,
         'tax-id': data.taxid,
         'species': speciesObj[data.taxid],
-        'expression': [ensembl, speciesObj[data.taxid]],
+        'expression': [ensembl.ident, speciesObj[data.taxid]],
         'other-names': names,
         'gene-type': data.type_of_gene,
         'wikipedia': wiki,

@@ -71,8 +71,8 @@
             </div>
         </div>
         <hr class="flex-rule">
-        <h3 class="sect-header" data-toggle="collapse" data-target="#basics,#info-div,#loc-div" id="basics-header"><span class="glyphicon glyphicon-collapse-down"></span>Overview</h3>
-        <div class="split-div collapse" id="basics">
+        <h3 class="sect-header" data-toggle="collapse" data-target="#info-div,#loc-div" id="basics-header"><span class="glyphicon glyphicon-collapse-down"></span>Overview</h3>
+        <div class="split-div" id="basics">
             <div class="info-left collapse" id="info-div">
                 <label class="hidden my-label" for="gene-symbol" id="gene-symbol-label">
                     Official Symbol
@@ -151,9 +151,9 @@
             <div class="hidden add-link text go" id="gocc" disabled></div>
         </div>
         <hr class="flex-rule">
-        <h3 class="sect-header" data-toggle="collapse" data-target="#expression-div" id="expression-header">
+        <h3 class="sect-header" data-toggle="collapse" data-target="#expression" id="expression-header">
           <span class="glyphicon glyphicon-collapse-down"></span>Expression</h3>
-        <div id="expression-div" class="collapse hidden">
+        <div id="expression" class="collapse hidden">
           <div id="highchartsContainer"></div>
         </div>
         <hr class="flex-rule">
@@ -178,6 +178,7 @@
                     <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                     data-original-title="A comprehensive knowledgebase for proteins, providing sequence information and curated functional summaries."></span>
                 </label>
+                <div class="hidden text add-link" id="uniprot" disabled></div>
                 <label class="hidden my-label" for="omim" id="omim-label">
                     OMIM
                     <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -187,7 +188,6 @@
                 <div class="hidden text add-link" id="omim" disabled></div>
             </div>
             <div class="info-right collapse" id="db2-div">
-                <div class="hidden text add-link" id="uniprot" disabled></div>
                 <label class="hidden my-label" for="pharmgkb" id="pharmgkb-label">
                     PharmGKB
                     <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -210,7 +210,7 @@
         </div>
     </div>
     <div class="footer">
-        <p>&copy; 2018 Payton Lab - Powered by <a href="http://mygene.info">MyGene.info</a>, <a href="https://www.ebi.ac.uk/gxa/home">EBI Expression Atlas</a>, and <a href="https://www.uniprot.org/">UniProtKB</a></p>
+        <p>&copy; 2018 Payton Lab - Powered by <a href="http://mygene.info">MyGene.info</a>, <a href="https://www.ebi.ac.uk/gxa/home">EBI Expression Atlas</a>, and <a href="https://www.uniprot.org/">UniProtKB.</a></p>
     </div>
 </body>
 

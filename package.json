@@ -13,7 +13,7 @@
     "linpack": "electron-packager . --platform=linux --out ./release-builds --arch=x64 --overwrite --asar --icon=./assets/icons/png/1024x1024.png --appCopyright=\"Copyright © 2018 Jared Andrews. All rights reserved.\""
   },
   "devDependencies": {
-    "electron": "~1.8.3"
+    "electron": "~2.0.2"
   },
   "dependencies": {
     "jquery": "3.3.1",
