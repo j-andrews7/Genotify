@@ -5,6 +5,7 @@
  - Added ability to limit to multiple species rather than just one.
  - Added small table so top 5 hits are easily navigable rather than showing the top hit only.
  - Added an interactive expression data widget from the EBI Expression Atlas.
+ - Added concise, curated descriptions from WormBase where available.
  - Added tooltips for some of the less common database accessions.
  - Added GO function and Interpro domains fields.
  - Added UCSC browser links for mouse and human genomic positions (mm9/hg19).

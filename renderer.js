@@ -385,6 +385,7 @@ function parseGeneData(data) {
     var expression = null;
     var prosite = null;
     var interpro = null;
+    var wombaseSum = null;
     var gobp = null;
     var gomf = null;
     var gocc = null;
@@ -500,6 +501,14 @@ function parseGeneData(data) {
       names = data.other_names;
     } else if (data.hasOwnProperty('other_names')) {
       names = data.other_names.join(', ');
+    }
+
+    // TODO fix this nightmare. How to deal with multiple promises that are not dependent on each other, but they need to result in a single resolution?
+    if (data.hasOwnProperty('WormBase')) {
+      getWormbaseSummary(data.WormBase).then(function(
+        wormbaseSum) {
+
+      })
     }
 
     if (data.hasOwnProperty('uniprot') && data.uniprot['Swiss-Prot'] !==
@@ -649,6 +658,31 @@ function getUniprotSummary(id) {
       })
     }).catch(function(err) {
       console.error('Fetch Uniprot Error', err);
+      reject();
+    });
+  });
+}
+
+function getWormbaseSummary(id) {
+  return new Promise(function(resolve, reject) {
+    if (!id) {
+      reject();
+    }
+    var summary;
+    fetch('http://rest.wormbase.org/rest/field/gene/' + id +
+      '/concise_description').then(function(
+      response) {
+      if (response.status !== 200) {
+        console.log('Looks like there was a problem. Status Code: ' +
+          response.status);
+        reject();
+      }
+      response.json().then(function(data) {
+        summary = data.concise_description.data.text
+        resolve(summary);
+      })
+    }).catch(function(err) {
+      console.error('Fetch Wormbase Error', err);
       reject();
     });
   });
