@@ -196,6 +196,8 @@ function newQuery(term = null) {
             displayData(topHit);
           });
         } else {
+          // Empty hits list.
+          $('#hitbody').empty();
           var empty = {
             'hits': 'No hits',
             'match-score': 0
@@ -207,6 +209,7 @@ function newQuery(term = null) {
           hideData(document.getElementById('summary-div'));
           hideData(document.getElementById('expression'));
           hideData(document.getElementById('diseases'));
+          hideData(document.getElementById('hit-table'));
           hideData(document.getElementById('species-div'));
           hideData(document.getElementById('db-div'));
           hideData(document.getElementById('db2-div'));
@@ -217,6 +220,15 @@ function newQuery(term = null) {
     .catch(function(err) {
       console.error('Fetch Query Error', err);
     });
+}
+
+function displayHits(hitsList) {
+  var hitTable = document.getElementById('hit-table');
+  hitTable.classList.remove('hidden');
+  for (i in data.hits) {
+    var hit = data.hits[i];
+
+  }
 }
 
 function renderExpression(data) {
@@ -685,7 +697,7 @@ function getCTDAssociations(id) {
         if (data[0].hasOwnProperty('DiseaseName')) {
           for (var x in data) {
             x = data[x];
-            var row = table.insertRow(0);
+            var row = table.insertRow(-1);
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
             var cell3 = row.insertCell(2);

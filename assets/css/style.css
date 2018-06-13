@@ -125,6 +125,10 @@ p {
   margin: 0;
 }
 
+.big {
+  font-size: 15pt;
+}
+
 #summary-div {
   background-color: #bccdc7;
   margin: 0;
