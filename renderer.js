@@ -225,7 +225,7 @@ function renderExpression(data) {
   };
   expressionAtlasHeatmapHighcharts.render({
     query: {
-      gene: data[0],
+      gene: data[0].ident,
       species: data[1],
     },
     target: 'highchartsContainer'
@@ -249,6 +249,9 @@ function displayData(dataObj) {
         currentData.classList.remove('hidden');
         currentLabel = document.getElementById(data + '-label');
         currentLabel.classList.remove('hidden');
+      } else if (currentData.id === "species" && dataObj[data].toLowerCase() !==
+        "homo sapiens") {
+        $('#diseasebody').empty();
       } else {
         currentData.classList.remove('hidden');
         currentLabel = document.getElementById(data + '-label');
@@ -298,11 +301,19 @@ function displayData(dataObj) {
             currentData.appendChild(spacer);
           }
         } else {
-          var link = linkData['db'] + linkData['ident'];
-          var aTag = document.createElement('a');
-          aTag.setAttribute('href', link);
-          aTag.textContent = linkData['ident'];
-          currentData.appendChild(aTag);
+          if (currentData.classList.contains('go')) {
+            var link = linkData['db'] + linkData['ident'].id;
+            var aTag = document.createElement('a');
+            aTag.setAttribute('href', link);
+            aTag.textContent = linkData['ident'].term;
+            currentData.appendChild(aTag);
+          } else {
+            var link = linkData['db'] + linkData['ident'];
+            var aTag = document.createElement('a');
+            aTag.setAttribute('href', link);
+            aTag.textContent = linkData['ident'];
+            currentData.appendChild(aTag);
+          }
         }
       } else {
         currentData.textContent = dataObj[data];
@@ -385,7 +396,7 @@ function parseGeneData(data) {
     var expression = null;
     var prosite = null;
     var interpro = null;
-    var wombaseSum = null;
+    var wormbaseSum = null;
     var gobp = null;
     var gomf = null;
     var gocc = null;
@@ -505,10 +516,7 @@ function parseGeneData(data) {
 
     // TODO fix this nightmare. How to deal with multiple promises that are not dependent on each other, but they need to result in a single resolution?
     if (data.hasOwnProperty('WormBase')) {
-      getWormbaseSummary(data.WormBase).then(function(
-        wormbaseSum) {
-
-      })
+      wormbaseSum = getWormbaseSummary(data.WormBase);
     }
 
     if (data.hasOwnProperty('uniprot') && data.uniprot['Swiss-Prot'] !==
@@ -517,8 +525,14 @@ function parseGeneData(data) {
         db: 'http://www.uniprot.org/uniprot/',
         ident: data.uniprot['Swiss-Prot']
       };
-      getUniprotSummary(data.uniprot['Swiss-Prot']).then(function(
-        uniprotSum) {
+      uniprotSum = getUniprotSummary(data.uniprot['Swiss-Prot']);
+    }
+
+    if (data.hasOwnProperty('WormBase') || data.hasOwnProperty('uniprot')) {
+      Promise.all([wormbaseSum, uniprotSum]).then(function(values) {
+        wormbaseSum = values[0];
+        uniprotSum = values[1];
+        // Resolve original promise.
         resolve({
           'entrez-summary': data.summary,
           'alias': aliases,
@@ -529,7 +543,7 @@ function parseGeneData(data) {
           'mm9gen-pos': mm9coords,
           'tax-id': data.taxid,
           'species': speciesObj[data.taxid],
-          'expression': [ensembl.ident, speciesObj[data.taxid]],
+          'expression': [ensembl, speciesObj[data.taxid]],
           'other-names': names,
           'gene-type': data.type_of_gene,
           'wikipedia': wiki,
@@ -544,6 +558,7 @@ function parseGeneData(data) {
           'gomf': gomf,
           'gocc': gocc,
           'uniprot-summary': uniprotSum,
+          'wormbase-summary': wormbaseSum,
           'gene-symbol': data.symbol,
           'gene-name': data.name,
           'gene-id': {
@@ -551,46 +566,10 @@ function parseGeneData(data) {
             ident: data._id
           },
           'match-score': data._score
-        });
-      }).catch(function(error) {
-        console.error(error);
-
-        // Resolve without the uniprot summary if we can't get it
-        resolve({
-          'entrez-summary': data.summary,
-          'alias': aliases,
-          'hgnc-id': hgnc,
-          'location': data.map_location,
-          'gen-pos': coords,
-          '19gen-pos': hg19coords,
-          'mm9gen-pos': mm9coords,
-          'tax-id': data.taxid,
-          'species': speciesObj[data.taxid],
-          'other-names': names,
-          'gene-type': data.type_of_gene,
-          'expression': [ensembl.ident, speciesObj[data.taxid]],
-          'wikipedia': wiki,
-          'omim': omim,
-          'ensembl': ensembl,
-          'uniprot': uniprot,
-          'pfam': pfam,
-          'pharmgkb': pharmgkb,
-          'prosite': prosite,
-          'interpro': interpro,
-          'gobp': gobp,
-          'gomf': gomf,
-          'gocc': gocc,
-          'uniprot-summary': null,
-          'gene-symbol': data.symbol,
-          'gene-name': data.name,
-          'gene-id': {
-            db: 'https://www.ncbi.nlm.nih.gov/gene/',
-            ident: data._id
-          },
-          'match-score': data._score
-        });
+        })
       });
     } else {
+      // Resolve original promise.
       resolve({
         'entrez-summary': data.summary,
         'alias': aliases,
@@ -601,7 +580,7 @@ function parseGeneData(data) {
         'mm9gen-pos': mm9coords,
         'tax-id': data.taxid,
         'species': speciesObj[data.taxid],
-        'expression': [ensembl.ident, speciesObj[data.taxid]],
+        'expression': [ensembl, speciesObj[data.taxid]],
         'other-names': names,
         'gene-type': data.type_of_gene,
         'wikipedia': wiki,
@@ -615,7 +594,8 @@ function parseGeneData(data) {
         'gobp': gobp,
         'gomf': gomf,
         'gocc': gocc,
-        'uniprot-summary': null,
+        'uniprot-summary': uniprotSum,
+        'wormbase-summary': wormbaseSum,
         'gene-symbol': data.symbol,
         'gene-name': data.name,
         'gene-id': {
@@ -623,11 +603,11 @@ function parseGeneData(data) {
           ident: data._id
         },
         'match-score': data._score
-      });
+      })
     }
   });
+};
 
-}
 
 function getUniprotSummary(id) {
   return new Promise(function(resolve, reject) {
