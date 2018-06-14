@@ -113,9 +113,9 @@ p {
 }
 
 #diseases {
-  height: 200px;
-  overflow-y: auto;
-  padding: 0 5px;
+  padding: 0 10px;
+  margin: 0;
+  width: 100%;
 }
 
 .split-div {
@@ -125,8 +125,25 @@ p {
   margin: 0;
 }
 
-.big {
-  font-size: 15pt;
+.table {
+  width: 100%;
+}
+
+.flex-me {
+  flex: 4;
+  margin: 0;
+  width: 100%;
+}
+
+#hits-div {
+  display: flex;
+  background-color: #bccdc7;
+  padding: 10px;
+  margin: 0;
+}
+
+thead {
+  background-color: #a1a2a3;
 }
 
 #summary-div {

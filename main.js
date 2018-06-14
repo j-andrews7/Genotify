@@ -21,7 +21,7 @@ app.setName('Genotify');
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 450,
+    width: 560,
     height: 1200,
     minWidth: 450,
     icon: path.join(__dirname, 'assets/icons/png/64x64.png')

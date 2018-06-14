@@ -6,12 +6,15 @@ const {
 } = require('electron').remote;
 
 window.$ = window.jQuery = require('jquery');
+require('datatables.net')(window, $);
 window.Bootstrap = require('bootstrap');
 require('./assets/js/jquery.flexdatalist.min.js');
 
 var speciesObj = null;
 var xmlParser = new DOMParser();
 var species = [];
+var hitsTable;
+var diseaseTable;
 
 var basepath = app.getAppPath();
 
@@ -43,6 +46,38 @@ document.addEventListener('DOMContentLoaded', function(event) {
       show: 300,
       hide: 300
     }
+  });
+
+  // Table initializations.
+  hitsTable = $('#hits-table').DataTable({
+    scrollY: '200px',
+    scrollCollapse: true,
+    paging: false,
+    columns: [{
+      title: 'Symbol'
+    }, {
+      title: 'ID'
+    }, {
+      title: 'Species'
+    }, {
+      title: 'Score'
+    }],
+    order: [
+      [3, 'desc']
+    ]
+  });
+
+  diseaseTable = $('#disease-table').DataTable({
+    scrollY: '200px',
+    scrollCollapse: true,
+    paging: false,
+    columns: [{
+      title: "Disease"
+    }, {
+      title: "Disease ID"
+    }, {
+      title: "PubMed/OMIM IDs"
+    }]
   });
 
   // Species search input setup.
@@ -191,6 +226,7 @@ function newQuery(term = null) {
           };
 
           displayData(basics);
+          displayHits(data);
           displayHeadings();
           parseGeneData(topHit).then(function(topHit) {
             displayData(topHit);
@@ -208,8 +244,8 @@ function newQuery(term = null) {
           hideData(document.getElementById('loc-div'));
           hideData(document.getElementById('summary-div'));
           hideData(document.getElementById('expression'));
-          hideData(document.getElementById('diseases'));
-          hideData(document.getElementById('hit-table'));
+          //hideData(document.getElementById('diseases'));
+          //hideData(document.getElementById('hits-div'));
           hideData(document.getElementById('species-div'));
           hideData(document.getElementById('db-div'));
           hideData(document.getElementById('db2-div'));
@@ -223,12 +259,21 @@ function newQuery(term = null) {
 }
 
 function displayHits(hitsList) {
-  var hitTable = document.getElementById('hit-table');
-  hitTable.classList.remove('hidden');
-  for (i in data.hits) {
-    var hit = data.hits[i];
-
+  var dataSet = [];
+  hitsTable.clear();
+  for (i in hitsList.hits) {
+    var hit = hitsList.hits[i];
+    dataSet.push([
+      hit.symbol,
+      hit._id,
+      speciesObj[hit.taxid],
+      hit._score
+    ]);
   }
+  hitsTable.rows.add(
+    dataSet
+  ).draw();
+  console.log(dataSet);
 }
 
 function renderExpression(data) {
@@ -359,7 +404,7 @@ function hideData(divObj) {
   var links = divObj.querySelectorAll('a');
   var i;
   var textDivs = divObj.getElementsByClassName('text');
-  $('table tbody tr').remove();
+  $('#disease-table').clear().draw();
 
   for (i = 0; i < labels.length; i++) {
     var childData = labels[i];
@@ -639,7 +684,8 @@ function getUniprotSummary(id) {
       }
 
       response.text().then(function(data) {
-        var parsedXML = xmlParser.parseFromString(data, 'text/xml');
+        var parsedXML = xmlParser.parseFromString(data,
+          'text/xml');
         var comments = parsedXML.querySelectorAll(
           'comment[type="function"]');
 
@@ -691,26 +737,22 @@ function getCTDAssociations(id) {
         return;
       }
       response.json().then(function(data) {
-        // Remove all old rows.
-        $('#diseasebody').empty();
-        var table = document.getElementById('diseasebody');
+        diseaseTable.clear().draw();
         if (data[0].hasOwnProperty('DiseaseName')) {
+          var diseaseList = [];
           for (var x in data) {
             x = data[x];
-            var row = table.insertRow(-1);
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-
-            cell1.innerHTML = x.DiseaseName;
-            cell2.innerHTML = '<a href=https://id.nlm.nih.gov/mesh/' + x.DiseaseID
+            var name = x.DiseaseName;
+            var id = '<a href=https://id.nlm.nih.gov/mesh/' +
+              x.DiseaseID
               .split(':')[1] + '.html>' + x.DiseaseID + '</a>';
             var linkList = [];
             if (x.hasOwnProperty('PubMedIDs')) {
               var pubs = x.PubMedIDs.split('|');
               for (i in pubs) {
                 var newLink =
-                  '<a href=https://www.ncbi.nlm.nih.gov/pubmed/' + pubs[i] +
+                  '<a href=https://www.ncbi.nlm.nih.gov/pubmed/' + pubs[
+                    i] +
                   '>' +
                   pubs[i] + '</a>';
                 linkList.push(newLink);
@@ -725,9 +767,13 @@ function getCTDAssociations(id) {
                 linkList.push(newLink);
               }
             }
-            cell3.innerHTML = linkList.join(' ');
-
+            var refs = linkList.join(' ');
+            diseaseList.push([name, id, refs])
           }
+          console.log(diseaseList);
+          diseaseTable.rows.add(
+            diseaseList
+          ).draw();
         }
       });
     })

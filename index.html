@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css"/>
     <link rel="stylesheet" href="./assets/css/jquery.flexdatalist.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.17/css/jquery.dataTables.min.css"/>
     <link rel="stylesheet" href="./assets/css/style.css">
     <script>if (typeof module === "object") {window.module = module; module = undefined;}</script>
 
@@ -18,6 +19,7 @@
       src="https://www.ebi.ac.uk/gxa/resources/js-bundles/vendorCommons.bundle.js"></script>
     <script language="JavaScript" type="text/javascript"
       src="https://www.ebi.ac.uk/gxa/resources/js-bundles/expressionAtlasHeatmapHighcharts.bundle.js"></script>
+    <script type="text/javascript" src="./assets/js/datatables.min.js"></script>
     <script>
         require("./renderer.js");
     </script>
@@ -46,49 +48,34 @@
                 <div class="container hidden"></div>
             </div>
             <div id="hit-div">
-                <div id="flex-container">
-                    <div>
-                        <label class="hidden my-label" for="hits" id="hits-label">
-                            Hits
-                        </label>
-                        <div class="hidden text" id="hits" disabled></div>
-                        <label class="hidden my-label" for="match-score" id="match-score-label">
-                            Match Score
-                        </label>
-                        <div class="hidden text" id="match-score" disabled></div>
-                    </div>
-                    <div id="species-div">
-                        <label class="hidden my-label" for="tax-id" id="tax-id-label">
-                            TaxID
-                        </label>
-                        <div class="hidden text" id="tax-id" disabled></div>
-                        <label class="hidden my-label" for="species" id="species-label">
-                            Species
-                        </label>
-                        <div class="hidden text" id="species" disabled></div>
-                    </div>
+                <div>
+                    <label class="hidden my-label" for="hits" id="hits-label">
+                        Hits
+                    </label>
+                    <div class="hidden text" id="hits" disabled></div>
+                    <label class="hidden my-label" for="match-score" id="match-score-label">
+                        Match Score
+                    </label>
+                    <div class="hidden text" id="match-score" disabled></div>
+                </div>
+                <div id="species-div">
+                    <label class="hidden my-label" for="tax-id" id="tax-id-label">
+                        TaxID
+                    </label>
+                    <div class="hidden text" id="tax-id" disabled></div>
+                    <label class="hidden my-label" for="species" id="species-label">
+                        Species
+                    </label>
+                    <div class="hidden text" id="species" disabled></div>
                 </div>
             </div>
-            <div id="hits-div">
-              <div class="hidden" id="hit-table">
-                <table class="table table-bordered table-hover table-condensed" id="hits-table">
-                  <thead class="thead-light">
-                    <tr>
-                      <th class="big">Hits</th>
-                    </tr>
-                    <tr>
-                      <th>Symbol</th>
-                      <th>Entrez</th>
-                      <th>Species</th>
-                      <th>Score</th>
-                    </tr>
-                  </thead>
-                  <tbody id="hitbody">
-                  </tbody>
-                </table>
-              </div>
+          </div>
+          <div id="hits-div">
+            <div class="flex-me">
+              <table class="display" id="hits-table">
+              </table>
             </div>
-        </div>
+          </div>
         <hr class="flex-rule">
         <h3 class="sect-header" data-toggle="collapse" data-target="#info-div,#loc-div" id="basics-header"><span class="glyphicon glyphicon-collapse-down"></span>Overview</h3>
         <div class="split-div" id="basics">
@@ -182,20 +169,11 @@
         <hr class="flex-rule">
         <h3 class="sect-header" data-toggle="collapse" data-target="#diseases" id="diseases-header">
           <span class="glyphicon glyphicon-collapse-down"></span>Disease Associations</h3>
-        <hr class="flex-rule">
-        <div class="collapse hidden" id="diseases">
-          <table class="table table-bordered table-hover table-condensed" id="disease-table">
-            <thead class="thead-light">
-              <tr>
-                <th>Disease Name</th>
-                <th>Disease ID</th>
-                <th>PubMed/OMIM IDs</th>
-              </tr>
-            </thead>
-            <tbody id="diseasebody">
-            </tbody>
+        <div class="collapse hidden flex-me" id="diseases">
+          <table class="display" id="disease-table">
           </table>
         </div>
+        <hr class="flex-rule">
         <h3 class="sect-header" data-toggle="collapse" data-target="#db-div,#db2-div" id="accessions-header">
           <span class="glyphicon glyphicon-collapse-down"></span>Accessions</h3>
         <div class="split-div" id="accessions">
