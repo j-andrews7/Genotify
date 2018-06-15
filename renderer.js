@@ -7,6 +7,7 @@ const {
 
 window.$ = window.jQuery = require('jquery');
 require('datatables.net')(window, $);
+require('./assets/js/ellipsis.js');
 window.Bootstrap = require('bootstrap');
 require('./assets/js/jquery.flexdatalist.min.js');
 
@@ -50,7 +51,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
   // Table initializations.
   hitsTable = $('#hits-table').DataTable({
-    scrollY: '200px',
+    scrollY: '150px',
+    scrollX: false,
     scrollCollapse: true,
     paging: false,
     columns: [{
@@ -64,11 +66,16 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }],
     order: [
       [3, 'desc']
-    ]
+    ],
+    columnDefs: [{
+      targets: 1,
+      render: $.fn.dataTable.render.ellipsis(10)
+    }]
   });
 
   diseaseTable = $('#disease-table').DataTable({
-    scrollY: '200px',
+    scrollY: '150px',
+    scrollX: false,
     scrollCollapse: true,
     paging: false,
     columns: [{
@@ -199,7 +206,8 @@ function newQuery(term = null) {
   if (term == null || term instanceof MouseEvent) {
     term = document.getElementById('query').value;
   }
-  var queryUrl = 'https://mygene.info/v3/query?q=' + term + '&fields=all';
+  var queryUrl = 'https://mygene.info/v3/query?q=' + term +
+    '&fields=all&size=1000';
   var querySpecies = '';
 
   if (species.length > 0) {
@@ -208,7 +216,7 @@ function newQuery(term = null) {
       querySpecies = querySpecies + "%2C" + species[i]
     }
     queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' +
-      querySpecies + '&fields=all';
+      querySpecies + '&fields=all&size=1000';
   }
 
   fetch(queryUrl).then(function(response) {
@@ -244,8 +252,8 @@ function newQuery(term = null) {
           hideData(document.getElementById('loc-div'));
           hideData(document.getElementById('summary-div'));
           hideData(document.getElementById('expression'));
-          //hideData(document.getElementById('diseases'));
-          //hideData(document.getElementById('hits-div'));
+          hideData(document.getElementById('diseases'));
+          hideData(document.getElementById('hits-div'));
           hideData(document.getElementById('species-div'));
           hideData(document.getElementById('db-div'));
           hideData(document.getElementById('db2-div'));
@@ -267,7 +275,7 @@ function displayHits(hitsList) {
       hit.symbol,
       hit._id,
       speciesObj[hit.taxid],
-      hit._score
+      hit._score.toFixed(2)
     ]);
   }
   hitsTable.rows.add(
@@ -404,7 +412,14 @@ function hideData(divObj) {
   var links = divObj.querySelectorAll('a');
   var i;
   var textDivs = divObj.getElementsByClassName('text');
-  $('#disease-table').clear().draw();
+
+  if (divObj.id === 'diseases') {
+    diseaseTable.clear().draw();
+  }
+
+  if (divObj.id === 'hits-div') {
+    hitsTable.clear().draw();
+  }
 
   for (i = 0; i < labels.length; i++) {
     var childData = labels[i];
@@ -424,7 +439,7 @@ function hideData(divObj) {
   }
 
   // Handle the expression data.
-  if (divObj.id === "expression") {
+  if (divObj.id === 'expression') {
     divObj.classList.add('hidden');
   }
 
@@ -571,7 +586,6 @@ function parseGeneData(data) {
       names = data.other_names.join(', ');
     }
 
-    // TODO fix this nightmare. How to deal with multiple promises that are not dependent on each other, but they need to result in a single resolution?
     if (data.hasOwnProperty('WormBase')) {
       wormbaseSum = getWormbaseSummary(data.WormBase);
     }
@@ -622,7 +636,7 @@ function parseGeneData(data) {
             db: 'https://www.ncbi.nlm.nih.gov/gene/',
             ident: data._id
           },
-          'match-score': data._score
+          'match-score': data._score.toFixed(2)
         })
       });
     } else {
@@ -659,7 +673,7 @@ function parseGeneData(data) {
           db: 'https://www.ncbi.nlm.nih.gov/gene/',
           ident: data._id
         },
-        'match-score': data._score
+        'match-score': data._score.toFixed(2)
       })
     }
   });
