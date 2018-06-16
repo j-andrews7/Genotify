@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     ],
     columnDefs: [{
       targets: 1,
-      render: $.fn.dataTable.render.ellipsis(10)
+      render: $.fn.dataTable.render.ellipsis(9)
     }]
   });
 
@@ -271,10 +271,14 @@ function displayHits(hitsList) {
   hitsTable.clear();
   for (i in hitsList.hits) {
     var hit = hitsList.hits[i];
+    var spec = 'NA';
+    if (speciesObj[hit.taxid] !== undefined) {
+      spec = speciesObj[hit.taxid];
+    } else {}
     dataSet.push([
       hit.symbol,
       hit._id,
-      speciesObj[hit.taxid],
+      spec,
       hit._score.toFixed(2)
     ]);
   }
@@ -636,7 +640,7 @@ function parseGeneData(data) {
             db: 'https://www.ncbi.nlm.nih.gov/gene/',
             ident: data._id
           },
-          'match-score': data._score.toFixed(2)
+          'match-score': data._score
         })
       });
     } else {
@@ -673,7 +677,7 @@ function parseGeneData(data) {
           db: 'https://www.ncbi.nlm.nih.gov/gene/',
           ident: data._id
         },
-        'match-score': data._score.toFixed(2)
+        'match-score': data._score
       })
     }
   });
