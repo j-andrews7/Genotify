@@ -100,6 +100,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
     species = $('.flexdatalist').flexdatalist('value');
   });
 
+  // Ensure hits table is properly adjusted on window resize.
+  window.onresize = function() {
+    hitsTable.columns.adjust().draw();
+  }
+
   // Used for header collapse.
   $("#summary-div").on("hide.bs.collapse", function() {
     $("#function-header").html(
@@ -149,11 +154,13 @@ document.addEventListener('DOMContentLoaded', function(event) {
     $("#diseases-header").html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Disease Associations'
     );
+    diseaseTable.columns.adjust().draw();
   });
   $("#diseases").on("show.bs.collapse", function() {
     $("#diseases-header").html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Disease Associations'
     );
+    diseaseTable.columns.adjust().draw();
   });
 
   function hideTooltip(x) {
@@ -285,7 +292,6 @@ function displayHits(hitsList) {
   hitsTable.rows.add(
     dataSet
   ).draw();
-  console.log(dataSet);
 }
 
 function renderExpression(data) {
@@ -788,7 +794,6 @@ function getCTDAssociations(id) {
             var refs = linkList.join(' ');
             diseaseList.push([name, id, refs])
           }
-          console.log(diseaseList);
           diseaseTable.rows.add(
             diseaseList
           ).draw();
