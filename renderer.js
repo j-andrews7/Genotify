@@ -16,6 +16,11 @@ var xmlParser = new DOMParser();
 var species = [];
 var hitsTable;
 var diseaseTable;
+var idMap = {};
+var hits;
+var expSpecies = [
+
+];
 
 var basepath = app.getAppPath();
 
@@ -86,6 +91,31 @@ document.addEventListener('DOMContentLoaded', function(event) {
       title: "PubMed/OMIM IDs"
     }]
   });
+
+  // Handle switching which hit is displayed.
+  document.querySelector("#hits-table tbody").addEventListener("click",
+    function(event) {
+      var td = event.target;
+      var tbl = document.getElementById("hits-table");
+      while (td !== this && !td.matches("td")) {
+        td = td.parentNode;
+      }
+      if (td === this) {
+        console.log("No table cell found");
+      } else {
+        // Use row and cell indices to get the hit data for row clicked on.
+        var row = td.parentNode.rowIndex;
+        var hitID = tbl.rows[row].cells[1].innerHTML;
+        // Deal with possible ellipses in content.
+        if (hitID.includes('span')) {
+          var s = $(hitID);
+          hitID = s[0].title;
+        }
+        parseGeneData(hits[idMap[hitID]]).then(function(results) {
+          displayData(results);
+        });
+      }
+    });
 
   // Species search input setup.
   $('.flexdatalist').flexdatalist({
@@ -234,10 +264,14 @@ function newQuery(term = null) {
       response.json().then(function(data) {
         console.log(data);
         if (data.total !== 0 && data.success !== false) {
-          topHit = data.hits[0];
+          hits = data.hits;
+          topHit = hits[0];
+          for (var i = 0; i < hits.length; i++) {
+            idMap[hits[i]._id] = i;
+          };
 
           var basics = {
-            'hits': data.hits.length
+            'hits': hits.length
           };
 
           displayData(basics);
@@ -295,6 +329,7 @@ function displayHits(hitsList) {
 }
 
 function renderExpression(data) {
+  var targ = document.getElementById('highchartsContainer');
   if (data[0] === null || data[1] === null) {
     return;
   };
@@ -303,8 +338,14 @@ function renderExpression(data) {
       gene: data[0].ident,
       species: data[1],
     },
-    target: 'highchartsContainer'
+    experiment: ['E-MTAB-4344', 'E-GEOD-26284'],
+    target: targ,
+    disableGoogleAnalytics: true,
+    fail: function() {
+      targ.innerHTML = 'No expression data available for this species.'
+    }
   });
+
 }
 
 function displayData(dataObj) {
@@ -326,7 +367,7 @@ function displayData(dataObj) {
         currentLabel.classList.remove('hidden');
       } else if (currentData.id === "species" && dataObj[data].toLowerCase() !==
         "homo sapiens") {
-        $('#diseasebody').empty();
+        diseaseTable.clear().draw();
       } else {
         currentData.classList.remove('hidden');
         currentLabel = document.getElementById(data + '-label');
