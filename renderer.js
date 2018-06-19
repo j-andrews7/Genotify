@@ -338,7 +338,6 @@ function renderExpression(data) {
       gene: data[0].ident,
       species: data[1],
     },
-    experiment: ['E-MTAB-4344', 'E-GEOD-26284'],
     target: targ,
     disableGoogleAnalytics: true,
     fail: function() {
@@ -422,6 +421,12 @@ function displayData(dataObj) {
             var aTag = document.createElement('a');
             aTag.setAttribute('href', link);
             aTag.textContent = linkData['ident'].term;
+            currentData.appendChild(aTag);
+          } else if (currentData.classList.contains('interpro')) {
+            var link = linkData['db'] + linkData['ident'].id;
+            var aTag = document.createElement('a');
+            aTag.setAttribute('href', link);
+            aTag.textContent = linkData['ident'].desc;
             currentData.appendChild(aTag);
           } else {
             var link = linkData['db'] + linkData['ident'];
@@ -567,10 +572,17 @@ function parseGeneData(data) {
     }
 
     if (data.hasOwnProperty('ensembl')) {
-      ensembl = {
-        db: 'https://www.ensembl.org/Gene/Summary?g=',
-        ident: data.ensembl['gene']
-      };
+      if (data.ensembl.constructor === Array) {
+        ensembl = {
+          db: 'https://www.ensembl.org/Gene/Summary?g=',
+          ident: data.ensembl[0].gene
+        };
+      } else {
+        ensembl = {
+          db: 'https://www.ensembl.org/Gene/Summary?g=',
+          ident: data.ensembl['gene']
+        };
+      }
     }
 
     if (data.hasOwnProperty('pfam')) {
@@ -610,24 +622,48 @@ function parseGeneData(data) {
     }
 
     if (data.hasOwnProperty('genomic_pos')) {
-      coords = 'chr' + data.genomic_pos.chr + ':' + data.genomic_pos.start +
-        '-' + data.genomic_pos.end;
+      if (data.genomic_pos.constructor === Array) {
+        coords = 'chr' + data.genomic_pos[0].chr + ':' + data.genomic_pos[0]
+          .start +
+          '-' + data.genomic_pos[0].end;
+      } else {
+        coords = 'chr' + data.genomic_pos.chr + ':' + data.genomic_pos.start +
+          '-' + data.genomic_pos.end;
+      }
     }
 
     if (data.hasOwnProperty('genomic_pos_hg19')) {
-      hg19coords = {
-        db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg19&position=",
-        ident: 'chr' + data.genomic_pos_hg19.chr + ':' + data.genomic_pos_hg19
-          .start + '-' + data.genomic_pos_hg19.end
-      };
+      if (data.genomic_pos_hg19.constructor === Array) {
+        hg19coords = {
+          db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg19&position=",
+          ident: 'chr' + data.genomic_pos_hg19[0].chr + ':' + data.genomic_pos_hg19[
+              0]
+            .start + '-' + data.genomic_pos_hg19[0].end
+        };
+      } else {
+        hg19coords = {
+          db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg19&position=",
+          ident: 'chr' + data.genomic_pos_hg19.chr + ':' + data.genomic_pos_hg19
+            .start + '-' + data.genomic_pos_hg19.end
+        };
+      }
     }
 
     if (data.hasOwnProperty('genomic_pos_mm9')) {
-      mm9coords = {
-        db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&position=",
-        ident: 'chr' + data.genomic_pos_mm9.chr + ':' + data.genomic_pos_mm9
-          .start + '-' + data.genomic_pos_mm9.end
-      };
+      if (data.genomic_pos_mm9.constructor === Array) {
+        mm9coords = {
+          db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&position=",
+          ident: 'chr' + data.genomic_pos_mm9[0].chr + ':' + data.genomic_pos_mm9[
+              0]
+            .start + '-' + data.genomic_pos_mm9[0].end
+        };
+      } else {
+        mm9coords = {
+          db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&position=",
+          ident: 'chr' + data.genomic_pos_mm9.chr + ':' + data.genomic_pos_mm9
+            .start + '-' + data.genomic_pos_mm9.end
+        };
+      }
     }
 
     if (data.hasOwnProperty('other_names') && typeof data.other_names ===
