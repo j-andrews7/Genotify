@@ -60,6 +60,9 @@ document.addEventListener('DOMContentLoaded', function(event) {
     scrollX: false,
     scrollCollapse: true,
     paging: false,
+    language: {
+      'search': 'Search Hits:'
+    },
     columns: [{
       title: 'Symbol'
     }, {

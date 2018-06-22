@@ -1,9 +1,9 @@
 ## Change log
 
 ### _**v1.1.0**_
-**Release date: June 7th, 2018**
+**Release date: June 24th, 2018**
  - Added ability to limit to multiple species rather than just one.
- - Added small table so top 5 hits are easily navigable rather than showing the top hit only.
+ - Added table so hits are easily navigable rather than showing the top hit only.
  - Added an interactive expression data widget from the EBI Expression Atlas.
  - Added concise, curated descriptions from WormBase where available.
  - Added tooltips for some of the less common database accessions.
