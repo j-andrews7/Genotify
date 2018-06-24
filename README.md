@@ -14,7 +14,7 @@ Just download the release for your OS, unzip, and run. To build from source with
 
 ## Usage
 
-Genotify is dead simple to use. Type a query into the search box and click the search button, hit enter, or use the hotkey `ctrl+q` (or `cmd+q`) to query from clipboard. Read what said gene does. Select one or more species from the list to limit the search to those species. Fin.
+Genotify is dead simple to use. Type a query into the search box and click the search button, hit enter, or use the hotkey `ctrl+q` (or `cmd+q`) to query from clipboard (even if Genotify isn't focused!). Search for and select species with the species filter, or filter hits in the hits table dynamically. Click on a different hit in the hits table will show the information for that hit. Expand the various sections to read what said gene does, explore expression data, see disease associations, or view links out to various data sources. 
 
 ## Issues/Comments
 Hit up the issues pages here and drop a line. I'm usually pretty quick to respond. I'm also open to suggestions for new features.
@@ -33,4 +33,4 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
-Copyright 2018, Jared Andrews
+Copyright 2018, Payton Lab
