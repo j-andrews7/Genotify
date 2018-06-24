@@ -2,188 +2,234 @@
 <html>
 
 <head>
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css"/>
+    <link rel="stylesheet" href="./assets/css/jquery.flexdatalist.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.17/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script>if (typeof module === "object") {window.module = module; module = undefined;}</script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="./assets/js/jquery.flexdatalist.min.js"></script>
+    <script language="JavaScript" type="text/javascript"
+      src="https://www.ebi.ac.uk/gxa/resources/js-bundles/vendorCommons.bundle.js"></script>
+    <script language="JavaScript" type="text/javascript"
+      src="https://www.ebi.ac.uk/gxa/resources/js-bundles/expressionAtlasHeatmapHighcharts.bundle.js"></script>
     <script>
         require("./renderer.js");
     </script>
+    <script>if (window.module) module = window.module;</script>
     <title>Genotify</title>
 </head>
 
 <body>
-    <div class="header">
-        <h2 name="genotifyheader">Genotify</h2>
-    </div>
     <div class="content flex-container">
         <div class="split-div">
             <div class="query-form">
-                Search for:
+                <label class="my-label" for="query" id="query-label">Search for:</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" id="query">
+                  <div class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="search-button">
+                      <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                  </div>
+                </div>
                 <br>
-                <input type="text" id="query" placeholder="CDK2, cyclin kinase 2, Entrez ID, etc" class="inp" length="30">
-                <br>
-                <br>
-                <label>Limit Search to:</label>
-                <br>
-                <select size="9" id="species-sel" name="species">
-                    <option value="human">Human</option>
-                    <option value="mouse">Mouse</option>
-                    <option value="rat">Rat</option>
-                    <option value="fruitfly">D. melanogaster</option>
-                    <option value="nematode">C. elegans</option>
-                    <option value="thale-cress">A. thaliana</option>
-                    <option value="4577">Zea mays</option>
-                    <option value="4530">Rice</option>
-                    <option value="zebrafish">Zebrafish</option>
-                    <option value="frog">Frog</option>
-                    <option value="pig">Pig</option>
-                    <option value="562">E. coli</option>
-                    <option value="4932">S. cerevisiae</option>
-                    <option value="9913">Cow</option>
-                    <option value="3055">Green algea</option>
-                    <option value="44689">D. discoideum</option>
-                    <option value="11103">Hepatitis C</option>
-                    <option value="2104">M. pneumoniae</option>
-                    <option value="5833">P. falciparum</option>
-                    <option value="4754">P. carinii</option>
-                    <option value="4896">S. pombe</option>
-                    <option value="31033">Torafugu</option>
-                </select>
-                <br>
-                <br>
-                <button id="search-button" type="submit">Search</button>
+                <label class="my-label">Limit Search to:</label>
+                <div class="input-group">
+                  <input type="text" data-min-length="1" placeholder="Select species..." class="flexdatalist form-control" data-data="species_search.json" data-value-property="id" data-search-in="name" multiple="multiple" name="species_name_suggestion_multiple">
+                </div>
+                <div class="container hidden"></div>
             </div>
             <div id="hit-div">
-                <div id="flex-container">
-                    <div>
-                        <label class="hidden" for="hits" id="hits-label">
-                            Hits:
-                            <div class="hidden text" id="hits" disabled></div>
-                        </label>
-                        <div class="hidden text" id="hits" disabled></div>
-                        <label class="hidden" for="match-score" id="match-score-label">
-                            Match Score:
-                            <div class="hidden text" id="match-score" disabled></div>
-                        </label>
-                    </div>
-                    <div id="species-div">
-                        <label class="hidden" for="tax-id" id="tax-id-label">
-                            TaxID:
-                            <div class="hidden text" id="tax-id" disabled></div>
-                        </label>
-                        <label class="hidden" for="species" id="species-label">
-                            Species:
-                            <div class="hidden text" id="species" disabled></div>
-                        </label>
-                        <label class="hidden" for="gene-id" id="gene-id-label">
-                            Entrez ID:
-                            <div class="hidden text add-link" id="gene-id" disabled></div>
-                        </label>
-                    </div>
+                <div>
+                    <label class="hidden my-label" for="hits" id="hits-label">
+                        Hits
+                    </label>
+                    <div class="hidden text" id="hits" disabled></div>
+                    <label class="hidden my-label" for="match-score" id="match-score-label">
+                        Match Score
+                    </label>
+                    <div class="hidden text" id="match-score" disabled></div>
+                </div>
+                <div id="species-div">
+                    <label class="hidden my-label" for="tax-id" id="tax-id-label">
+                        TaxID
+                    </label>
+                    <div class="hidden text" id="tax-id" disabled></div>
+                    <label class="hidden my-label" for="species" id="species-label">
+                        Species
+                    </label>
+                    <div class="hidden text" id="species" disabled></div>
                 </div>
             </div>
+          </div>
+          <div id="hits-div">
+            <div class="flex-me">
+              <table class="display compact" id="hits-table">
+                <caption>
+                    Hits
+                </caption>
+              </table>
+            </div>
+          </div>
+        <hr class="flex-rule">
+        <h3 class="sect-header" data-toggle="collapse" data-target="#info-div,#loc-div" id="basics-header"><span class="glyphicon glyphicon-collapse-down"></span>Overview</h3>
+        <div class="split-div" id="basics">
+            <div class="info-left collapse" id="info-div">
+                <label class="hidden my-label" for="gene-symbol" id="gene-symbol-label">
+                    Official Symbol
+                </label>
+                <div class="hidden text" id="gene-symbol" disabled></div>
+                <label class="hidden my-label" for="gene-name" id="gene-name-label">
+                    Official Name
+                </label>
+                <div class="hidden text" id="gene-name" disabled></div>
+                <label class="hidden my-label" for="hgnc-id" id="hgnc-id-label">
+                    HGNC ID
+                </label>
+                <div class="hidden text add-link" id="hgnc-id" disabled></div>
+                <label class="hidden my-label" for="alias" id="alias-label">
+                    Aliases
+                </label>
+                <div class="hidden text" id="alias" disabled></div>
+                <label class="hidden my-label" for="other-names" id="other-names-label">
+                    Other Names
+                </label>
+                <div class="hidden text" id="other-names" disabled></div>
+            </div>
+            <div class="info-right collapse" id="loc-div">
+                <label class="hidden my-label" for="location" id="location-label">
+                    Chromosomal Location
+                </label>
+                <div class="hidden text" id="location" disabled></div>
+                <label class="hidden my-label" for="gen-pos" id="gen-pos-label">
+                    Genomic Position
+                </label>
+                <div class="hidden text" id="gen-pos" disabled></div>
+                <label class="hidden my-label" for="19gen-pos" id="19gen-pos-label">
+                    hg19 Genomic Position
+                </label>
+                <div class="hidden text add-link" id="19gen-pos" disabled></div>
+                <label class="hidden my-label" for="mm9gen-pos" id="mm9gen-pos-label">
+                    mm9 Genomic Position
+                </label>
+                <div class="hidden text add-link" id="mm9gen-pos" disabled></div>
+                <label class="hidden my-label" for="gene-type" id="gene-type-label">
+                    Gene Type
+                </label>
+                <div class="hidden text" id="gene-type" disabled></div>
+            </div>
         </div>
         <hr class="flex-rule">
-        <h3 class="sect-header hidden">Gene Basics</h3>
-        <div class="split-div" id="basic-wrap-div">
-            <div class="info-left" id="info-div">
-                <label class="hidden" for="gene-symbol" id="gene-symbol-label">
-                    Symbol:
-                    <div class="hidden text" id="gene-symbol" disabled></div>
-                </label>
-                <label class="hidden" for="gene-name" id="gene-name-label">
-                    Name:
-                    <div class="hidden text" id="gene-name" disabled></div>
-                </label>
-                <label class="hidden" for="hgnc-id" id="hgnc-id-label">
-                    HGNC ID:
-                    <div class="hidden text add-link" id="hgnc-id" disabled></div>
-                </label>
-                <label class="hidden" for="alias" id="alias-label">
-                    Aliases:
-                    <div class="hidden text" id="alias" disabled></div>
-                </label>
-                <label class="hidden" for="other-names" id="other-names-label">
-                    Other Names:
-                    <div class="hidden text" id="other-names" disabled></div>
-                </label>
-            </div>
-            <div class="info-right" id="loc-div">
-                <label class="hidden" for="location" id="location-label">
-                    Chromosomal Location:
-                    <div class="hidden text" id="location" disabled></div>
-                </label>
-                <label class="hidden" for="gen-pos" id="gen-pos-label">
-                    Genomic Position:
-                    <div class="hidden text" id="gen-pos" disabled></div>
-                </label>
-                <label class="hidden" for="19gen-pos" id="19gen-pos-label">
-                    hg19 Genomic Position:
-                    <div class="hidden text add-link" id="19gen-pos" disabled></div>
-                </label>
-                <label class="hidden" for="mm9gen-pos" id="mm9gen-pos-label">
-                    mm9 Genomic Position:
-                    <div class="hidden text add-link" id="mm9gen-pos" disabled></div>
-                </label>
-                <label class="hidden" for="gene-type" id="gene-type-label">
-                    Gene Type:
-                    <div class="hidden text" id="gene-type" disabled></div>
-                </label>
-            </div>
+        <h3 class="sect-header" data-toggle="collapse" data-target="#summary-div" id="function-header"><span class="glyphicon glyphicon-collapse-down"></span>Function</h3>
+        <div id="summary-div" class="collapse">
+            <label class="hidden my-label" for="wikipedia" id="wikipedia-label">
+                Wikipedia
+            </label>
+            <div class="hidden text add-link" id="wikipedia" disabled></div>
+            <label class="hidden my-label" for="entrez-summary" id="entrez-summary-label">
+                Entrez Summary
+            </label>
+            <div class="hidden text just-text" id="entrez-summary" disabled></div>
+            <label class="hidden my-label" for="uniprot-summary" id="uniprot-summary-label">
+                Uniprot Summary
+            </label>
+            <div class="hidden text just-text" id="uniprot-summary" disabled></div>
+            <label class="hidden my-label" for="wormbase-summary" id="wormbase-summary-label">
+                Wormbase Summary
+            </label>
+            <div class="hidden text just-text" id="wormbase-summary" disabled></div>
+            <label class="hidden my-label" for="interpro" id="interpro-label">
+                Interpro Domains
+            </label>
+            <div class="hidden text add-link interpro" id="interpro" disabled></div>
+            <label class="hidden my-label" for="gobp" id="gobp-label">
+                GO Biological Processes
+            </label>
+            <div class="hidden add-link text go" id="gobp" disabled></div>
+            <label class="hidden my-label" for="gomf" id="gomf-label">
+                GO Molecular Function
+            </label>
+            <div class="hidden add-link text go" id="gomf" disabled></div>
+            <label class="hidden my-label" for="gocc" id="gocc-label">
+                GO Cellular Component
+            </label>
+            <div class="hidden add-link text go" id="gocc" disabled></div>
         </div>
         <hr class="flex-rule">
-        <h3 class="sect-header hidden">Function</h3>
-        <div id="summary-div">
-            <label class="hidden" for="entrez-summary" id="entrez-summary-label">
-                Entrez Summary:
-                <div class="hidden text just-text" id="entrez-summary" disabled></div>
-            </label>
-            <label class="hidden" for="uniprot-summary" id="uniprot-summary-label">
-                Uniprot Summary:
-                <div class="hidden text just-text" id="uniprot-summary" disabled></div>
-            </label>
-            <label class="hidden" for="wikipedia" id="wikipedia-label">
-                Wikipedia:
-                <div class="hidden text add-link" id="wikipedia" disabled></div>
-            </label>
+        <h3 class="sect-header" data-toggle="collapse" data-target="#expression" id="expression-header">
+          <span class="glyphicon glyphicon-collapse-down"></span>Expression</h3>
+        <div id="expression" class="collapse hidden">
+          <div id="highchartsContainer"></div>
         </div>
         <hr class="flex-rule">
-        <h3 class="sect-header hidden">Databases</h3>
-        <div class="split-div" id="basic-wrap-div">
-            <div class="info-left" id="db-div">
-                <label class="hidden" for="ensembl" id="ensembl-label">
-                    Ensembl:
-                    <div class="hidden text add-link" id="ensembl" disabled></div>
+        <h3 class="sect-header" data-toggle="collapse" data-target="#diseases" id="diseases-header">
+          <span class="glyphicon glyphicon-collapse-down"></span>Disease Associations</h3>
+        <div class="collapse hidden flex-me" id="diseases">
+          <table class="display compact" id="disease-table">
+          </table>
+        </div>
+        <hr class="flex-rule">
+        <h3 class="sect-header" data-toggle="collapse" data-target="#db-div,#db2-div" id="accessions-header">
+          <span class="glyphicon glyphicon-collapse-down"></span>Accessions</h3>
+        <div class="split-div" id="accessions">
+            <div class="info-left collapse" id="db-div">
+                <label class="hidden my-label" for="gene-id" id="gene-id-label">
+                    Entrez
+                    <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                    data-original-title="An NCBI database for vertebrate and invertebrate genes with links to genome, phenotype, and locus specific resources."></span>
                 </label>
-                <label class="hidden" for="omim" id="omim-label">
-                    OMIM:
-                    <div class="hidden text add-link" id="omim" disabled></div>
+                <div class="hidden text add-link" id="gene-id" disabled></div>
+                <label class="hidden my-label" for="ensembl" id="ensembl-label">
+                    Ensembl
+                    <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                    data-original-title="Vast suite of databases and tools that support research in comparative genomics, evolution, and transcriptional regulation for dozens of species."></span>
                 </label>
-                <label class="hidden" for="vega" id="vega-label">
-                    Vega:
-                    <div class="hidden text add-link" id="vega" disabled></div>
+                <div class="hidden text add-link" id="ensembl" disabled></div>
+                <label class="hidden my-label" for="uniprot" id="uniprot-label">
+                    UniProtKB
+                    <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                    data-original-title="A comprehensive knowledgebase for proteins, providing sequence information and curated functional summaries."></span>
                 </label>
-                <label class="hidden" for="pfam" id="pfam-label">
-                    Pfam:
-                    <div class="hidden text add-link" id="pfam" disabled></div>
-                </label>
+                <div class="hidden text add-link" id="uniprot" disabled></div>
             </div>
-            <div class="info-right" id="db2-div">
-                <label class="hidden" for="uniprot" id="uniprot-label">
-                    UniProtKB:
-                    <div class="hidden text add-link" id="uniprot" disabled></div>
+            <div class="info-right collapse" id="db2-div">
+              <label class="hidden my-label" for="omim" id="omim-label">
+                  OMIM
+                  <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  data-original-title="A comprehensive compendium of all known mendelian disorders,
+                  focusing on the relationship between phenotype and genotype."></span>
+              </label>
+              <div class="hidden text add-link" id="omim" disabled></div>
+                <label class="hidden my-label" for="pharmgkb" id="pharmgkb-label">
+                    PharmGKB
+                    <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                    data-original-title="A comprehensive resource that curates knowledge about the impact of genetic variation on drug response."></span>
                 </label>
-                <label class="hidden" for="pharmgkb" id="pharmgkb-label">
-                    PharmGKB:
-                    <div class="hidden text add-link" id="pharmgkb" disabled></div>
+                <div class="hidden text add-link" id="pharmgkb" disabled></div>
+                <label class="hidden my-label" for="prosite" id="prosite-label">
+                    PROSITE
+                    <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                    data-original-title="A protein database that describes protein families, domains, and functional sites."></span>
                 </label>
-                <label class="hidden" for="prosite" id="prosite-label">
-                    PROSITE:
-                    <div class="hidden text add-link" id="prosite" disabled></div>
+                <div class="hidden text add-link" id="prosite" disabled></div>
+                <label class="hidden my-label" for="pfam" id="pfam-label">
+                    Pfam
+                    <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                    data-original-title="A database of annotated protein families generated using hidden Markov models."></span>
                 </label>
+                <div class="hidden text add-link" id="pfam" disabled></div>
             </div>
         </div>
     </div>
     <div class="footer">
-        <p>&copy; 2018 Jared Andrews - Powered by the <a href="http://mygene.info">MyGene API</a></p>
+        <p>&copy; 2018 Payton Lab - Powered by <a href="http://mygene.info">MyGene.info</a>, <a href="https://www.ebi.ac.uk/gxa/home">EBI Expression Atlas</a>, <a href="http://ctdbase.org">CTDbase</a>, <a href="https://www.wormbase.org">WormBase</a>, and <a href="https://www.uniprot.org/">UniProtKB.</a></p>
     </div>
 </body>
 

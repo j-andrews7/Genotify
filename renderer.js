@@ -6,27 +6,28 @@ const {
 } = require('electron').remote;
 
 window.$ = window.jQuery = require('jquery');
+require('datatables.net')(window, $);
+require('./assets/js/ellipsis.js');
 window.Bootstrap = require('bootstrap');
+require('./assets/js/jquery.flexdatalist.min.js');
 
 var speciesObj = null;
 var xmlParser = new DOMParser();
+var species = [];
+var hitsTable;
+var diseaseTable;
+var idMap = {};
+var hits;
+var expSpecies = [
+
+];
 
 var basepath = app.getAppPath();
-
-// Open all links in external browser
-let shell = require('electron').shell
-document.addEventListener('click', function(event) {
-  if (event.target.tagName === 'A' && event.target.href.startsWith('http')) {
-    event.preventDefault()
-    shell.openExternal(event.target.href)
-  }
-})
 
 document.addEventListener('DOMContentLoaded', function(event) {
   retrieveSpeciesJSON();
 
   ipcRenderer.send('loaded');
-
   // Listen for command to read from clipboard.
   ipcRenderer.on('queryFromClipboard', function(event, clipboardContents) {
     document.getElementById('query').value = clipboardContents;
@@ -42,6 +43,157 @@ document.addEventListener('DOMContentLoaded', function(event) {
       show: 0,
       hide: 500
     }
+  });
+
+  // Help tooltip functionality.
+  $('[data-toggle="tooltip"]').tooltip({
+    placement: 'top',
+    delay: {
+      show: 300,
+      hide: 300
+    }
+  });
+
+  // Table initializations.
+  hitsTable = $('#hits-table').DataTable({
+    scrollY: '150px',
+    scrollX: false,
+    scrollCollapse: true,
+    paging: false,
+    language: {
+      'search': 'Search Hits:'
+    },
+    columns: [{
+      title: 'Symbol'
+    }, {
+      title: 'ID'
+    }, {
+      title: 'Species'
+    }, {
+      title: 'Score'
+    }],
+    order: [
+      [3, 'desc']
+    ],
+    columnDefs: [{
+      targets: 1,
+      render: $.fn.dataTable.render.ellipsis(9)
+    }]
+  });
+
+  diseaseTable = $('#disease-table').DataTable({
+    scrollY: '150px',
+    scrollX: false,
+    scrollCollapse: true,
+    paging: false,
+    columns: [{
+      title: "Disease"
+    }, {
+      title: "Disease ID"
+    }, {
+      title: "PubMed/OMIM IDs"
+    }]
+  });
+
+  // Handle switching which hit is displayed.
+  document.querySelector("#hits-table tbody").addEventListener("click",
+    function(event) {
+      var td = event.target;
+      var tbl = document.getElementById("hits-table");
+      while (td !== this && !td.matches("td")) {
+        td = td.parentNode;
+      }
+      if (td === this) {
+        console.log("No table cell found");
+      } else {
+        // Use row and cell indices to get the hit data for row clicked on.
+        var row = td.parentNode.rowIndex;
+        var hitID = tbl.rows[row].cells[1].innerHTML;
+        // Deal with possible ellipses in content.
+        if (hitID.includes('span')) {
+          var s = $(hitID);
+          hitID = s[0].title;
+        }
+        parseGeneData(hits[idMap[hitID]]).then(function(results) {
+          displayData(results);
+        });
+      }
+    });
+
+  // Species search input setup.
+  $('.flexdatalist').flexdatalist({
+    minLength: 1,
+    searchIn: 'name',
+    textProperty: 'name',
+    valueProperty: 'id',
+    data: 'species_search.json'
+  });
+
+  $('.flexdatalist').on('change:flexdatalist', function() {
+    species = $('.flexdatalist').flexdatalist('value');
+  });
+
+  // Ensure hits table is properly adjusted on window resize.
+  window.onresize = function() {
+    hitsTable.columns.adjust().draw();
+  }
+
+  // Used for header collapse.
+  $("#summary-div").on("hide.bs.collapse", function() {
+    $("#function-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Function'
+    );
+  });
+  $("#summary-div").on("show.bs.collapse", function() {
+    $("#function-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Function'
+    );
+  });
+
+  $("#basics").on("hide.bs.collapse", function() {
+    $("#basics-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Gene Basics'
+    );
+  });
+  $("#basics").on("show.bs.collapse", function() {
+    $("#basics-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Gene Basics'
+    );
+  });
+
+  $("#accessions").on("hide.bs.collapse", function() {
+    $("#accessions-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Accessions'
+    );
+  });
+  $("#accessions").on("show.bs.collapse", function() {
+    $("#accessions-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Accessions'
+    );
+  });
+
+  $("#expression").on("hide.bs.collapse", function() {
+    $("#expression-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Expression'
+    );
+  });
+  $("#expression").on("show.bs.collapse", function() {
+    $("#expression-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Expression'
+    );
+  });
+
+  $("#diseases").on("hide.bs.collapse", function() {
+    $("#diseases-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Disease Associations'
+    );
+    diseaseTable.columns.adjust().draw();
+  });
+  $("#diseases").on("show.bs.collapse", function() {
+    $("#diseases-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Disease Associations'
+    );
+    diseaseTable.columns.adjust().draw();
   });
 
   function hideTooltip(x) {
@@ -72,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     var key = e.which || e.keyCode;
 
     if (key === 13) {
-      newQuery();
+      newQuery(term = document.getElementById('query').value);
     }
   });
 });
@@ -91,16 +243,20 @@ function newQuery(term = null) {
   // Check if no term was passed and pull it from the input value if so.
   // Also does an ugly check to make sure click event itself isn't passed as the term if
   // search button used.
-  if (term == null || term instanceof Event) {
-    var term = document.getElementById('query').value;
+  if (term == null || term instanceof MouseEvent) {
+    term = document.getElementById('query').value;
   }
-  var queryUrl = 'https://mygene.info/v3/query?q=' + term;
-  var speciesOptions = document.getElementById('species-sel');
+  var queryUrl = 'https://mygene.info/v3/query?q=' + term +
+    '&fields=all&size=1000';
+  var querySpecies = '';
 
-  if (speciesOptions.selectedIndex !== -1) {
-    var species = speciesOptions.options[speciesOptions.selectedIndex].value;
-
-    queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' + species;
+  if (species.length > 0) {
+    querySpecies = species[0]
+    for (var i = 1; i < species.length; i++) {
+      querySpecies = querySpecies + "%2C" + species[i]
+    }
+    queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' +
+      querySpecies + '&fields=all&size=1000';
   }
 
   fetch(queryUrl).then(function(response) {
@@ -108,27 +264,28 @@ function newQuery(term = null) {
         console.log('Fetch Query Error. Status Code: ' + response.status);
         return;
       }
-
       response.json().then(function(data) {
         console.log(data);
         if (data.total !== 0 && data.success !== false) {
-          topHit = data.hits[0];
+          hits = data.hits;
+          topHit = hits[0];
+          for (var i = 0; i < hits.length; i++) {
+            idMap[hits[i]._id] = i;
+          };
 
           var basics = {
-            'gene-symbol': topHit.symbol,
-            'gene-name': topHit.name,
-            'gene-id': {
-              db: 'https://www.ncbi.nlm.nih.gov/gene/',
-              ident: topHit._id
-            },
-            'match-score': topHit._score,
-            'hits': data.hits.length
+            'hits': hits.length
           };
 
           displayData(basics);
+          displayHits(data);
           displayHeadings();
-          annotateGene(topHit._id);
+          parseGeneData(topHit).then(function(topHit) {
+            displayData(topHit);
+          });
         } else {
+          // Empty hits list.
+          $('#hitbody').empty();
           var empty = {
             'hits': 'No hits',
             'match-score': 0
@@ -138,6 +295,9 @@ function newQuery(term = null) {
           hideData(document.getElementById('info-div'));
           hideData(document.getElementById('loc-div'));
           hideData(document.getElementById('summary-div'));
+          hideData(document.getElementById('expression'));
+          hideData(document.getElementById('diseases'));
+          hideData(document.getElementById('hits-div'));
           hideData(document.getElementById('species-div'));
           hideData(document.getElementById('db-div'));
           hideData(document.getElementById('db2-div'));
@@ -150,39 +310,134 @@ function newQuery(term = null) {
     });
 }
 
+function displayHits(hitsList) {
+  var dataSet = [];
+  hitsTable.clear();
+  for (i in hitsList.hits) {
+    var hit = hitsList.hits[i];
+    var spec = 'NA';
+    if (speciesObj[hit.taxid] !== undefined) {
+      spec = speciesObj[hit.taxid];
+    } else {}
+    dataSet.push([
+      hit.symbol,
+      hit._id,
+      spec,
+      hit._score.toFixed(2)
+    ]);
+  }
+  hitsTable.rows.add(
+    dataSet
+  ).draw();
+}
+
+function renderExpression(data) {
+  var targ = document.getElementById('highchartsContainer');
+  if (data[0] === null || data[1] === null) {
+    return;
+  };
+  expressionAtlasHeatmapHighcharts.render({
+    query: {
+      gene: data[0].ident,
+      species: data[1],
+    },
+    target: targ,
+    disableGoogleAnalytics: true,
+    fail: function() {
+      targ.innerHTML = 'No expression data available for this species.'
+    }
+  });
+
+}
+
 function displayData(dataObj) {
   for (data in dataObj) {
     if (dataObj.hasOwnProperty(data) && dataObj[data]) {
+      // Check/call expression widget rendering.
       currentData = document.getElementById(data);
-      currentData.classList.remove('hidden');
-      currentLabel = document.getElementById(data + '-label');
-      currentLabel.classList.remove('hidden');
+      if (currentData.id === "expression") {
+        currentData.classList.remove('hidden');
+        renderExpression(dataObj[data]);
+        continue;
+      } else if (currentData.id === "species" && dataObj[data].toLowerCase() ===
+        "homo sapiens") {
+        getCTDAssociations(dataObj['gene-id'].ident);
+        diseaseData = document.getElementById('diseases');
+        diseaseData.classList.remove('hidden');
+        currentData.classList.remove('hidden');
+        currentLabel = document.getElementById(data + '-label');
+        currentLabel.classList.remove('hidden');
+      } else if (currentData.id === "species" && dataObj[data].toLowerCase() !==
+        "homo sapiens") {
+        diseaseTable.clear().draw();
+      } else {
+        currentData.classList.remove('hidden');
+        currentLabel = document.getElementById(data + '-label');
+        currentLabel.classList.remove('hidden');
+      }
 
-      // Add new/remove old links from appropriate divs.
+      // Add new/remove old links and linebreaks from appropriate divs.
       if (currentData.classList.contains('add-link')) {
         var oldLinks = currentData.getElementsByTagName('a');
+        var oldBreaks = currentData.getElementsByTagName('br');
         while (oldLinks.length > 0) {
           oldLinks[0].parentNode.removeChild(oldLinks[0]);
         }
+        while (oldBreaks.length > 0) {
+          oldBreaks[0].parentNode.removeChild(oldBreaks[0]);
+        }
         var linkData = dataObj[data];
         // Handle potential multiple links that needs to be added.
+        // And special cases like GO terms. Kind of messy.
         if (linkData['ident'].constructor === Array) {
+          // Used to potentially check for redundant GO terms.
+          var old = [];
           for (i in linkData['ident']) {
-            var link = linkData['db'] + linkData['ident'][i];
-            var aTag = document.createElement('a');
-            var spacer = document.createElement('span');
-            spacer.textContent = " "
-            aTag.setAttribute('href', link);
-            aTag.textContent = linkData['ident'][i];
+            if (currentData.classList.contains('interpro')) {
+              var link = linkData['db'] + linkData['ident'][i].id;
+              var aTag = document.createElement('a');
+              aTag.setAttribute('href', link);
+              aTag.textContent = linkData['ident'][i].desc;
+            } else if (currentData.classList.contains('go')) {
+              // Skip redundant GO terms.
+              if (old.includes(linkData['ident'][i].term)) {
+                continue;
+              }
+              var link = linkData['db'] + linkData['ident'][i].id;
+              var aTag = document.createElement('a');
+              aTag.setAttribute('href', link);
+              aTag.textContent = linkData['ident'][i].term;
+              old.push(linkData['ident'][i].term);
+            } else {
+              var link = linkData['db'] + linkData['ident'][i];
+              var aTag = document.createElement('a');
+              aTag.setAttribute('href', link);
+              aTag.textContent = linkData['ident'][i];
+            }
+            var spacer = document.createElement('br');
             currentData.appendChild(aTag);
             currentData.appendChild(spacer);
           }
         } else {
-          var link = linkData['db'] + linkData['ident'];
-          var aTag = document.createElement('a');
-          aTag.setAttribute('href', link);
-          aTag.textContent = linkData['ident'];
-          currentData.appendChild(aTag);
+          if (currentData.classList.contains('go')) {
+            var link = linkData['db'] + linkData['ident'].id;
+            var aTag = document.createElement('a');
+            aTag.setAttribute('href', link);
+            aTag.textContent = linkData['ident'].term;
+            currentData.appendChild(aTag);
+          } else if (currentData.classList.contains('interpro')) {
+            var link = linkData['db'] + linkData['ident'].id;
+            var aTag = document.createElement('a');
+            aTag.setAttribute('href', link);
+            aTag.textContent = linkData['ident'].desc;
+            currentData.appendChild(aTag);
+          } else {
+            var link = linkData['db'] + linkData['ident'];
+            var aTag = document.createElement('a');
+            aTag.setAttribute('href', link);
+            aTag.textContent = linkData['ident'];
+            currentData.appendChild(aTag);
+          }
         }
       } else {
         currentData.textContent = dataObj[data];
@@ -211,11 +466,19 @@ function displayData(dataObj) {
 }
 
 function hideData(divObj) {
-  // Hide all data in child nodes of givin div element.
+  // Hide all data in child nodes of given div element.
   var labels = divObj.querySelectorAll('label');
   var links = divObj.querySelectorAll('a');
   var i;
   var textDivs = divObj.getElementsByClassName('text');
+
+  if (divObj.id === 'diseases') {
+    diseaseTable.clear().draw();
+  }
+
+  if (divObj.id === 'hits-div') {
+    hitsTable.clear().draw();
+  }
 
   for (i = 0; i < labels.length; i++) {
     var childData = labels[i];
@@ -234,35 +497,16 @@ function hideData(divObj) {
     }
   }
 
+  // Handle the expression data.
+  if (divObj.id === 'expression') {
+    divObj.classList.add('hidden');
+  }
+
   // Delete any links if necessary.
   for (i = 0; i < links.length; i++) {
     var childData = links[i];
     childData.remove();
   }
-}
-
-function annotateGene(gene) {
-  fetch('https://mygene.info/v3/gene/' + gene)
-    .then(
-      function(response) {
-        if (response.status !== 200) {
-          console.log('Looks like there was a problem. Status Code: ' +
-            response.status);
-          return;
-        }
-
-        // Examine the text in the response
-        response.json().then(function(data) {
-          console.log(data);
-          parseGeneData(data).then(function(data) {
-            displayData(data)
-          });
-        });
-      }
-    )
-    .catch(function(err) {
-      console.error('Fetch Gene Annotation Error', err);
-    });
 }
 
 function parseGeneData(data) {
@@ -277,11 +521,37 @@ function parseGeneData(data) {
     var wiki = null;
     var omim = null;
     var ensembl = null;
-    var vega = null;
     var pfam = null;
     var uniprot = null;
     var pharmgkb = null;
+    var expression = null;
     var prosite = null;
+    var interpro = null;
+    var wormbaseSum = null;
+    var gobp = null;
+    var gomf = null;
+    var gocc = null;
+
+    if (data.hasOwnProperty('go')) {
+      if (data.go.hasOwnProperty('BP')) {
+        gobp = {
+          db: 'https://www.ebi.ac.uk/QuickGO/term/',
+          ident: data.go.BP
+        }
+      };
+      if (data.go.hasOwnProperty('MF')) {
+        gomf = {
+          db: 'https://www.ebi.ac.uk/QuickGO/term/',
+          ident: data.go.MF
+        }
+      };
+      if (data.go.hasOwnProperty('CC')) {
+        gocc = {
+          db: 'https://www.ebi.ac.uk/QuickGO/term/',
+          ident: data.go.CC
+        }
+      };
+    }
 
     if (data.hasOwnProperty('HGNC')) {
       hgnc = {
@@ -305,17 +575,17 @@ function parseGeneData(data) {
     }
 
     if (data.hasOwnProperty('ensembl')) {
-      ensembl = {
-        db: 'https://www.ensembl.org/Gene/Summary?g=',
-        ident: data.ensembl['gene']
-      };
-    }
-
-    if (data.hasOwnProperty('Vega')) {
-      vega = {
-        db: 'http://vega.archive.ensembl.org/Gene/Summary?g=',
-        ident: data.Vega
-      };
+      if (data.ensembl.constructor === Array) {
+        ensembl = {
+          db: 'https://www.ensembl.org/Gene/Summary?g=',
+          ident: data.ensembl[0].gene
+        };
+      } else {
+        ensembl = {
+          db: 'https://www.ensembl.org/Gene/Summary?g=',
+          ident: data.ensembl['gene']
+        };
+      }
     }
 
     if (data.hasOwnProperty('pfam')) {
@@ -335,7 +605,14 @@ function parseGeneData(data) {
     if (data.hasOwnProperty('prosite')) {
       prosite = {
         db: 'https://prosite.expasy.org/',
-        ident: data.pfam
+        ident: data.prosite
+      };
+    }
+
+    if (data.hasOwnProperty('interpro')) {
+      interpro = {
+        db: 'http://www.ebi.ac.uk/interpro/entry/',
+        ident: data.interpro
       };
     }
 
@@ -348,24 +625,48 @@ function parseGeneData(data) {
     }
 
     if (data.hasOwnProperty('genomic_pos')) {
-      coords = 'chr' + data.genomic_pos.chr + ':' + data.genomic_pos.start +
-        '-' + data.genomic_pos.end;
+      if (data.genomic_pos.constructor === Array) {
+        coords = 'chr' + data.genomic_pos[0].chr + ':' + data.genomic_pos[0]
+          .start +
+          '-' + data.genomic_pos[0].end;
+      } else {
+        coords = 'chr' + data.genomic_pos.chr + ':' + data.genomic_pos.start +
+          '-' + data.genomic_pos.end;
+      }
     }
 
     if (data.hasOwnProperty('genomic_pos_hg19')) {
-      hg19coords = {
-        db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg19&position=",
-        ident: 'chr' + data.genomic_pos_hg19.chr + ':' + data.genomic_pos_hg19
-          .start + '-' + data.genomic_pos_hg19.end
-      };
+      if (data.genomic_pos_hg19.constructor === Array) {
+        hg19coords = {
+          db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg19&position=",
+          ident: 'chr' + data.genomic_pos_hg19[0].chr + ':' + data.genomic_pos_hg19[
+              0]
+            .start + '-' + data.genomic_pos_hg19[0].end
+        };
+      } else {
+        hg19coords = {
+          db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg19&position=",
+          ident: 'chr' + data.genomic_pos_hg19.chr + ':' + data.genomic_pos_hg19
+            .start + '-' + data.genomic_pos_hg19.end
+        };
+      }
     }
 
     if (data.hasOwnProperty('genomic_pos_mm9')) {
-      mm9coords = {
-        db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&position=",
-        ident: 'chr' + data.genomic_pos_mm9.chr + ':' + data.genomic_pos_mm9
-          .start + '-' + data.genomic_pos_mm9.end
-      };
+      if (data.genomic_pos_mm9.constructor === Array) {
+        mm9coords = {
+          db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&position=",
+          ident: 'chr' + data.genomic_pos_mm9[0].chr + ':' + data.genomic_pos_mm9[
+              0]
+            .start + '-' + data.genomic_pos_mm9[0].end
+        };
+      } else {
+        mm9coords = {
+          db: "http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&db=mm9&position=",
+          ident: 'chr' + data.genomic_pos_mm9.chr + ':' + data.genomic_pos_mm9
+            .start + '-' + data.genomic_pos_mm9.end
+        };
+      }
     }
 
     if (data.hasOwnProperty('other_names') && typeof data.other_names ===
@@ -375,40 +676,24 @@ function parseGeneData(data) {
       names = data.other_names.join(', ');
     }
 
+    if (data.hasOwnProperty('WormBase')) {
+      wormbaseSum = getWormbaseSummary(data.WormBase);
+    }
+
     if (data.hasOwnProperty('uniprot') && data.uniprot['Swiss-Prot'] !==
       undefined) {
       uniprot = {
         db: 'http://www.uniprot.org/uniprot/',
         ident: data.uniprot['Swiss-Prot']
       };
-      getUniprotSummary(data.uniprot['Swiss-Prot']).then(function(
-        uniprotSum) {
-        resolve({
-          'entrez-summary': data.summary,
-          'alias': aliases,
-          'hgnc-id': hgnc,
-          'location': data.map_location,
-          'gen-pos': coords,
-          '19gen-pos': hg19coords,
-          'mm9gen-pos': mm9coords,
-          'tax-id': data.taxid,
-          'species': speciesObj[data.taxid],
-          'other-names': names,
-          'gene-type': data.type_of_gene,
-          'wikipedia': wiki,
-          'omim': omim,
-          'ensembl': ensembl,
-          'vega': vega,
-          'uniprot': uniprot,
-          'pfam': pfam,
-          'pharmgkb': pharmgkb,
-          'prosite': prosite,
-          'uniprot-summary': uniprotSum
-        });
-      }).catch(function(error) {
-        console.error(error);
+      uniprotSum = getUniprotSummary(data.uniprot['Swiss-Prot']);
+    }
 
-        // Resolve without the uniprot summary if we can't get it
+    if (data.hasOwnProperty('WormBase') || data.hasOwnProperty('uniprot')) {
+      Promise.all([wormbaseSum, uniprotSum]).then(function(values) {
+        wormbaseSum = values[0];
+        uniprotSum = values[1];
+        // Resolve original promise.
         resolve({
           'entrez-summary': data.summary,
           'alias': aliases,
@@ -419,20 +704,33 @@ function parseGeneData(data) {
           'mm9gen-pos': mm9coords,
           'tax-id': data.taxid,
           'species': speciesObj[data.taxid],
+          'expression': [ensembl, speciesObj[data.taxid]],
           'other-names': names,
           'gene-type': data.type_of_gene,
           'wikipedia': wiki,
           'omim': omim,
           'ensembl': ensembl,
-          'vega': vega,
           'uniprot': uniprot,
           'pfam': pfam,
           'pharmgkb': pharmgkb,
           'prosite': prosite,
-          'uniprot-summary': null
-        });
+          'interpro': interpro,
+          'gobp': gobp,
+          'gomf': gomf,
+          'gocc': gocc,
+          'uniprot-summary': uniprotSum,
+          'wormbase-summary': wormbaseSum,
+          'gene-symbol': data.symbol,
+          'gene-name': data.name,
+          'gene-id': {
+            db: 'https://www.ncbi.nlm.nih.gov/gene/',
+            ident: data._id
+          },
+          'match-score': data._score
+        })
       });
     } else {
+      // Resolve original promise.
       resolve({
         'entrez-summary': data.summary,
         'alias': aliases,
@@ -443,22 +741,34 @@ function parseGeneData(data) {
         'mm9gen-pos': mm9coords,
         'tax-id': data.taxid,
         'species': speciesObj[data.taxid],
+        'expression': [ensembl, speciesObj[data.taxid]],
         'other-names': names,
         'gene-type': data.type_of_gene,
         'wikipedia': wiki,
         'omim': omim,
         'ensembl': ensembl,
-        'vega': vega,
         'uniprot': uniprot,
         'pfam': pfam,
         'pharmgkb': pharmgkb,
         'prosite': prosite,
-        'uniprot-summary': null
-      });
+        'interpro': interpro,
+        'gobp': gobp,
+        'gomf': gomf,
+        'gocc': gocc,
+        'uniprot-summary': uniprotSum,
+        'wormbase-summary': wormbaseSum,
+        'gene-symbol': data.symbol,
+        'gene-name': data.name,
+        'gene-id': {
+          db: 'https://www.ncbi.nlm.nih.gov/gene/',
+          ident: data._id
+        },
+        'match-score': data._score
+      })
     }
   });
+};
 
-}
 
 function getUniprotSummary(id) {
   return new Promise(function(resolve, reject) {
@@ -468,7 +778,7 @@ function getUniprotSummary(id) {
 
     var summary;
 
-    fetch('http://www.uniprot.org/uniprot/' + id + '.xml').then(function(
+    fetch('https://www.uniprot.org/uniprot/' + id + '.xml').then(function(
       response) {
       if (response.status !== 200) {
         console.log('Looks like there was a problem. Status Code: ' +
@@ -478,7 +788,8 @@ function getUniprotSummary(id) {
       }
 
       response.text().then(function(data) {
-        var parsedXML = xmlParser.parseFromString(data, 'text/xml');
+        var parsedXML = xmlParser.parseFromString(data,
+          'text/xml');
         var comments = parsedXML.querySelectorAll(
           'comment[type="function"]');
 
@@ -489,10 +800,89 @@ function getUniprotSummary(id) {
       })
     }).catch(function(err) {
       console.error('Fetch Uniprot Error', err);
-
       reject();
     });
   });
+}
+
+function getWormbaseSummary(id) {
+  return new Promise(function(resolve, reject) {
+    if (!id) {
+      reject();
+    }
+    var summary;
+    fetch('http://rest.wormbase.org/rest/field/gene/' + id +
+      '/concise_description').then(function(
+      response) {
+      if (response.status !== 200) {
+        console.log('Looks like there was a problem. Status Code: ' +
+          response.status);
+        reject();
+      }
+      response.json().then(function(data) {
+        summary = data.concise_description.data.text
+        resolve(summary);
+      })
+    }).catch(function(err) {
+      console.error('Fetch Wormbase Error', err);
+      reject();
+    });
+  });
+}
+
+function getCTDAssociations(id) {
+  var queryUrl =
+    'http://ctdbase.org/tools/batchQuery.go?inputType=gene&inputTerms=' + id +
+    '&report=diseases_curated&format=json';
+
+  fetch(queryUrl).then(function(response) {
+      if (response.status !== 200) {
+        console.log('CTD Fetch Query Error. Status Code: ' + response.status);
+        return;
+      }
+      response.json().then(function(data) {
+        diseaseTable.clear().draw();
+        if (data[0].hasOwnProperty('DiseaseName')) {
+          var diseaseList = [];
+          for (var x in data) {
+            x = data[x];
+            var name = x.DiseaseName;
+            var id = '<a href=https://id.nlm.nih.gov/mesh/' +
+              x.DiseaseID
+              .split(':')[1] + '.html>' + x.DiseaseID + '</a>';
+            var linkList = [];
+            if (x.hasOwnProperty('PubMedIDs')) {
+              var pubs = x.PubMedIDs.split('|');
+              for (i in pubs) {
+                var newLink =
+                  '<a href=https://www.ncbi.nlm.nih.gov/pubmed/' + pubs[
+                    i] +
+                  '>' +
+                  pubs[i] + '</a>';
+                linkList.push(newLink);
+              }
+            } else {
+              var pubs = x.OmimIDs.split('|');
+              for (i in pubs) {
+                var newLink =
+                  '<a href=https://www.omim.org/entry/' + pubs[i] +
+                  '>' +
+                  pubs[i] + '</a>';
+                linkList.push(newLink);
+              }
+            }
+            var refs = linkList.join(' ');
+            diseaseList.push([name, id, refs])
+          }
+          diseaseTable.rows.add(
+            diseaseList
+          ).draw();
+        }
+      });
+    })
+    .catch(function(err) {
+      console.error('Fetch Query Error', err);
+    });
 }
 
 // Display and hide section headings as appropriate.

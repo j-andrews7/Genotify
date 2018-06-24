@@ -21,8 +21,8 @@ app.setName('Genotify');
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 450,
-    height: 1250,
+    width: 550,
+    height: 1200,
     minWidth: 450,
     icon: path.join(__dirname, 'assets/icons/png/64x64.png')
   });
@@ -51,6 +51,15 @@ function createWindow() {
   });
 
   createMenu();
+
+  // Opens all new windows in external browser.
+  let wc = mainWindow.webContents
+  wc.on('will-navigate', function(e, url) {
+    if (url != wc.getURL()) {
+      e.preventDefault()
+      electron.shell.openExternal(url)
+    }
+  })
 }
 
 // This method will be called when Electron has finished

@@ -1,21 +1,27 @@
 {
   "name": "Genotify",
   "productName": "Genotify",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Jared Andrews",
   "license": "GPL-3.0",
   "repository": "https://github.com/j-andrews7/GenotifyDesktop",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "winpack": "electron-packager . --platform=win32 --out ./release-builds --arch=x64 --overwrite --asar --icon=./assets/icons/windows/icon.ico --win32metadata.CompanyName=\"Genotify\" --win32metadata.ProductName=\"Genotify\" --win32metadata.FileDescription=\"Genotify\" --appCopyright=\"Copyright © 2018 Payton Lab. All rights reserved.\"",
+    "osxpack": "electron-packager . --platform=darwin --out ./release-builds --arch=x64 --overwrite --asar --icon=./assets/icons/mac/1024x1024.icns",
+    "linpack": "electron-packager . --platform=linux --out ./release-builds --arch=x64 --overwrite --asar --icon=./assets/icons/png/1024x1024.png --appCopyright=\"Copyright © 2018 Payton Lab. All rights reserved.\""
   },
   "devDependencies": {
-    "electron": "~1.8.3"
+    "electron": "~2.0.2"
   },
   "dependencies": {
     "jquery": "3.3.1",
     "bootstrap": "4.1.1",
     "popper.js": "1.14.3",
-    "load-json-file": "~4.0.0"
+    "load-json-file": "~4.0.0",
+    "datatables.net": "1.10.16",
+    "datatables.net-dt": "1.10.16",
+    "expression-atlas-heatmap-highcharts": "4.4.1"
   }
 }
