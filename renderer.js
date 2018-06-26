@@ -87,24 +87,24 @@ document.addEventListener('DOMContentLoaded', function(event) {
     scrollCollapse: true,
     paging: false,
     columns: [{
-      title: "Disease"
+      title: 'Disease'
     }, {
-      title: "Disease ID"
+      title: 'Disease ID'
     }, {
-      title: "PubMed/OMIM IDs"
+      title: 'PubMed/OMIM IDs'
     }]
   });
 
   // Handle switching which hit is displayed.
-  document.querySelector("#hits-table tbody").addEventListener("click",
+  document.querySelector('#hits-table tbody').addEventListener('click',
     function(event) {
       var td = event.target;
-      var tbl = document.getElementById("hits-table");
-      while (td !== this && !td.matches("td")) {
+      var tbl = document.getElementById('hits-table');
+      while (td !== this && !td.matches('td')) {
         td = td.parentNode;
       }
       if (td === this) {
-        console.log("No table cell found");
+        console.log('No table cell found');
       } else {
         // Use row and cell indices to get the hit data for row clicked on.
         var row = td.parentNode.rowIndex;
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     hideTooltip($(this));
   };
 
-  var textDivs = document.getElementsByClassName("text");
+  var textDivs = document.getElementsByClassName('text');
 
   for (var i = 0; i < textDivs.length; i++) {
     textDivs[i].addEventListener('click', copyToClipboard, false);
@@ -253,7 +253,7 @@ function newQuery(term = null) {
   if (species.length > 0) {
     querySpecies = species[0]
     for (var i = 1; i < species.length; i++) {
-      querySpecies = querySpecies + "%2C" + species[i]
+      querySpecies = querySpecies + '%2C' + species[i]
     }
     queryUrl = 'https://mygene.info/v3/query?q=' + term + '&species=' +
       querySpecies + '&fields=all&size=1000';
@@ -352,10 +352,11 @@ function renderExpression(data) {
 }
 
 function displayData(dataObj) {
+  // dataObj is a single search hit with all gene info as a dict.
   for (data in dataObj) {
     if (dataObj.hasOwnProperty(data) && dataObj[data]) {
       // Check/call expression widget rendering.
-      currentData = document.getElementById(data);
+      var currentData = document.getElementById(data);
       if (currentData.id === "expression") {
         currentData.classList.remove('hidden');
         renderExpression(dataObj[data]);
@@ -888,7 +889,7 @@ function getCTDAssociations(id) {
 
 // Display and hide section headings as appropriate.
 function displayHeadings() {
-  var headers = document.querySelectorAll('h3');
+  var headers = document.querySelectorAll('sect-header');
 
   for (var i = 0; i < headers.length; i++) {
     var childData = headers[i];
@@ -900,7 +901,7 @@ function displayHeadings() {
 }
 
 function hideHeadings() {
-  var headers = document.getElementsByClassName("sect-header");
+  var headers = document.getElementsByClassName('sect-header');
 
   for (var i = 0; i < headers.length; i++) {
     var childData = headers[i];
