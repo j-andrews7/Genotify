@@ -24,8 +24,23 @@ function createWindow() {
     width: 550,
     height: 1200,
     minWidth: 450,
-    icon: path.join(__dirname, 'assets/icons/png/64x64.png')
+    icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
+    show: false
   });
+
+  // Splash screen.
+  splash = new BrowserWindow({
+    width: 810,
+    height: 610,
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true
+  });
+  splash.loadURL(url.format({
+    pathname: path.join(__dirname, '/assets/splash/splash.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -33,6 +48,11 @@ function createWindow() {
     protocol: 'file:',
     slashes: true
   }));
+
+  mainWindow.once('ready-to-show', () => {
+    splash.destroy();
+    mainWindow.show();
+  });
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
