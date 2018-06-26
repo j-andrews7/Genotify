@@ -334,6 +334,7 @@ function displayHits(hitsList) {
 function renderExpression(data) {
   var targ = document.getElementById('highchartsContainer');
   if (data[0] === null || data[1] === null) {
+    targ.innerHTML = 'No expression data available for this species.';
     return;
   };
   expressionAtlasHeatmapHighcharts.render({
