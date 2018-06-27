@@ -1,7 +1,7 @@
 ## Change log
 
 ### _**v1.1.0**_
-**Release date: June 24th, 2018**
+**Release date: June 27th, 2018**
  - Added splash screen.
  - Added ability to limit to multiple species rather than just one.
  - Added table so hits are easily navigable rather than showing the top hit only.
