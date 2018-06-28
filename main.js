@@ -31,7 +31,7 @@ function createWindow() {
   // Splash screen.
   splash = new BrowserWindow({
     width: 810,
-    height: 610,
+    height: 350,
     transparent: true,
     frame: false,
     alwaysOnTop: true
