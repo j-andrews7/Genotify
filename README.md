@@ -10,7 +10,7 @@ This program aims to give you access to all of the resources you could ever want
 
 ## Installation
 
-Just download the release for your OS, unzip, and run. To build from source with `node.js`, you can just clone the repo and do the typical `npm install` followed by `npm start`.
+Just download the [release](https://github.com/j-andrews7/GenotifyDesktop/releases) for your OS, unpack, and run. To build from source with `node.js`, you can clone the repo and run `npm install` followed by `npm start`.
 
 ## Usage
 
