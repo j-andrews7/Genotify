@@ -1,5 +1,10 @@
 ## Change log
 
+### _**v1.1.1**_
+**Release date: July 12th, 2018**
+ - Fixed 'Gene Basics' header changing to 'Overview' after un-collapsing the section.
+ - Fixed a bug where headers weren't properly displayed for a hit after a query where no hits were found.
+
 ### _**v1.1.0**_
 **Release date: June 27th, 2018**
  - Added splash screen.
