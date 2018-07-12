@@ -889,7 +889,7 @@ function getCTDAssociations(id) {
 
 // Display and hide section headings as appropriate.
 function displayHeadings() {
-  var headers = document.querySelectorAll('sect-header');
+  var headers = document.querySelectorAll('.sect-header');
 
   for (var i = 0; i < headers.length; i++) {
     var childData = headers[i];
