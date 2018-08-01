@@ -1,7 +1,7 @@
 {
   "name": "Genotify",
   "productName": "Genotify",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": "Jared Andrews",
   "license": "GPL-3.0",
   "repository": "https://github.com/j-andrews7/Genotify",
@@ -22,6 +22,7 @@
     "load-json-file": "~4.0.0",
     "datatables.net": "1.10.16",
     "datatables.net-dt": "1.10.16",
-    "expression-atlas-heatmap-highcharts": "4.4.1"
+    "expression-atlas-heatmap-highcharts": "4.4.1",
+    "ProtVista": "j-andrews7/ProtVista"
   }
 }

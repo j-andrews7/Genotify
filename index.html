@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css"/>
     <link rel="stylesheet" href="./assets/css/jquery.flexdatalist.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.17/css/jquery.dataTables.min.css"/>
+    <link href="./assets/css/protvista.css" rel="stylesheet"/>
     <link rel="stylesheet" href="./assets/css/style.css">
     <script>if (typeof module === "object") {window.module = module; module = undefined;}</script>
 
@@ -167,6 +168,12 @@
           <span class="glyphicon glyphicon-collapse-down"></span>Expression</h3>
         <div id="expression" class="collapse hidden">
           <div id="highchartsContainer"></div>
+        </div>
+        <hr class="flex-rule">
+        <h3 class="sect-header" data-toggle="collapse" data-target="#protein" id="protein-header">
+          <span class="glyphicon glyphicon-collapse-down"></span>Protein Viewer</h3>
+        <div id="protein" class="collapse hidden">
+          <div id="proteinContainer"></div>
         </div>
         <hr class="flex-rule">
         <h3 class="sect-header" data-toggle="collapse" data-target="#diseases" id="diseases-header">

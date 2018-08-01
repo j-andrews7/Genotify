@@ -10,6 +10,7 @@ require('datatables.net')(window, $);
 require('./assets/js/ellipsis.js');
 window.Bootstrap = require('bootstrap');
 require('./assets/js/jquery.flexdatalist.min.js');
+var ProtVista = require('ProtVista');
 
 var speciesObj = null;
 var xmlParser = new DOMParser();
@@ -183,6 +184,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
     );
   });
 
+  $("#protein").on("hide.bs.collapse", function() {
+    $("#protein-header").html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Protein Viewer'
+    );
+  });
+  $("#protein").on("show.bs.collapse", function() {
+    $("#protein-header").html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Protein Viewer'
+    );
+  });
+
   $("#diseases").on("hide.bs.collapse", function() {
     $("#diseases-header").html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Disease Associations'
@@ -351,15 +363,40 @@ function renderExpression(data) {
 
 }
 
+function renderProtein(data) {
+  var targ = document.getElementById('proteinContainer');
+  if (data[0] === null) {
+    targ.innerHTML = 'No data available for this protein.';
+    return;
+  };
+  var instance = new ProtVista({
+    el: targ,
+    uniprotacc: data
+  });
+
+  instance.getDispatcher().on("noDataAvailable", function(obj) {
+    targ.innerHTML = 'No data available for this protein.';
+  });
+
+  instance.getDispatcher().on("noDataRetrieved", function(obj) {
+    targ.innerHTML = 'No data available for this protein.';
+  });
+
+}
+
 function displayData(dataObj) {
   // dataObj is a single search hit with all gene info as a dict.
   for (data in dataObj) {
     if (dataObj.hasOwnProperty(data) && dataObj[data]) {
       // Check/call expression widget rendering.
       var currentData = document.getElementById(data);
-      if (currentData.id === "expression") {
+      if (currentData.id === 'expression') {
         currentData.classList.remove('hidden');
         renderExpression(dataObj[data]);
+        continue;
+      } else if (currentData.id === 'protein') {
+        currentData.classList.remove('hidden');
+        renderProtein(dataObj[data]);
         continue;
       } else if (currentData.id === "species" && dataObj[data].toLowerCase() ===
         "homo sapiens") {
@@ -500,7 +537,7 @@ function hideData(divObj) {
   }
 
   // Handle the expression data.
-  if (divObj.id === 'expression') {
+  if (divObj.id === 'expression' || divObj.id === 'protein') {
     divObj.classList.add('hidden');
   }
 
@@ -525,6 +562,7 @@ function parseGeneData(data) {
     var ensembl = null;
     var pfam = null;
     var uniprot = null;
+    var protein = null;
     var pharmgkb = null;
     var expression = null;
     var prosite = null;
@@ -689,6 +727,7 @@ function parseGeneData(data) {
         ident: data.uniprot['Swiss-Prot']
       };
       uniprotSum = getUniprotSummary(data.uniprot['Swiss-Prot']);
+      protein = data.uniprot['Swiss-Prot'];
     }
 
     if (data.hasOwnProperty('WormBase') || data.hasOwnProperty('uniprot')) {
@@ -713,6 +752,7 @@ function parseGeneData(data) {
           'omim': omim,
           'ensembl': ensembl,
           'uniprot': uniprot,
+          'protein': protein,
           'pfam': pfam,
           'pharmgkb': pharmgkb,
           'prosite': prosite,
@@ -750,6 +790,7 @@ function parseGeneData(data) {
         'omim': omim,
         'ensembl': ensembl,
         'uniprot': uniprot,
+        'protein': protein,
         'pfam': pfam,
         'pharmgkb': pharmgkb,
         'prosite': prosite,
