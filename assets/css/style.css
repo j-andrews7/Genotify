@@ -118,6 +118,11 @@ p {
   width: 100%;
 }
 
+#proteinContainer {
+  background-color: #fff;
+  margin: 10px;
+}
+
 .split-div {
   display: flex;
   background-color: #bccdc7;
