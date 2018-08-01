@@ -1,5 +1,9 @@
 ## Change log
 
+### _**v1.2.0**_
+
+ - Fixed a bug where the hits search box was being improperly hidden if no results were returned. 
+
 ### _**v1.1.1**_
 **Release date: July 12th, 2018**
  - Fixed 'Gene Basics' header changing to 'Overview' after un-collapsing the section.
