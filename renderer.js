@@ -515,6 +515,7 @@ function hideData(divObj) {
 
   if (divObj.id === 'hits-div') {
     hitsTable.clear().draw();
+    return;
   }
 
   for (i = 0; i < labels.length; i++) {
