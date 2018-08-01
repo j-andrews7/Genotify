@@ -19,9 +19,6 @@ var hitsTable;
 var diseaseTable;
 var idMap = {};
 var hits;
-var expSpecies = [
-
-];
 
 var basepath = app.getAppPath();
 
@@ -308,6 +305,7 @@ function newQuery(term = null) {
           hideData(document.getElementById('loc-div'));
           hideData(document.getElementById('summary-div'));
           hideData(document.getElementById('expression'));
+          hideData(document.getElementById('protein'));
           hideData(document.getElementById('diseases'));
           hideData(document.getElementById('hits-div'));
           hideData(document.getElementById('species-div'));

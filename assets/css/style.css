@@ -365,32 +365,32 @@ thead {
 }
 
 .modal-body .row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .modal-body .row > div:first-child {
-    display: flex;
-    flex-grow: 1;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .checkbox {
-    margin: 0;
+  margin: 0;
 }
 
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
-    position: relative;
-    margin: 0;
+  position: relative;
+  margin: 0;
 }
 
 .checkbox label, .radio label {
-    padding-left: 5px;
+  padding-left: 5px;
 }
 
 .checkbox+.checkbox, .radio+.radio {
-    margin: 0;
+  margin: 0;
 }
