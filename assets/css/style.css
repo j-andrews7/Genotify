@@ -112,10 +112,18 @@ p {
   flex: 2;
 }
 
+#expression {
+  margin: 10px;
+}
+
 #diseases {
   padding: 0 10px;
   margin: 0;
   width: 100%;
+}
+
+#exp-table_info {
+  margin-bottom: 15px;
 }
 
 #proteinContainer {
@@ -185,7 +193,6 @@ thead {
 
 #highchartsContainer {
   background-color: #fff;
-  margin: 10px;
   flex: 4;
   padding: 10px;
 }

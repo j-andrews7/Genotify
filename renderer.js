@@ -13,9 +13,12 @@ require('./assets/js/jquery.flexdatalist.min.js');
 var ProtVista = require('ProtVista');
 
 var speciesObj = null;
+var expObj = null;
 var xmlParser = new DOMParser();
+var currentHit = null;
 var species = [];
 var hitsTable;
+var expTable;
 var diseaseTable;
 var idMap = {};
 var hits;
@@ -24,6 +27,7 @@ var basepath = app.getAppPath();
 
 document.addEventListener('DOMContentLoaded', function(event) {
   retrieveSpeciesJSON();
+  retrieveExpList();
 
   ipcRenderer.send('loaded');
   // Listen for command to read from clipboard.
@@ -52,6 +56,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
   });
 
+  function hideTooltip(x) {
+    setTimeout(function() {
+      x.tooltip('hide');
+    }, 1000);
+  }
+
   // Table initializations.
   hitsTable = $('#hits-table').DataTable({
     scrollY: '150px',
@@ -76,6 +86,24 @@ document.addEventListener('DOMContentLoaded', function(event) {
     columnDefs: [{
       targets: 1,
       render: $.fn.dataTable.render.ellipsis(9)
+    }]
+  });
+
+  expTable = $('#exp-table').DataTable({
+    scrollY: '150px',
+    scrollX: false,
+    scrollCollapse: true,
+    paging: false,
+    language: {
+      'search': 'Search Experiments:'
+    },
+    columns: [{
+      title: 'ID',
+      width: '20%'
+    }, {
+      title: 'Description'
+    }, {
+      title: 'Type'
     }]
   });
 
@@ -118,6 +146,29 @@ document.addEventListener('DOMContentLoaded', function(event) {
       }
     });
 
+  // Handle switching which expression experiment is displayed.
+  document.querySelector('#exp-table tbody').addEventListener('click',
+    function(event) {
+      var td = event.target;
+      var tbl = document.getElementById('exp-table');
+      while (td !== this && !td.matches('td')) {
+        td = td.parentNode;
+      }
+      if (td === this) {
+        console.log('No table cell found');
+      } else {
+        // Use row and cell indices to get the hit data for row clicked on.
+        var row = td.parentNode.rowIndex;
+        var hitID = tbl.rows[row].cells[0].innerHTML;
+        // Deal with possible ellipses in content.
+        if (hitID.includes('span')) {
+          var s = $(hitID);
+          hitID = s[0].title;
+        }
+        renderSingleExperiment(hitID);
+      }
+    });
+
   // Species search input setup.
   $('.flexdatalist').flexdatalist({
     minLength: 1,
@@ -134,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   // Ensure hits table is properly adjusted on window resize.
   window.onresize = function() {
     hitsTable.columns.adjust().draw();
+    expTable.columns.adjust().draw();
   }
 
   // Used for header collapse.
@@ -205,12 +257,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
     diseaseTable.columns.adjust().draw();
   });
 
-  function hideTooltip(x) {
-    setTimeout(function() {
-      x.tooltip('hide');
-    }, 1000);
-  }
-
   // Copies a clicked div element text to the clipboard.
   var copyToClipboard = function() {
     var pop = $(this);
@@ -241,6 +287,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
 function retrieveSpeciesJSON() {
   loadJsonFile(basepath + '/species.json').then(function(json) {
     speciesObj = json;
+  });
+}
+
+function retrieveExpList() {
+  $.getJSON('https://www.ebi.ac.uk/gxa/json/experiments', function(data) {
+    expObj = data.aaData;
   });
 }
 
@@ -342,6 +394,7 @@ function displayHits(hitsList) {
 }
 
 function renderExpression(data) {
+  // Renders the interactive widget initially.
   var targ = document.getElementById('highchartsContainer');
   if (data[0] === null || data[1] === null) {
     targ.innerHTML = 'No expression data available for this species.';
@@ -359,6 +412,70 @@ function renderExpression(data) {
     }
   });
 
+  // Creates the experiment table.
+  displayExpers();
+}
+
+function renderSingleExperiment(expID) {
+  var targ = document.getElementById('highchartsContainer');
+  expressionAtlasHeatmapHighcharts.render({
+    experiment: expID,
+    query: {
+      gene: [{
+        'value': currentHit.ensembl.ident
+      }]
+    },
+    target: targ,
+    disableGoogleAnalytics: true,
+    fail: function() {
+      expressionAtlasHeatmapHighcharts.render({
+        experiment: expID,
+        query: {
+          gene: [{
+            'value': currentHit.uniprot.ident
+          }]
+        },
+        target: targ,
+        disableGoogleAnalytics: true,
+        fail: function() {
+          expressionAtlasHeatmapHighcharts.render({
+            experiment: expID,
+            query: {
+              gene: [{
+                'value': currentHit['gene-symbol']
+              }]
+            },
+            target: targ,
+            disableGoogleAnalytics: true,
+            fail: function() {
+              targ.innerHTML =
+                'No expression data available for this gene in this experiment.'
+            }
+          })
+        }
+      })
+    }
+  });
+}
+
+function displayExpers() {
+  var dataSet = [];
+  expTable.clear();
+  for (i in expObj) {
+    var exper = expObj[i];
+    var exID = exper.experimentAccession;
+    var exDesc = exper.experimentDescription;
+
+    if (exper.species === currentHit.species) {
+      dataSet.push([
+        exID,
+        exDesc
+      ]);
+    }
+  }
+  expTable.rows.add(
+    dataSet
+  ).draw();
 }
 
 function renderProtein(data) {
@@ -384,6 +501,7 @@ function renderProtein(data) {
 
 function displayData(dataObj) {
   // dataObj is a single search hit with all gene info as a dict.
+  currentHit = dataObj;
   for (data in dataObj) {
     if (dataObj.hasOwnProperty(data) && dataObj[data]) {
       // Check/call expression widget rendering.
@@ -482,11 +600,13 @@ function displayData(dataObj) {
     } else {
       // Hide and clear any previous results.
       currentData = document.getElementById(data);
-      if (currentData !== null && !currentData.classList.contains('hidden')) {
+      if (currentData !== null && !currentData.classList.contains(
+          'hidden')) {
         currentData.classList.add('hidden');
       }
       // Remove links of previous results.
-      if (currentData !== null && currentData.classList.contains('add-link')) {
+      if (currentData !== null && currentData.classList.contains(
+          'add-link')) {
         var oldLinks = currentData.getElementsByTagName('a');
         while (oldLinks.length > 0) {
           oldLinks[0].parentNode.removeChild(oldLinks[0]);
@@ -494,7 +614,8 @@ function displayData(dataObj) {
       }
       // Hide labels too.
       currentLabel = document.getElementById(data + '-label');
-      if (currentLabel !== null && !currentLabel.classList.contains('hidden')) {
+      if (currentLabel !== null && !currentLabel.classList.contains(
+          'hidden')) {
         currentLabel.classList.add('hidden');
       }
     }
@@ -538,6 +659,7 @@ function hideData(divObj) {
   // Handle the expression data.
   if (divObj.id === 'expression' || divObj.id === 'protein') {
     divObj.classList.add('hidden');
+    expTable.clear().draw();
   }
 
   // Delete any links if necessary.
@@ -665,11 +787,13 @@ function parseGeneData(data) {
 
     if (data.hasOwnProperty('genomic_pos')) {
       if (data.genomic_pos.constructor === Array) {
-        coords = 'chr' + data.genomic_pos[0].chr + ':' + data.genomic_pos[0]
+        coords = 'chr' + data.genomic_pos[0].chr + ':' + data.genomic_pos[
+            0]
           .start +
           '-' + data.genomic_pos[0].end;
       } else {
-        coords = 'chr' + data.genomic_pos.chr + ':' + data.genomic_pos.start +
+        coords = 'chr' + data.genomic_pos.chr + ':' + data.genomic_pos
+          .start +
           '-' + data.genomic_pos.end;
       }
     }
@@ -729,7 +853,8 @@ function parseGeneData(data) {
       protein = data.uniprot['Swiss-Prot'];
     }
 
-    if (data.hasOwnProperty('WormBase') || data.hasOwnProperty('uniprot')) {
+    if (data.hasOwnProperty('WormBase') || data.hasOwnProperty(
+        'uniprot')) {
       Promise.all([wormbaseSum, uniprotSum]).then(function(values) {
         wormbaseSum = values[0];
         uniprotSum = values[1];
@@ -820,27 +945,29 @@ function getUniprotSummary(id) {
 
     var summary;
 
-    fetch('https://www.uniprot.org/uniprot/' + id + '.xml').then(function(
-      response) {
-      if (response.status !== 200) {
-        console.log('Looks like there was a problem. Status Code: ' +
-          response.status);
+    fetch('https://www.uniprot.org/uniprot/' + id + '.xml').then(
+      function(
+        response) {
+        if (response.status !== 200) {
+          console.log(
+            'Looks like there was a problem. Status Code: ' +
+            response.status);
 
-        reject();
-      }
-
-      response.text().then(function(data) {
-        var parsedXML = xmlParser.parseFromString(data,
-          'text/xml');
-        var comments = parsedXML.querySelectorAll(
-          'comment[type="function"]');
-
-        for (var i = 0; i < comments.length; i++) {
-          summary = comments[0].textContent;
+          reject();
         }
-        resolve(summary);
-      })
-    }).catch(function(err) {
+
+        response.text().then(function(data) {
+          var parsedXML = xmlParser.parseFromString(data,
+            'text/xml');
+          var comments = parsedXML.querySelectorAll(
+            'comment[type="function"]');
+
+          for (var i = 0; i < comments.length; i++) {
+            summary = comments[0].textContent;
+          }
+          resolve(summary);
+        })
+      }).catch(function(err) {
       console.error('Fetch Uniprot Error', err);
       reject();
     });
@@ -857,7 +984,8 @@ function getWormbaseSummary(id) {
       '/concise_description').then(function(
       response) {
       if (response.status !== 200) {
-        console.log('Looks like there was a problem. Status Code: ' +
+        console.log(
+          'Looks like there was a problem. Status Code: ' +
           response.status);
         reject();
       }
@@ -874,7 +1002,8 @@ function getWormbaseSummary(id) {
 
 function getCTDAssociations(id) {
   var queryUrl =
-    'http://ctdbase.org/tools/batchQuery.go?inputType=gene&inputTerms=' + id +
+    'http://ctdbase.org/tools/batchQuery.go?inputType=gene&inputTerms=' +
+    id +
     '&report=diseases_curated&format=json';
 
   fetch(queryUrl).then(function(response) {
@@ -897,7 +1026,8 @@ function getCTDAssociations(id) {
               var pubs = x.PubMedIDs.split('|');
               for (i in pubs) {
                 var newLink =
-                  '<a href=https://www.ncbi.nlm.nih.gov/pubmed/' + pubs[
+                  '<a href=https://www.ncbi.nlm.nih.gov/pubmed/' +
+                  pubs[
                     i] +
                   '>' +
                   pubs[i] + '</a>';
