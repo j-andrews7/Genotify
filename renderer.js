@@ -22,6 +22,7 @@ var expTable;
 var diseaseTable;
 var idMap = {};
 var hits;
+var currentExp = null;
 
 var basepath = app.getAppPath();
 
@@ -160,11 +161,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
         // Use row and cell indices to get the hit data for row clicked on.
         var row = td.parentNode.rowIndex;
         var hitID = tbl.rows[row].cells[0].innerHTML;
-        // Deal with possible ellipses in content.
-        if (hitID.includes('span')) {
-          var s = $(hitID);
-          hitID = s[0].title;
-        }
+        currentExp = {
+          species: currentHit.species,
+          experiment: hitID
+        };
+
         renderSingleExperiment(hitID);
       }
     });
@@ -182,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     species = $('.flexdatalist').flexdatalist('value');
   });
 
-  // Ensure hits table is properly adjusted on window resize.
+  // Ensure tables are properly adjusted on window resize.
   window.onresize = function() {
     hitsTable.columns.adjust().draw();
     expTable.columns.adjust().draw();
@@ -226,11 +227,13 @@ document.addEventListener('DOMContentLoaded', function(event) {
     $("#expression-header").html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Expression'
     );
+    expTable.columns.adjust().draw();
   });
   $("#expression").on("show.bs.collapse", function() {
     $("#expression-header").html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Expression'
     );
+    expTable.columns.adjust().draw();
   });
 
   $("#protein").on("hide.bs.collapse", function() {
@@ -284,12 +287,15 @@ document.addEventListener('DOMContentLoaded', function(event) {
   });
 });
 
+
+// Grab the JSON file with species/TaxID mappings.
 function retrieveSpeciesJSON() {
   loadJsonFile(basepath + '/species.json').then(function(json) {
     speciesObj = json;
   });
 }
 
+// Grab the list of all expression experiments.
 function retrieveExpList() {
   $.getJSON('https://www.ebi.ac.uk/gxa/json/experiments', function(data) {
     expObj = data.aaData;
@@ -338,6 +344,7 @@ function newQuery(term = null) {
             'hits': hits.length
           };
 
+          // Display all info for the top hit.
           displayData(basics);
           displayHits(data);
           displayHeadings();
@@ -352,6 +359,7 @@ function newQuery(term = null) {
             'match-score': 0
           };
 
+          // Wipe the rest of the fields.
           displayData(empty);
           hideData(document.getElementById('info-div'));
           hideData(document.getElementById('loc-div'));
@@ -372,6 +380,7 @@ function newQuery(term = null) {
     });
 }
 
+// Adds all hits to the hit table.
 function displayHits(hitsList) {
   var dataSet = [];
   hitsTable.clear();
@@ -400,6 +409,15 @@ function renderExpression(data) {
     targ.innerHTML = 'No expression data available for this species.';
     return;
   };
+  // Render previously selected experiment if top hit from new search is of same species.
+  // Much more convenient than continously going back and selecting the same experiment.
+  if (currentExp !== null) {
+    console.log(currentExp);
+    if (currentExp.species === data[1]) {
+      renderSingleExperiment(currentExp.experiment);
+      return;
+    }
+  };
   expressionAtlasHeatmapHighcharts.render({
     query: {
       gene: data[0].ident,
@@ -416,6 +434,8 @@ function renderExpression(data) {
   displayExpers();
 }
 
+// Display a single experiment chosen from the experiment list.
+// Tries several different gene identifiers if ENSEMBL ID fails.
 function renderSingleExperiment(expID) {
   var targ = document.getElementById('highchartsContainer');
   expressionAtlasHeatmapHighcharts.render({
@@ -458,6 +478,7 @@ function renderSingleExperiment(expID) {
   });
 }
 
+// Populate the expression experiment table.
 function displayExpers() {
   var dataSet = [];
   expTable.clear();
@@ -465,11 +486,20 @@ function displayExpers() {
     var exper = expObj[i];
     var exID = exper.experimentAccession;
     var exDesc = exper.experimentDescription;
+    var exType;
+    if (exper.experimentType === 'MICROARRAY_ANY') {
+      exType = 'Microarray';
+    } else if (exper.experimentType === 'RNASEQ_MRNA_DIFFERENTIAL') {
+      exType = 'RNA-seq Differential'
+    } else {
+      exType = 'RNA-seq Baseline'
+    };
 
     if (exper.species === currentHit.species) {
       dataSet.push([
         exID,
-        exDesc
+        exDesc,
+        exType
       ]);
     }
   }
@@ -478,6 +508,7 @@ function displayExpers() {
   ).draw();
 }
 
+// Renders the ProtVista widget.
 function renderProtein(data) {
   var targ = document.getElementById('proteinContainer');
   if (data[0] === null) {
@@ -499,6 +530,8 @@ function renderProtein(data) {
 
 }
 
+
+// Display all text fields.
 function displayData(dataObj) {
   // dataObj is a single search hit with all gene info as a dict.
   currentHit = dataObj;
@@ -619,12 +652,11 @@ function displayData(dataObj) {
         currentLabel.classList.add('hidden');
       }
     }
-
   }
 }
 
+// Hide all data in child nodes of given div element.
 function hideData(divObj) {
-  // Hide all data in child nodes of given div element.
   var labels = divObj.querySelectorAll('label');
   var links = divObj.querySelectorAll('a');
   var i;
@@ -669,6 +701,7 @@ function hideData(divObj) {
   }
 }
 
+// Parses all gene data from a given hit into an Object.
 function parseGeneData(data) {
   return new Promise(function(resolve, reject) {
     var aliases = null;
@@ -936,7 +969,7 @@ function parseGeneData(data) {
   });
 };
 
-
+// Fetch the function summary for given protein from UniprotKB.
 function getUniprotSummary(id) {
   return new Promise(function(resolve, reject) {
     if (!id) {
@@ -974,6 +1007,7 @@ function getUniprotSummary(id) {
   });
 }
 
+// Fetch the function summary for given protein from Wormbase.
 function getWormbaseSummary(id) {
   return new Promise(function(resolve, reject) {
     if (!id) {
@@ -1000,6 +1034,7 @@ function getWormbaseSummary(id) {
   });
 }
 
+// Fetch disease associations from CTDbase and add them to the disease table.
 function getCTDAssociations(id) {
   var queryUrl =
     'http://ctdbase.org/tools/batchQuery.go?inputType=gene&inputTerms=' +
