@@ -189,72 +189,78 @@ document.addEventListener('DOMContentLoaded', function(event) {
     expTable.columns.adjust().draw();
   }
 
+  // Reset expression widget to default view on button press.
+  document.querySelector('#reset-button').addEventListener('click',
+    function() {
+      renderExpression([currentHit.ensembl, currentHit.species], true);
+    });
+
   // Used for header collapse.
-  $("#summary-div").on("hide.bs.collapse", function() {
-    $("#function-header").html(
+  $('#summary-div').on('hide.bs.collapse', function() {
+    $('#function-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Function'
     );
   });
-  $("#summary-div").on("show.bs.collapse", function() {
-    $("#function-header").html(
+  $('#summary-div').on('show.bs.collapse', function() {
+    $('#function-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Function'
     );
   });
 
-  $("#basics").on("hide.bs.collapse", function() {
-    $("#basics-header").html(
+  $('#basics').on('hide.bs.collapse', function() {
+    $('#basics-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Gene Basics'
     );
   });
-  $("#basics").on("show.bs.collapse", function() {
-    $("#basics-header").html(
+  $('#basics').on('show.bs.collapse', function() {
+    $('#basics-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Gene Basics'
     );
   });
 
-  $("#accessions").on("hide.bs.collapse", function() {
-    $("#accessions-header").html(
+  $('#accessions').on('hide.bs.collapse', function() {
+    $('#accessions-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Accessions'
     );
   });
-  $("#accessions").on("show.bs.collapse", function() {
-    $("#accessions-header").html(
+  $('#accessions').on('show.bs.collapse', function() {
+    $('#accessions-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Accessions'
     );
   });
 
-  $("#expression").on("hide.bs.collapse", function() {
-    $("#expression-header").html(
+  $('#expression').on('hide.bs.collapse', function() {
+    $('#expression-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Expression'
     );
     expTable.columns.adjust().draw();
   });
-  $("#expression").on("show.bs.collapse", function() {
-    $("#expression-header").html(
+  $('#expression').on('show.bs.collapse', function() {
+    $('#expression-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Expression'
     );
     expTable.columns.adjust().draw();
   });
 
-  $("#protein").on("hide.bs.collapse", function() {
-    $("#protein-header").html(
+  $('#protein').on('hide.bs.collapse', function() {
+    $('#protein-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Protein Viewer'
     );
   });
-  $("#protein").on("show.bs.collapse", function() {
-    $("#protein-header").html(
+  $('#protein').on('show.bs.collapse', function() {
+    $('#protein-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Protein Viewer'
     );
   });
 
-  $("#diseases").on("hide.bs.collapse", function() {
-    $("#diseases-header").html(
+  $('#diseases').on('hide.bs.collapse', function() {
+    $('#diseases-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Disease Associations'
     );
     diseaseTable.columns.adjust().draw();
   });
-  $("#diseases").on("show.bs.collapse", function() {
-    $("#diseases-header").html(
+  $('#diseases').on('show.bs.collapse', function() {
+    $('#diseases-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Disease Associations'
     );
     diseaseTable.columns.adjust().draw();
@@ -402,26 +408,29 @@ function displayHits(hitsList) {
   ).draw();
 }
 
-function renderExpression(data) {
+function renderExpression(data, reset) {
+  var expGene = data[0].ident;
+  var expSpecies = data[1];
   // Renders the interactive widget initially.
   var targ = document.getElementById('highchartsContainer');
   if (data[0] === null || data[1] === null) {
     targ.innerHTML = 'No expression data available for this species.';
     return;
   };
+
   // Render previously selected experiment if top hit from new search is of same species.
   // Much more convenient than continously going back and selecting the same experiment.
-  if (currentExp !== null) {
-    console.log(currentExp);
+  if (currentExp !== null && reset !== true) {
     if (currentExp.species === data[1]) {
       renderSingleExperiment(currentExp.experiment);
       return;
     }
-  };
+  }
+
   expressionAtlasHeatmapHighcharts.render({
     query: {
-      gene: data[0].ident,
-      species: data[1],
+      gene: expGene,
+      species: expSpecies,
     },
     target: targ,
     disableGoogleAnalytics: true,
@@ -541,7 +550,7 @@ function displayData(dataObj) {
       var currentData = document.getElementById(data);
       if (currentData.id === 'expression') {
         currentData.classList.remove('hidden');
-        renderExpression(dataObj[data]);
+        renderExpression(dataObj[data], false);
         continue;
       } else if (currentData.id === 'protein') {
         currentData.classList.remove('hidden');
