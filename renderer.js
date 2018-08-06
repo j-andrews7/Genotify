@@ -409,14 +409,15 @@ function displayHits(hitsList) {
 }
 
 function renderExpression(data, reset) {
-  var expGene = data[0].ident;
-  var expSpecies = data[1];
+
   // Renders the interactive widget initially.
   var targ = document.getElementById('highchartsContainer');
   if (data[0] === null || data[1] === null) {
     targ.innerHTML = 'No expression data available for this species.';
     return;
   };
+  var expGene = data[0].ident;
+  var expSpecies = data[1];
 
   // Render previously selected experiment if top hit from new search is of same species.
   // Much more convenient than continously going back and selecting the same experiment.
