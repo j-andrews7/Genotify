@@ -1,11 +1,11 @@
 ## Change log
 
 ### _**v1.2.0**_
-**Release date: 2018**
- - Fixed a bug where the hits search box was being improperly hidden if no results were returned.
+**Release date: August 6th, 2018**
  - Added the Prot Vista widget from EBI for interactive protein data (domains, PTMs, variation, etc).
  - Added a table for all expression experiments available for a given species so that the expression widget can display single experiments.
-
+ - Fixed a bug where the hits search box was sometimes improperly hidden.
+ - Fixed a bug where the hits search box was being improperly hidden if no results were returned.
 
 ### _**v1.1.1**_
 **Release date: July 12th, 2018**
