@@ -100,6 +100,19 @@ p {
   flex: 2;
 }
 
+#reset-button {
+  background-color: #fff;
+  color: black;
+  border: 2px solid #e7e7e7;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+#reset-button:hover {
+  background-color: #e7e7e7;
+}
+
 #genotifyheader {
   margin: 0;
   padding: 0;
@@ -112,10 +125,23 @@ p {
   flex: 2;
 }
 
+#expression {
+  margin: 10px;
+}
+
 #diseases {
   padding: 0 10px;
   margin: 0;
   width: 100%;
+}
+
+#exp-table_info {
+  margin-bottom: 15px;
+}
+
+#proteinContainer {
+  background-color: #fff;
+  margin-top: 10px;
 }
 
 .split-div {
@@ -180,7 +206,6 @@ thead {
 
 #highchartsContainer {
   background-color: #fff;
-  margin: 10px;
   flex: 4;
   padding: 10px;
 }
@@ -360,32 +385,32 @@ thead {
 }
 
 .modal-body .row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .modal-body .row > div:first-child {
-    display: flex;
-    flex-grow: 1;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .checkbox {
-    margin: 0;
+  margin: 0;
 }
 
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
-    position: relative;
-    margin: 0;
+  position: relative;
+  margin: 0;
 }
 
 .checkbox label, .radio label {
-    padding-left: 5px;
+  padding-left: 5px;
 }
 
 .checkbox+.checkbox, .radio+.radio {
-    margin: 0;
+  margin: 0;
 }

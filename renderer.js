@@ -10,22 +10,25 @@ require('datatables.net')(window, $);
 require('./assets/js/ellipsis.js');
 window.Bootstrap = require('bootstrap');
 require('./assets/js/jquery.flexdatalist.min.js');
+var ProtVista = require('ProtVista');
 
 var speciesObj = null;
+var expObj = null;
 var xmlParser = new DOMParser();
+var currentHit = null;
 var species = [];
 var hitsTable;
+var expTable;
 var diseaseTable;
 var idMap = {};
 var hits;
-var expSpecies = [
-
-];
+var currentExp = null;
 
 var basepath = app.getAppPath();
 
 document.addEventListener('DOMContentLoaded', function(event) {
   retrieveSpeciesJSON();
+  retrieveExpList();
 
   ipcRenderer.send('loaded');
   // Listen for command to read from clipboard.
@@ -54,6 +57,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
   });
 
+  function hideTooltip(x) {
+    setTimeout(function() {
+      x.tooltip('hide');
+    }, 1000);
+  }
+
   // Table initializations.
   hitsTable = $('#hits-table').DataTable({
     scrollY: '150px',
@@ -78,6 +87,24 @@ document.addEventListener('DOMContentLoaded', function(event) {
     columnDefs: [{
       targets: 1,
       render: $.fn.dataTable.render.ellipsis(9)
+    }]
+  });
+
+  expTable = $('#exp-table').DataTable({
+    scrollY: '150px',
+    scrollX: false,
+    scrollCollapse: true,
+    paging: false,
+    language: {
+      'search': 'Search Experiments:'
+    },
+    columns: [{
+      title: 'ID',
+      width: '20%'
+    }, {
+      title: 'Description'
+    }, {
+      title: 'Type'
     }]
   });
 
@@ -120,6 +147,29 @@ document.addEventListener('DOMContentLoaded', function(event) {
       }
     });
 
+  // Handle switching which expression experiment is displayed.
+  document.querySelector('#exp-table tbody').addEventListener('click',
+    function(event) {
+      var td = event.target;
+      var tbl = document.getElementById('exp-table');
+      while (td !== this && !td.matches('td')) {
+        td = td.parentNode;
+      }
+      if (td === this) {
+        console.log('No table cell found');
+      } else {
+        // Use row and cell indices to get the hit data for row clicked on.
+        var row = td.parentNode.rowIndex;
+        var hitID = tbl.rows[row].cells[0].innerHTML;
+        currentExp = {
+          species: currentHit.species,
+          experiment: hitID
+        };
+
+        renderSingleExperiment(hitID);
+      }
+    });
+
   // Species search input setup.
   $('.flexdatalist').flexdatalist({
     minLength: 1,
@@ -133,74 +183,88 @@ document.addEventListener('DOMContentLoaded', function(event) {
     species = $('.flexdatalist').flexdatalist('value');
   });
 
-  // Ensure hits table is properly adjusted on window resize.
+  // Ensure tables are properly adjusted on window resize.
   window.onresize = function() {
     hitsTable.columns.adjust().draw();
+    expTable.columns.adjust().draw();
   }
 
+  // Reset expression widget to default view on button press.
+  document.querySelector('#reset-button').addEventListener('click',
+    function() {
+      renderExpression([currentHit.ensembl, currentHit.species], true);
+    });
+
   // Used for header collapse.
-  $("#summary-div").on("hide.bs.collapse", function() {
-    $("#function-header").html(
+  $('#summary-div').on('hide.bs.collapse', function() {
+    $('#function-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Function'
     );
   });
-  $("#summary-div").on("show.bs.collapse", function() {
-    $("#function-header").html(
+  $('#summary-div').on('show.bs.collapse', function() {
+    $('#function-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Function'
     );
   });
 
-  $("#basics").on("hide.bs.collapse", function() {
-    $("#basics-header").html(
+  $('#basics').on('hide.bs.collapse', function() {
+    $('#basics-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Gene Basics'
     );
   });
-  $("#basics").on("show.bs.collapse", function() {
-    $("#basics-header").html(
+  $('#basics').on('show.bs.collapse', function() {
+    $('#basics-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Gene Basics'
     );
   });
 
-  $("#accessions").on("hide.bs.collapse", function() {
-    $("#accessions-header").html(
+  $('#accessions').on('hide.bs.collapse', function() {
+    $('#accessions-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Accessions'
     );
   });
-  $("#accessions").on("show.bs.collapse", function() {
-    $("#accessions-header").html(
+  $('#accessions').on('show.bs.collapse', function() {
+    $('#accessions-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Accessions'
     );
   });
 
-  $("#expression").on("hide.bs.collapse", function() {
-    $("#expression-header").html(
+  $('#expression').on('hide.bs.collapse', function() {
+    $('#expression-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Expression'
     );
+    expTable.columns.adjust().draw();
   });
-  $("#expression").on("show.bs.collapse", function() {
-    $("#expression-header").html(
+  $('#expression').on('show.bs.collapse', function() {
+    $('#expression-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Expression'
+    );
+    expTable.columns.adjust().draw();
+  });
+
+  $('#protein').on('hide.bs.collapse', function() {
+    $('#protein-header').html(
+      '<span class="glyphicon glyphicon-collapse-down"></span>Protein Viewer'
+    );
+  });
+  $('#protein').on('show.bs.collapse', function() {
+    $('#protein-header').html(
+      '<span class="glyphicon glyphicon-collapse-up"></span>Protein Viewer'
     );
   });
 
-  $("#diseases").on("hide.bs.collapse", function() {
-    $("#diseases-header").html(
+  $('#diseases').on('hide.bs.collapse', function() {
+    $('#diseases-header').html(
       '<span class="glyphicon glyphicon-collapse-down"></span>Disease Associations'
     );
     diseaseTable.columns.adjust().draw();
   });
-  $("#diseases").on("show.bs.collapse", function() {
-    $("#diseases-header").html(
+  $('#diseases').on('show.bs.collapse', function() {
+    $('#diseases-header').html(
       '<span class="glyphicon glyphicon-collapse-up"></span>Disease Associations'
     );
     diseaseTable.columns.adjust().draw();
   });
-
-  function hideTooltip(x) {
-    setTimeout(function() {
-      x.tooltip('hide');
-    }, 1000);
-  }
 
   // Copies a clicked div element text to the clipboard.
   var copyToClipboard = function() {
@@ -229,9 +293,18 @@ document.addEventListener('DOMContentLoaded', function(event) {
   });
 });
 
+
+// Grab the JSON file with species/TaxID mappings.
 function retrieveSpeciesJSON() {
   loadJsonFile(basepath + '/species.json').then(function(json) {
     speciesObj = json;
+  });
+}
+
+// Grab the list of all expression experiments.
+function retrieveExpList() {
+  $.getJSON('https://www.ebi.ac.uk/gxa/json/experiments', function(data) {
+    expObj = data.aaData;
   });
 }
 
@@ -277,6 +350,7 @@ function newQuery(term = null) {
             'hits': hits.length
           };
 
+          // Display all info for the top hit.
           displayData(basics);
           displayHits(data);
           displayHeadings();
@@ -291,11 +365,13 @@ function newQuery(term = null) {
             'match-score': 0
           };
 
+          // Wipe the rest of the fields.
           displayData(empty);
           hideData(document.getElementById('info-div'));
           hideData(document.getElementById('loc-div'));
           hideData(document.getElementById('summary-div'));
           hideData(document.getElementById('expression'));
+          hideData(document.getElementById('protein'));
           hideData(document.getElementById('diseases'));
           hideData(document.getElementById('hits-div'));
           hideData(document.getElementById('species-div'));
@@ -310,6 +386,7 @@ function newQuery(term = null) {
     });
 }
 
+// Adds all hits to the hit table.
 function displayHits(hitsList) {
   var dataSet = [];
   hitsTable.clear();
@@ -331,16 +408,29 @@ function displayHits(hitsList) {
   ).draw();
 }
 
-function renderExpression(data) {
+function renderExpression(data, reset) {
+  var expGene = data[0].ident;
+  var expSpecies = data[1];
+  // Renders the interactive widget initially.
   var targ = document.getElementById('highchartsContainer');
   if (data[0] === null || data[1] === null) {
     targ.innerHTML = 'No expression data available for this species.';
     return;
   };
+
+  // Render previously selected experiment if top hit from new search is of same species.
+  // Much more convenient than continously going back and selecting the same experiment.
+  if (currentExp !== null && reset !== true) {
+    if (currentExp.species === data[1]) {
+      renderSingleExperiment(currentExp.experiment);
+      return;
+    }
+  }
+
   expressionAtlasHeatmapHighcharts.render({
     query: {
-      gene: data[0].ident,
-      species: data[1],
+      gene: expGene,
+      species: expSpecies,
     },
     target: targ,
     disableGoogleAnalytics: true,
@@ -349,17 +439,122 @@ function renderExpression(data) {
     }
   });
 
+  // Creates the experiment table.
+  displayExpers();
 }
 
+// Display a single experiment chosen from the experiment list.
+// Tries several different gene identifiers if ENSEMBL ID fails.
+function renderSingleExperiment(expID) {
+  var targ = document.getElementById('highchartsContainer');
+  expressionAtlasHeatmapHighcharts.render({
+    experiment: expID,
+    query: {
+      gene: [{
+        'value': currentHit.ensembl.ident
+      }]
+    },
+    target: targ,
+    disableGoogleAnalytics: true,
+    fail: function() {
+      expressionAtlasHeatmapHighcharts.render({
+        experiment: expID,
+        query: {
+          gene: [{
+            'value': currentHit.uniprot.ident
+          }]
+        },
+        target: targ,
+        disableGoogleAnalytics: true,
+        fail: function() {
+          expressionAtlasHeatmapHighcharts.render({
+            experiment: expID,
+            query: {
+              gene: [{
+                'value': currentHit['gene-symbol']
+              }]
+            },
+            target: targ,
+            disableGoogleAnalytics: true,
+            fail: function() {
+              targ.innerHTML =
+                'No expression data available for this gene in this experiment.'
+            }
+          })
+        }
+      })
+    }
+  });
+}
+
+// Populate the expression experiment table.
+function displayExpers() {
+  var dataSet = [];
+  expTable.clear();
+  for (i in expObj) {
+    var exper = expObj[i];
+    var exID = exper.experimentAccession;
+    var exDesc = exper.experimentDescription;
+    var exType;
+    if (exper.experimentType === 'MICROARRAY_ANY') {
+      exType = 'Microarray';
+    } else if (exper.experimentType === 'RNASEQ_MRNA_DIFFERENTIAL') {
+      exType = 'RNA-seq Differential'
+    } else {
+      exType = 'RNA-seq Baseline'
+    };
+
+    if (exper.species === currentHit.species) {
+      dataSet.push([
+        exID,
+        exDesc,
+        exType
+      ]);
+    }
+  }
+  expTable.rows.add(
+    dataSet
+  ).draw();
+}
+
+// Renders the ProtVista widget.
+function renderProtein(data) {
+  var targ = document.getElementById('proteinContainer');
+  if (data[0] === null) {
+    targ.innerHTML = 'No data available for this protein.';
+    return;
+  };
+  var instance = new ProtVista({
+    el: targ,
+    uniprotacc: data
+  });
+
+  instance.getDispatcher().on("noDataAvailable", function(obj) {
+    targ.innerHTML = 'No data available for this protein.';
+  });
+
+  instance.getDispatcher().on("noDataRetrieved", function(obj) {
+    targ.innerHTML = 'No data available for this protein.';
+  });
+
+}
+
+
+// Display all text fields.
 function displayData(dataObj) {
   // dataObj is a single search hit with all gene info as a dict.
+  currentHit = dataObj;
   for (data in dataObj) {
     if (dataObj.hasOwnProperty(data) && dataObj[data]) {
       // Check/call expression widget rendering.
       var currentData = document.getElementById(data);
-      if (currentData.id === "expression") {
+      if (currentData.id === 'expression') {
         currentData.classList.remove('hidden');
-        renderExpression(dataObj[data]);
+        renderExpression(dataObj[data], false);
+        continue;
+      } else if (currentData.id === 'protein') {
+        currentData.classList.remove('hidden');
+        renderProtein(dataObj[data]);
         continue;
       } else if (currentData.id === "species" && dataObj[data].toLowerCase() ===
         "homo sapiens") {
@@ -447,11 +642,13 @@ function displayData(dataObj) {
     } else {
       // Hide and clear any previous results.
       currentData = document.getElementById(data);
-      if (currentData !== null && !currentData.classList.contains('hidden')) {
+      if (currentData !== null && !currentData.classList.contains(
+          'hidden')) {
         currentData.classList.add('hidden');
       }
       // Remove links of previous results.
-      if (currentData !== null && currentData.classList.contains('add-link')) {
+      if (currentData !== null && currentData.classList.contains(
+          'add-link')) {
         var oldLinks = currentData.getElementsByTagName('a');
         while (oldLinks.length > 0) {
           oldLinks[0].parentNode.removeChild(oldLinks[0]);
@@ -459,16 +656,16 @@ function displayData(dataObj) {
       }
       // Hide labels too.
       currentLabel = document.getElementById(data + '-label');
-      if (currentLabel !== null && !currentLabel.classList.contains('hidden')) {
+      if (currentLabel !== null && !currentLabel.classList.contains(
+          'hidden')) {
         currentLabel.classList.add('hidden');
       }
     }
-
   }
 }
 
+// Hide all data in child nodes of given div element.
 function hideData(divObj) {
-  // Hide all data in child nodes of given div element.
   var labels = divObj.querySelectorAll('label');
   var links = divObj.querySelectorAll('a');
   var i;
@@ -480,6 +677,7 @@ function hideData(divObj) {
 
   if (divObj.id === 'hits-div') {
     hitsTable.clear().draw();
+    return;
   }
 
   for (i = 0; i < labels.length; i++) {
@@ -500,8 +698,9 @@ function hideData(divObj) {
   }
 
   // Handle the expression data.
-  if (divObj.id === 'expression') {
+  if (divObj.id === 'expression' || divObj.id === 'protein') {
     divObj.classList.add('hidden');
+    expTable.clear().draw();
   }
 
   // Delete any links if necessary.
@@ -511,6 +710,7 @@ function hideData(divObj) {
   }
 }
 
+// Parses all gene data from a given hit into an Object.
 function parseGeneData(data) {
   return new Promise(function(resolve, reject) {
     var aliases = null;
@@ -525,6 +725,7 @@ function parseGeneData(data) {
     var ensembl = null;
     var pfam = null;
     var uniprot = null;
+    var protein = null;
     var pharmgkb = null;
     var expression = null;
     var prosite = null;
@@ -628,11 +829,13 @@ function parseGeneData(data) {
 
     if (data.hasOwnProperty('genomic_pos')) {
       if (data.genomic_pos.constructor === Array) {
-        coords = 'chr' + data.genomic_pos[0].chr + ':' + data.genomic_pos[0]
+        coords = 'chr' + data.genomic_pos[0].chr + ':' + data.genomic_pos[
+            0]
           .start +
           '-' + data.genomic_pos[0].end;
       } else {
-        coords = 'chr' + data.genomic_pos.chr + ':' + data.genomic_pos.start +
+        coords = 'chr' + data.genomic_pos.chr + ':' + data.genomic_pos
+          .start +
           '-' + data.genomic_pos.end;
       }
     }
@@ -689,9 +892,11 @@ function parseGeneData(data) {
         ident: data.uniprot['Swiss-Prot']
       };
       uniprotSum = getUniprotSummary(data.uniprot['Swiss-Prot']);
+      protein = data.uniprot['Swiss-Prot'];
     }
 
-    if (data.hasOwnProperty('WormBase') || data.hasOwnProperty('uniprot')) {
+    if (data.hasOwnProperty('WormBase') || data.hasOwnProperty(
+        'uniprot')) {
       Promise.all([wormbaseSum, uniprotSum]).then(function(values) {
         wormbaseSum = values[0];
         uniprotSum = values[1];
@@ -713,6 +918,7 @@ function parseGeneData(data) {
           'omim': omim,
           'ensembl': ensembl,
           'uniprot': uniprot,
+          'protein': protein,
           'pfam': pfam,
           'pharmgkb': pharmgkb,
           'prosite': prosite,
@@ -750,6 +956,7 @@ function parseGeneData(data) {
         'omim': omim,
         'ensembl': ensembl,
         'uniprot': uniprot,
+        'protein': protein,
         'pfam': pfam,
         'pharmgkb': pharmgkb,
         'prosite': prosite,
@@ -771,7 +978,7 @@ function parseGeneData(data) {
   });
 };
 
-
+// Fetch the function summary for given protein from UniprotKB.
 function getUniprotSummary(id) {
   return new Promise(function(resolve, reject) {
     if (!id) {
@@ -780,33 +987,36 @@ function getUniprotSummary(id) {
 
     var summary;
 
-    fetch('https://www.uniprot.org/uniprot/' + id + '.xml').then(function(
-      response) {
-      if (response.status !== 200) {
-        console.log('Looks like there was a problem. Status Code: ' +
-          response.status);
+    fetch('https://www.uniprot.org/uniprot/' + id + '.xml').then(
+      function(
+        response) {
+        if (response.status !== 200) {
+          console.log(
+            'Looks like there was a problem. Status Code: ' +
+            response.status);
 
-        reject();
-      }
-
-      response.text().then(function(data) {
-        var parsedXML = xmlParser.parseFromString(data,
-          'text/xml');
-        var comments = parsedXML.querySelectorAll(
-          'comment[type="function"]');
-
-        for (var i = 0; i < comments.length; i++) {
-          summary = comments[0].textContent;
+          reject();
         }
-        resolve(summary);
-      })
-    }).catch(function(err) {
+
+        response.text().then(function(data) {
+          var parsedXML = xmlParser.parseFromString(data,
+            'text/xml');
+          var comments = parsedXML.querySelectorAll(
+            'comment[type="function"]');
+
+          for (var i = 0; i < comments.length; i++) {
+            summary = comments[0].textContent;
+          }
+          resolve(summary);
+        })
+      }).catch(function(err) {
       console.error('Fetch Uniprot Error', err);
       reject();
     });
   });
 }
 
+// Fetch the function summary for given protein from Wormbase.
 function getWormbaseSummary(id) {
   return new Promise(function(resolve, reject) {
     if (!id) {
@@ -817,7 +1027,8 @@ function getWormbaseSummary(id) {
       '/concise_description').then(function(
       response) {
       if (response.status !== 200) {
-        console.log('Looks like there was a problem. Status Code: ' +
+        console.log(
+          'Looks like there was a problem. Status Code: ' +
           response.status);
         reject();
       }
@@ -832,9 +1043,11 @@ function getWormbaseSummary(id) {
   });
 }
 
+// Fetch disease associations from CTDbase and add them to the disease table.
 function getCTDAssociations(id) {
   var queryUrl =
-    'http://ctdbase.org/tools/batchQuery.go?inputType=gene&inputTerms=' + id +
+    'http://ctdbase.org/tools/batchQuery.go?inputType=gene&inputTerms=' +
+    id +
     '&report=diseases_curated&format=json';
 
   fetch(queryUrl).then(function(response) {
@@ -857,7 +1070,8 @@ function getCTDAssociations(id) {
               var pubs = x.PubMedIDs.split('|');
               for (i in pubs) {
                 var newLink =
-                  '<a href=https://www.ncbi.nlm.nih.gov/pubmed/' + pubs[
+                  '<a href=https://www.ncbi.nlm.nih.gov/pubmed/' +
+                  pubs[
                     i] +
                   '>' +
                   pubs[i] + '</a>';
