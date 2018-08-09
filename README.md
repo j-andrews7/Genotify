@@ -14,6 +14,15 @@ Just download the [release](https://github.com/j-andrews7/GenotifyDesktop/releas
 ## Basic Usage
 Genotify is dead simple to use. Type a query into the search box and click the search button, hit enter, or use the hotkey `ctrl+q` (or `cmd+q`) to query from clipboard (even if Genotify isn't focused!). Search for and select species with the species filter, or filter hits in the hits table dynamically. Clicking on a different hit in the hits table will show the information for that hit. Expand the various sections to read what said gene does, explore expression data, see disease associations, or view links out to various data sources. Clicking on a text box will copy its contents to your clipboard for easy copying.
 
+Our group frequently uses Genotify to facilitate:
+
+ - rapid, efficient lookup of genes while reviewing literature or curating lists of significant genes,
+ - close investigation of families of related genes,
+ - quick ascertainment of the biological significance of differentially expressed genes or associating proteins,
+ - determination of known disease associations,
+ - exploration of protein structure, modifications, and variants,
+ - comparison of mRNA expression of a queried gene across diverse tissues, cell types, and species.
+
 ## An Illustrative Example
 One of the situations where Genotify really shines is when you're digging through a table of results from some analysis. Say you just finished a differential expression analysis from a human cancer cell line treated with a novel compound identified as potentially efficacious and want to determine how the drug might be affecting the biology of these cells. You view the top 10 most downregulated genes after treatment and notice several that seem similar:
 
@@ -37,7 +46,7 @@ We can also search for specific datasets by typing in the Search Experiments box
 
 ![More expression data](./docs/img/5.gif)
 
-Now we know that the drug seems to be affecting histone methyltransferases and can easily determine what diseases these genes are associated with, any known variants that might affect their disease potential, and identify other cell lines that would make good candidates for investigating these genes due to their high expression. More importantly, it suggests that maybe some ChIP-seq experiments for histone methylation would be a good idea for next steps.
+Now we know that the drug seems to be affecting histone methyltransferases and can easily determine what diseases these genes are associated with, any known variants that might affect their disease potential, and identify other cell lines that would make good candidates for investigating these genes due to their high expression. It also suggests that maybe some ChIP-seq experiments for histone methylation would be a good idea for next steps. Importantly, **Genotify provides all this information and interactive exploratory widgets in a single place** for convenience and time-saving. 
 
 ## Issues/Comments
 Hit up the issues pages here and describe the issue in detail. Screenshots may be helpful. I'm usually pretty quick to respond. We are also open to suggestions for new features.
