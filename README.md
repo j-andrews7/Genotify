@@ -37,6 +37,8 @@ We can also search for specific datasets by typing in the Search Experiments box
 
 ![More expression data](./docs/img/5.gif)
 
+Now we know that the drug seems to be affecting histone methyltransferases and can easily determine what diseases these genes are associated with, any known variants that might affect their disease potential, and identify other cell lines that would make good candidates for investigating these genes due to their high expression. More importantly, it suggests that maybe some ChIP-seq experiments for histone methylation would be a good idea for next steps.
+
 ## Issues/Comments
 Hit up the issues pages here and describe the issue in detail. Screenshots may be helpful. I'm usually pretty quick to respond. We are also open to suggestions for new features.
 
