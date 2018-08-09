@@ -11,8 +11,31 @@ This program aims to give you access to all of the resources you could ever want
 ## Installation
 Just download the [release](https://github.com/j-andrews7/GenotifyDesktop/releases) for your OS, unpack, and run. To build from source with `node.js`, you can clone the repo and run `npm install` followed by `npm start`.
 
-## Usage
+## Basic Usage
 Genotify is dead simple to use. Type a query into the search box and click the search button, hit enter, or use the hotkey `ctrl+q` (or `cmd+q`) to query from clipboard (even if Genotify isn't focused!). Search for and select species with the species filter, or filter hits in the hits table dynamically. Clicking on a different hit in the hits table will show the information for that hit. Expand the various sections to read what said gene does, explore expression data, see disease associations, or view links out to various data sources. Clicking on a text box will copy its contents to your clipboard for easy copying.
+
+## An Illustrative Example
+One of the situations where Genotify really shines is when you're digging through a table of results from some analysis. Say you just finished a differential expression analysis from a human cancer cell line treated with a novel compound identified as potentially efficacious and want to determine how the drug might be affecting the biology of these cells. You view the top 10 most downregulated genes after treatment and notice several that seem similar:
+
+![Our downregulated genes](./docs/img/1.PNG)
+
+A quick search for our top hit in the list (*KMT2E*) let's us determine it's genomic location, official name, aliases (the KMT2 family are frequently interchanged with their old *MLL* names to this day), and other basic information under the **Gene Basics** section. We could click on another hit in the **Hits** table to view information for the gene in another species. For more info, we can look at the **Function** section and see that the KMT2E protein functions as a histone methyltransferase, trimethylating histone H3 at Lysine 3 (a histone modification often seen near active gene promoters). 
+
+![A search for KMT2E](./docs/img/2.gif)
+
+Let's try another hit - *KMT2C*, and limit the search to humans only.
+
+![A search for KMT2C](./docs/img/3.gif)
+
+Again, it's a histone methyltransferase (as are KMT2D and KMT2A). We can look at known **Disease Associations**, get **Accessions** to many other databases that will open in your default browser when clicked, and look at the actual structure of the KMT2C protein - domains, variants, post-translation modifications, and more - all with links to their data sources and publications via the ProtVista viewer.
+
+The **Expression** section provides a wealth of information regarding expression of *KMT2C* across many different tissues, experiments, and cell lines through the EBI Expression Atlas. The default view shows many experiments - not super helpful! But we can filter for a specific tissue or cell type easily by clicking the Filter button. We could also download the data with the download button.
+
+![Expression data](./docs/img/4.gif)
+
+We can also search for specific datasets by typing in the Search Experiments box. Maybe we want to know the expression of this gene in a variety of tissues, so we search for the GTEx dataset and can interactively compare the expression. It also has a boxplot view that sometimes makes it easier to compare between samples/tissues.
+
+![More expression data](./docs/img/5.gif)
 
 ## Issues/Comments
 Hit up the issues pages here and describe the issue in detail. Screenshots may be helpful. I'm usually pretty quick to respond. We are also open to suggestions for new features.
