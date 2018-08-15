@@ -1,5 +1,11 @@
 ## Change log
 
+### _**v1.2.1**_
+**Release date: August 15th, 2018**
+ - Added a link back to CTDbase in the disease associations table.
+ - Fixed a bug where the expression experiments search box being improperly hidden after no results were returned and then a valid query was performed.
+ - Fixed a bug that occasionally resulted in the Prot Vista widget crashing (thereby crashing the app) when a hit didn't have an Ensembl ID.
+
 ### _**v1.2.0**_
 **Release date: August 6th, 2018**
  - Added the Prot Vista widget from EBI for interactive protein data (domains, PTMs, variation, etc).

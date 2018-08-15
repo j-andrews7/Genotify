@@ -119,6 +119,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
       title: 'Disease ID'
     }, {
       title: 'PubMed/OMIM IDs'
+    }, {
+      title: 'CTDbase'
     }]
   });
 
@@ -681,6 +683,13 @@ function hideData(divObj) {
     return;
   }
 
+  // Handle the expression data.
+  if (divObj.id === 'expression' || divObj.id === 'protein') {
+    divObj.classList.add('hidden');
+    expTable.clear().draw();
+    return;
+  }
+
   for (i = 0; i < labels.length; i++) {
     var childData = labels[i];
 
@@ -696,12 +705,6 @@ function hideData(divObj) {
       childData.classList.add('hidden');
       childData.textContent = '';
     }
-  }
-
-  // Handle the expression data.
-  if (divObj.id === 'expression' || divObj.id === 'protein') {
-    divObj.classList.add('hidden');
-    expTable.clear().draw();
   }
 
   // Delete any links if necessary.
@@ -1088,8 +1091,13 @@ function getCTDAssociations(id) {
                 linkList.push(newLink);
               }
             }
+            var link =
+              '<a href=http://ctdbase.org/detail.go?type=gene&acc=' + x.GeneID +
+              '>' +
+              'link' + '</a>';
+
             var refs = linkList.join(' ');
-            diseaseList.push([name, id, refs])
+            diseaseList.push([name, id, refs, link])
           }
           diseaseTable.rows.add(
             diseaseList
