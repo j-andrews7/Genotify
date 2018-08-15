@@ -6,6 +6,17 @@ Genotify is a light-weight, cross-platform desktop application for quick gene an
 
 This program aims to give you access to all of the resources you could ever want for a gene, from links to all of the major databases to functional summaries. Hopefully it does it well.
 
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+  * []
+- [An Illustrative Example](#an-illustrative-example)
+  * [Finding Basic Gene Information](#finding-basic-gene-information)
+  * [Finding Disease Associations, Accessions, and Viewing Protein Structure](#finding-disease-associations-accessions-and-viewing-protein-structure)
+  * [Investigating Gene Expression](#investigating-gene-expression)
+- [Issues & Feedback](#issues-and-feedback)
+- [Contributing](#contributing)
+- [License](#license)
+
 ---
 
 ## Installation
@@ -28,27 +39,30 @@ One of the situations where Genotify really shines is when you're digging throug
 
 ![Our downregulated genes](./docs/img/1.png)
 
-A quick search for our top hit in the list (*KMT2E*) let's us determine it's genomic location, official name, aliases (the KMT2 family are frequently interchanged with their old *MLL* names to this day), and other basic information under the **Gene Basics** section. We could click on another hit in the **Hits** table to view information for the gene in another species. For more info, we can look at the **Function** section and see that the KMT2E protein functions as a histone methyltransferase, trimethylating histone H3 at Lysine 3 (a histone modification often seen near active gene promoters). 
+### Finding Basic Gene Information
+A quick search for our top hit in the list (*KMT2E*) let's us determine it's genomic location, official name, aliases (the KMT2 family are frequently interchanged with their old *MLL* names to this day), and other basic information under the **Gene Basics** section. We could click on another hit in the **Hits** table to view information for the gene in another species. For more info, we can look at the **Function** section and see that the KMT2E protein functions as a histone methyltransferase, trimethylating histone H3 at Lysine 3 (a histone modification often seen near active gene promoters).
 
 ![A search for KMT2E](./docs/img/2.gif)
 
 Let's try another hit - *KMT2C*, and limit the search to humans only.
 
+### Finding Disease Associations, Accessions, and Viewing Protein Structure
 ![A search for KMT2C](./docs/img/3.gif)
 
 Again, it's a histone methyltransferase (as are KMT2D and KMT2A). We can look at known **Disease Associations**, get **Accessions** to many other databases that will open in your default browser when clicked, and look at the actual structure of the KMT2C protein - domains, variants, post-translation modifications, and more - all with links to their data sources and publications via the ProtVista viewer.
 
+### Investigating Gene Expression
 The **Expression** section provides a wealth of information regarding expression of *KMT2C* across many different tissues, experiments, and cell lines through the EBI Expression Atlas. The default view shows many experiments - not super helpful! But we can filter for a specific tissue or cell type easily by clicking the Filter button. We could also download the data with the download button.
 
 ![Expression data](./docs/img/4.gif)
 
-We can also search for specific datasets by typing in the Search Experiments box. Maybe we want to know the expression of this gene in a variety of tissues, so we search for the GTEx dataset and can interactively compare the expression. It also has a boxplot view that sometimes makes it easier to compare between samples/tissues.
+We can also search for specific datasets by typing in the Search Experiments box. Maybe we want to know the expression of this gene in a variety of tissues, so we search for the GTEx dataset and can interactively compare the expression. It also has a boxplot view that sometimes makes it easier to compare between samples/tissues. The experiments table will update to show different experiments if a hit for a different species is shown. Sometimes, data won't be found for a given gene in a given experiment. This is usually due to the experiment being a differential expression analysis (Microarray or RNA-Seq Differential), which only contain data for genes that are differentially expressed between the two conditions. The RNA-Seq Baseline experiments are typically more reliable and are what most people will likely find most useful.
 
 ![More expression data](./docs/img/5.gif)
 
-Now we know that the drug seems to be affecting histone methyltransferases and can easily determine what diseases these genes are associated with, any known variants that might affect their disease potential, and identify other cell lines that would make good candidates for investigating these genes due to their high expression. It also suggests that maybe some ChIP-seq experiments for histone methylation would be a good idea for next steps. Importantly, **Genotify provides all this information and interactive exploratory widgets in a single place** for convenience and time-saving. 
+Now we know that the drug seems to be affecting histone methyltransferases and can easily determine what diseases these genes are associated with, any known variants that might affect their disease potential, and identify other cell lines that would make good candidates for investigating these genes due to their high expression. It also suggests that maybe some ChIP-seq experiments for histone methylation would be a good idea for next steps. Importantly, **Genotify provides all this information and interactive exploratory widgets in a single place** for convenience and time-saving.
 
-## Issues/Comments
+## Issues and Feedback
 Hit up the issues pages here and describe the issue in detail. Screenshots may be helpful. I'm usually pretty quick to respond. We are also open to suggestions for new features.
 
 ## Contributing
