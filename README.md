@@ -8,7 +8,6 @@ This program aims to give you access to all of the resources you could ever want
 
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
-  * []
 - [An Illustrative Example](#an-illustrative-example)
   * [Finding Basic Gene Information](#finding-basic-gene-information)
   * [Finding Disease Associations, Accessions, and Viewing Protein Structure](#finding-disease-associations-accessions-and-viewing-protein-structure)
