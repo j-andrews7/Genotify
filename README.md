@@ -1,4 +1,9 @@
 # Genotify
+[![DOI](http://joss.theoj.org/papers/10.21105/joss.00885/status.svg)](https://doi.org/10.21105/joss.00885)
+
+The paper for Genotify is located [here](http://joss.theoj.org/papers/10.21105/joss.00885). Please cite it if you use Genotify in your research:
+
+Andrews et al., (2018). Genotify: Fast, lightweight gene lookup and summarization . Journal of Open Source Software, 3(28), 885, https://doi.org/10.21105/joss.00885
 
 ---
 
