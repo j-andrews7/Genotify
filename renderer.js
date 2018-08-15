@@ -119,6 +119,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
       title: 'Disease ID'
     }, {
       title: 'PubMed/OMIM IDs'
+    }, {
+      title: 'CTDbase'
     }]
   });
 
@@ -409,14 +411,15 @@ function displayHits(hitsList) {
 }
 
 function renderExpression(data, reset) {
-  var expGene = data[0].ident;
-  var expSpecies = data[1];
+
   // Renders the interactive widget initially.
   var targ = document.getElementById('highchartsContainer');
   if (data[0] === null || data[1] === null) {
     targ.innerHTML = 'No expression data available for this species.';
     return;
   };
+  var expGene = data[0].ident;
+  var expSpecies = data[1];
 
   // Render previously selected experiment if top hit from new search is of same species.
   // Much more convenient than continously going back and selecting the same experiment.
@@ -680,6 +683,13 @@ function hideData(divObj) {
     return;
   }
 
+  // Handle the expression data.
+  if (divObj.id === 'expression' || divObj.id === 'protein') {
+    divObj.classList.add('hidden');
+    expTable.clear().draw();
+    return;
+  }
+
   for (i = 0; i < labels.length; i++) {
     var childData = labels[i];
 
@@ -695,12 +705,6 @@ function hideData(divObj) {
       childData.classList.add('hidden');
       childData.textContent = '';
     }
-  }
-
-  // Handle the expression data.
-  if (divObj.id === 'expression' || divObj.id === 'protein') {
-    divObj.classList.add('hidden');
-    expTable.clear().draw();
   }
 
   // Delete any links if necessary.
@@ -1087,8 +1091,13 @@ function getCTDAssociations(id) {
                 linkList.push(newLink);
               }
             }
+            var link =
+              '<a href=http://ctdbase.org/detail.go?type=gene&acc=' + x.GeneID +
+              '>' +
+              'link' + '</a>';
+
             var refs = linkList.join(' ');
-            diseaseList.push([name, id, refs])
+            diseaseList.push([name, id, refs, link])
           }
           diseaseTable.rows.add(
             diseaseList
