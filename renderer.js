@@ -527,6 +527,12 @@ function renderProtein(data) {
     targ.innerHTML = 'No data available for this protein.';
     return;
   };
+
+  //Snag only first Uniprot ID if multiple in array.
+  if (Array.isArray(data)) {
+    data = data[0]
+  };
+
   var instance = new ProtVista({
     el: targ,
     uniprotacc: data
@@ -893,7 +899,7 @@ function parseGeneData(data) {
       undefined) {
       uniprot = {
         db: 'http://www.uniprot.org/uniprot/',
-        ident: data.uniprot['Swiss-Prot']
+        ident: checkArray(data.uniprot['Swiss-Prot'])
       };
       uniprotSum = getUniprotSummary(data.uniprot['Swiss-Prot']);
       protein = data.uniprot['Swiss-Prot'];
@@ -982,11 +988,32 @@ function parseGeneData(data) {
   });
 };
 
+// Check if ID is an array. If so, return first element.
+function checkArray(id) {
+  return new Promise(function(resolve, reject) {
+    if (!id) {
+      reject();
+    }
+
+    // Necessary for edge cases where multiple IDs are returned.
+    if (Array.isArray(id)) {
+      id = id[0];
+    }
+
+    resolve(id);
+  });
+}
+
 // Fetch the function summary for given protein from UniprotKB.
 function getUniprotSummary(id) {
   return new Promise(function(resolve, reject) {
     if (!id) {
       reject();
+    }
+
+    // Necessary for edge cases where multiple IDs are returned.
+    if (Array.isArray(id)) {
+      id = id[0];
     }
 
     var summary;
