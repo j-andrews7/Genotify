@@ -897,10 +897,17 @@ function parseGeneData(data) {
 
     if (data.hasOwnProperty('uniprot') && data.uniprot['Swiss-Prot'] !==
       undefined) {
-      uniprot = {
-        db: 'http://www.uniprot.org/uniprot/',
-        ident: checkArray(data.uniprot['Swiss-Prot'])
-      };
+      if (Array.isArray(data.uniprot['Swiss-Prot'])) {
+        uniprot = {
+          db: 'http://www.uniprot.org/uniprot/',
+          ident: data.uniprot['Swiss-Prot'][0]
+        };
+      } else {
+        uniprot = {
+          db: 'http://www.uniprot.org/uniprot/',
+          ident: data.uniprot['Swiss-Prot']
+        };
+      }
       uniprotSum = getUniprotSummary(data.uniprot['Swiss-Prot']);
       protein = data.uniprot['Swiss-Prot'];
     }
@@ -987,22 +994,6 @@ function parseGeneData(data) {
     }
   });
 };
-
-// Check if ID is an array. If so, return first element.
-function checkArray(id) {
-  return new Promise(function(resolve, reject) {
-    if (!id) {
-      reject();
-    }
-
-    // Necessary for edge cases where multiple IDs are returned.
-    if (Array.isArray(id)) {
-      id = id[0];
-    }
-
-    resolve(id);
-  });
-}
 
 // Fetch the function summary for given protein from UniprotKB.
 function getUniprotSummary(id) {
