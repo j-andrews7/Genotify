@@ -395,11 +395,20 @@ function displayHits(hitsList) {
   for (i in hitsList.hits) {
     var hit = hitsList.hits[i];
     var spec = 'NA';
+    var symbol = 'NA';
+
+    // Check if species is in our list.
     if (speciesObj[hit.taxid] !== undefined) {
       spec = speciesObj[hit.taxid];
-    } else {}
+    }
+
+    // Check if symbol is part of the hit.
+    if (hit.symbol !== undefined) {
+      symbol = hit.symbol;
+    }
+
     dataSet.push([
-      hit.symbol,
+      symbol,
       hit._id,
       spec,
       hit._score.toFixed(2)
@@ -527,6 +536,12 @@ function renderProtein(data) {
     targ.innerHTML = 'No data available for this protein.';
     return;
   };
+
+  //Snag only first Uniprot ID if multiple in array.
+  if (Array.isArray(data)) {
+    data = data[0]
+  };
+
   var instance = new ProtVista({
     el: targ,
     uniprotacc: data
@@ -738,6 +753,7 @@ function parseGeneData(data) {
     var gobp = null;
     var gomf = null;
     var gocc = null;
+    var symbol = null;
 
     if (data.hasOwnProperty('go')) {
       if (data.go.hasOwnProperty('BP')) {
@@ -891,12 +907,25 @@ function parseGeneData(data) {
 
     if (data.hasOwnProperty('uniprot') && data.uniprot['Swiss-Prot'] !==
       undefined) {
-      uniprot = {
-        db: 'http://www.uniprot.org/uniprot/',
-        ident: data.uniprot['Swiss-Prot']
-      };
+      if (Array.isArray(data.uniprot['Swiss-Prot'])) {
+        uniprot = {
+          db: 'http://www.uniprot.org/uniprot/',
+          ident: data.uniprot['Swiss-Prot'][0]
+        };
+      } else {
+        uniprot = {
+          db: 'http://www.uniprot.org/uniprot/',
+          ident: data.uniprot['Swiss-Prot']
+        };
+      }
       uniprotSum = getUniprotSummary(data.uniprot['Swiss-Prot']);
       protein = data.uniprot['Swiss-Prot'];
+    }
+
+    if (data.hasOwnProperty('symbol') !== undefined) {
+      symbol = data.symbol;
+    } else {
+      symbol = "NA"
     }
 
     if (data.hasOwnProperty('WormBase') || data.hasOwnProperty(
@@ -932,7 +961,7 @@ function parseGeneData(data) {
           'gocc': gocc,
           'uniprot-summary': uniprotSum,
           'wormbase-summary': wormbaseSum,
-          'gene-symbol': data.symbol,
+          'gene-symbol': symbol,
           'gene-name': data.name,
           'gene-id': {
             db: 'https://www.ncbi.nlm.nih.gov/gene/',
@@ -970,7 +999,7 @@ function parseGeneData(data) {
         'gocc': gocc,
         'uniprot-summary': uniprotSum,
         'wormbase-summary': wormbaseSum,
-        'gene-symbol': data.symbol,
+        'gene-symbol': symbol,
         'gene-name': data.name,
         'gene-id': {
           db: 'https://www.ncbi.nlm.nih.gov/gene/',
@@ -987,6 +1016,11 @@ function getUniprotSummary(id) {
   return new Promise(function(resolve, reject) {
     if (!id) {
       reject();
+    }
+
+    // Necessary for edge cases where multiple IDs are returned.
+    if (Array.isArray(id)) {
+      id = id[0];
     }
 
     var summary;
