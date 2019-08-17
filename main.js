@@ -25,7 +25,8 @@ function createWindow() {
     height: 1200,
     minWidth: 450,
     icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
-    show: false
+    show: false, 
+    title: "Genotify"
   });
 
   // Splash screen.
@@ -147,7 +148,7 @@ function createMenu() {
       label: 'How to Use',
       click() {
         require('electron').shell.openExternal(
-          'https://github.com/j-andrews7/GenotifyDesktop/')
+          'https://github.com/j-andrews7/Genotify/')
       }
     }]
   }]
