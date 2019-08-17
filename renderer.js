@@ -395,11 +395,20 @@ function displayHits(hitsList) {
   for (i in hitsList.hits) {
     var hit = hitsList.hits[i];
     var spec = 'NA';
+    var symbol = 'NA';
+
+    // Check if species is in our list.
     if (speciesObj[hit.taxid] !== undefined) {
       spec = speciesObj[hit.taxid];
-    } else {}
+    }
+
+    // Check if symbol is part of the hit.
+    if (hit.symbol !== undefined) {
+      symbol = hit.symbol;
+    }
+
     dataSet.push([
-      hit.symbol,
+      symbol,
       hit._id,
       spec,
       hit._score.toFixed(2)
@@ -744,6 +753,7 @@ function parseGeneData(data) {
     var gobp = null;
     var gomf = null;
     var gocc = null;
+    var symbol = null;
 
     if (data.hasOwnProperty('go')) {
       if (data.go.hasOwnProperty('BP')) {
@@ -912,6 +922,12 @@ function parseGeneData(data) {
       protein = data.uniprot['Swiss-Prot'];
     }
 
+    if (data.hasOwnProperty('symbol') !== undefined) {
+      symbol = data.symbol;
+    } else {
+      symbol = "NA"
+    }
+
     if (data.hasOwnProperty('WormBase') || data.hasOwnProperty(
         'uniprot')) {
       Promise.all([wormbaseSum, uniprotSum]).then(function(values) {
@@ -945,7 +961,7 @@ function parseGeneData(data) {
           'gocc': gocc,
           'uniprot-summary': uniprotSum,
           'wormbase-summary': wormbaseSum,
-          'gene-symbol': data.symbol,
+          'gene-symbol': symbol,
           'gene-name': data.name,
           'gene-id': {
             db: 'https://www.ncbi.nlm.nih.gov/gene/',
@@ -983,7 +999,7 @@ function parseGeneData(data) {
         'gocc': gocc,
         'uniprot-summary': uniprotSum,
         'wormbase-summary': wormbaseSum,
-        'gene-symbol': data.symbol,
+        'gene-symbol': symbol,
         'gene-name': data.name,
         'gene-id': {
           db: 'https://www.ncbi.nlm.nih.gov/gene/',
