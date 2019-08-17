@@ -1,5 +1,13 @@
 ## Change log
 
+### _**v1.2.2**_
+**Release date: August 17th, 2019**
+ - Upgraded a bunch of dependency versions to fix most security issues [#43](https://github.com/j-andrews7/Genotify/issues/43).
+ - Upgraded to Electron 3.1.13, which fixed the menu bar being impossible to see on linux [#45](https://github.com/j-andrews7/Genotify/issues/45).
+ - Fixed a bug that caused the Hits datatable to throw mad errors when hits had no symbol provided [#44](https://github.com/j-andrews7/Genotify/issues/44).
+ - Fixed a long standing bug due to multiple Uniprot IDs being returned. This caused errors in retrieving the Uniprot Summary and ProtVista data [#40](https://github.com/j-andrews7/Genotify/issues/40).
+ - Fix issues building from source on linux [#42](https://github.com/j-andrews7/Genotify/issues/42) - thanks to @hmontenegro for reporting and help troubleshooting.
+
 ### _**v1.2.1**_
 **Release date: August 15th, 2018**
  - Added a link back to CTDbase in the disease associations table.
