@@ -1,6 +1,6 @@
 # Genotify
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00885/status.svg)](https://doi.org/10.21105/joss.00885)
-![GitHub All Releases](https://img.shields.io/github/downloads/j-andrews7/Genotify/total?style=plastic)
+![GitHub All Releases](https://img.shields.io/github/downloads/j-andrews7/Genotify/total)
 
 The paper for Genotify is located [here](http://joss.theoj.org/papers/10.21105/joss.00885). Please cite it if you use Genotify in your research:
 
