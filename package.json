@@ -20,7 +20,7 @@
     "bootstrap": "4.3.1",
     "popper.js": "1.14.7",
     "load-json-file": "~4.0.0",
-    "datatables.net": "1.10.16",
+    "datatables.net": "1.10.22",
     "datatables.net-dt": "1.10.16",
     "expression-atlas-heatmap-highcharts": "4.4.1",
     "ProtVista": "j-andrews7/ProtVista",
